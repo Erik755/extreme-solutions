@@ -387,18 +387,39 @@
       padding: 1.5rem;
     }
 
-    /* Capturas de teléfono completas: contain + letterbox, sin recorte cover */
-    .project-media img.phone-shot {
-      object-fit: contain;
-      object-position: center center;
-      background: #071827;
+    /* Capturas de teléfono: marco 3/4 (legible, sin el vacío de 9/20) + contain */
+    .project-media:has(img.phone-shot) {
+      position: relative;
+      aspect-ratio: 9 / 16;
+      background: var(--paper-2);
     }
 
-    .project[data-project-id="evidencia-visual"] .project-media,
-    .project[data-project-id="formatos-pdf-excel"] .project-media,
+    .project-media img.phone-shot {
+      position: absolute;
+      inset: .55rem .7rem;
+      width: auto;
+      height: auto;
+      max-width: calc(100% - 1.4rem);
+      max-height: calc(100% - 1.1rem);
+      margin: auto;
+      object-fit: contain;
+      object-position: center center;
+      border-radius: 14px;
+      background: transparent;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .2);
+    }
+
+    /* Letterbox alineado al tono de cada captura (bordes del asset) */
     .project[data-project-id="control-gastos-pro"] .project-media {
-      aspect-ratio: 9 / 20;
-      background: #071827;
+      background: #eef3f0;
+    }
+
+    .project[data-project-id="evidencia-visual"] .project-media {
+      background: #0a1622;
+    }
+
+    .project[data-project-id="formatos-pdf-excel"] .project-media {
+      background: #e8eef4;
     }
 
     .project.project-featured {
@@ -728,10 +749,15 @@
         aspect-ratio: 4 / 3;
       }
 
-      .project[data-project-id="evidencia-visual"] .project-media,
-      .project[data-project-id="formatos-pdf-excel"] .project-media,
-      .project[data-project-id="control-gastos-pro"] .project-media {
-        aspect-ratio: 9 / 20;
+      .project-media:has(img.phone-shot) {
+        aspect-ratio: 9 / 16;
+      }
+
+      .project-media img.phone-shot {
+        inset: .45rem .55rem;
+        max-width: calc(100% - 1.1rem);
+        max-height: calc(100% - .9rem);
+        border-radius: 12px;
       }
 
       .project.project-featured {
@@ -759,6 +785,27 @@
   
   /* Servicio: integración de pasarelas de pago (tarjeta discreta, mismo componente que .capability) */
   .section.section-compact{padding:2.75rem 0}
+
+    html[data-theme="dark"] .project-media:has(img.phone-shot) {
+      background: #152338;
+    }
+
+    html[data-theme="dark"] .project[data-project-id="control-gastos-pro"] .project-media {
+      background: #1a2838;
+    }
+
+    html[data-theme="dark"] .project[data-project-id="evidencia-visual"] .project-media {
+      background: #0a1622;
+    }
+
+    html[data-theme="dark"] .project[data-project-id="formatos-pdf-excel"] .project-media {
+      background: #152338;
+    }
+
+    html[data-theme="dark"] .project-media img.phone-shot {
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .45);
+    }
+
   .capability.capability-wide{min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:1.5rem;align-items:center}
   .capability.capability-wide svg{margin:0;align-self:start;color:var(--cyan)}
   .capability-wide-kickers{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
