@@ -34,6 +34,22 @@ test('destacados en el héroe y MCP/Lentes en las listas de herramientas y espec
   for (const match of tools.matchAll(/<p>([^<]+)<\/p>/g)) assert.ok(translations[match[1]], match[1].slice(0, 60));
 });
 
+test('Reporte Servicio Pro: disponible en Google Play con enlace a la ficha y demo', () => {
+  const card = cards.find(c => c.includes('data-project-id="reporte-servicio-pro"'));
+  assert.ok(card.includes('Producto Android · Disponible en Google Play'));
+  assert.ok(card.includes('Disponible en Google Play.'));
+  const project = JSON.parse(readFileSync(new URL('../data/projects.json', import.meta.url), 'utf8')).find(item => item.id === 'reporte-servicio-pro');
+  assert.equal(project.links[0].url, 'https://play.google.com/store/apps/details?id=com.reporteservicio.pro');
+  assert.equal(project.links[0].label, 'Ver en Google Play →');
+  assert.equal(project.links[1].url, 'https://youtu.be/Jkbw1u1hXkk?si=lP8OdGsO1P8lORdo');
+  assert.equal(project.privacy, 'reporte-servicio-pro');
+  const translations = JSON.parse(readFileSync(new URL('../data/translations.json', import.meta.url), 'utf8'));
+  for (const text of [project.type, project.description, ...project.links.map(link => link.label)]) assert.ok(translations[text], text);
+  const privacy = readFileSync(new URL('../privacidad.html', import.meta.url), 'utf8');
+  assert.ok(privacy.includes('Política 3.0 · app 2.0.15'));
+  assert.ok(!privacy.includes('Política 3.0 · app 2.0.13'));
+});
+
 test('Plataforma web operativa conserva su texto y su enlace a /proyecto/ltv-maestro', () => {
   const ltv = cards.find(card => card.includes('data-project-id="ltv-maestro"'));
   assert.ok(ltv.includes('<span class="project-type">Plataforma web operativa</span>'));

@@ -383,7 +383,6 @@ window.EXTREME_TRANSLATIONS = {
   "Política de cada aplicación": "Policy for each app",
   "Las políticas marcadas como «Resumen» provienen de la política oficial publicada de la app, que prevalece en caso de diferencia. Las marcadas como «Aviso completo» se publican íntegras en esta página.": "Policies marked “Summary” come from the app’s official published policy, which prevails if there is any difference. Those marked “Full notice” are published in full on this page.",
   "IA y servicios en la nube": "AI and cloud services",
-  "Política 3.0 · app 2.0.13": "Policy 3.0 · app 2.0.13",
   "Vigente desde: 29 de septiembre de 2026": "Effective: September 29, 2026",
   "Aviso completo": "Full notice",
   "App móvil de productividad para crear, guardar, firmar y compartir reportes técnicos de servicio en PDF y Excel desde un dispositivo Android. Los datos del reporte, clientes, evidencias, anotaciones, firmas, ubicación e historial se procesan y conservan en el dispositivo. Solo salen de él los datos de compra necesarios para validar la suscripción y los archivos que tú decides compartir.": "A productivity mobile app to create, save, sign and share technical service reports in PDF and Excel from an Android device. Report data, clients, evidence, annotations, signatures, location and history are processed and kept on the device. Only the purchase data needed to validate the subscription and the files you choose to share leave it.",
@@ -560,5 +559,9 @@ window.EXTREME_TRANSLATIONS = {
   "Seguridad de agentes de IA": "AI agent security",
   "Patrón Dual LLM": "Dual LLM pattern",
   "Producto Android · Prueba cerrada en Google Play": "Android product · Closed testing on Google Play",
-  "OAuth · Google Identity Services": "OAuth · Google Identity Services"
+  "OAuth · Google Identity Services": "OAuth · Google Identity Services",
+  "Producto Android · Disponible en Google Play": "Android product · Available on Google Play",
+  "Desarrollamos captura de servicios, clientes, evidencias, firmas, historial y documentos PDF/Excel desde el celular. Disponible en Google Play.": "We build service capture, clients, evidence, signatures, history, and PDF/Excel documents from the phone. Available on Google Play.",
+  "Ver en Google Play →": "View on Google Play →",
+  "Política 3.0 · app 2.0.15": "Policy 3.0 · app 2.0.15"
 };

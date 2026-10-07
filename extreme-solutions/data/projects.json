@@ -69,8 +69,8 @@
     "id": "reporte-servicio-pro",
     "category": "android",
     "title": "Reporte Servicio Pro",
-    "type": "Producto Android",
-    "description": "Desarrollamos captura de servicios, clientes, evidencias, firmas, historial y documentos PDF/Excel desde el celular.",
+    "type": "Producto Android · Disponible en Google Play",
+    "description": "Desarrollamos captura de servicios, clientes, evidencias, firmas, historial y documentos PDF/Excel desde el celular. Disponible en Google Play.",
     "image": "/assets/embedded-6.webp",
     "alt": "Captura de Reporte Servicio Pro en Android",
     "tags": [
@@ -80,6 +80,10 @@
       "Firmas"
     ],
     "links": [
+      {
+        "url": "https://play.google.com/store/apps/details?id=com.reporteservicio.pro",
+        "label": "Ver en Google Play →"
+      },
       {
         "url": "https://youtu.be/Jkbw1u1hXkk?si=lP8OdGsO1P8lORdo",
         "label": "Ver demostración →"
