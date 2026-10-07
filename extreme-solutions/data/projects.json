@@ -98,7 +98,7 @@
     "title": "Control de Gastos Pro",
     "type": "Producto Android",
     "description": "Diseñamos una app para organizar gastos personales y empresariales por periodo, registrar movimientos desde los ajustes rápidos y conservar un historial privado en el teléfono.",
-    "image": "/assets/control-gastos-pro-dashboard.png",
+    "image": "/assets/control-gastos-pro-dashboard.webp",
     "alt": "Panel de Control de Gastos Pro con periodo y sincronización con Google Sheets",
     "tags": [
       "Control financiero",
