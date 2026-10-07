@@ -51,9 +51,22 @@ function certificate(cert, tr) {
   </section>`;
 }
 
+
+const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro']);
+function mediaClass(project) {
+  if (project.id === 'ltv-maestro') return ' class="ltv-media"';
+  if (PHONE_SHOT_IDS.has(project.id)) return ' class="phone-shot"';
+  return '';
+}
+function detailMediaClass(project) {
+  if (project.id === 'ltv-maestro') return ' detail-image--logo';
+  if (PHONE_SHOT_IDS.has(project.id)) return ' detail-image--phone';
+  return '';
+}
+
 export function card(project) {
   return `<article class="project${project.featured ? ' project-featured' : ''}" data-category="${project.category}" data-project-id="${project.id}">
-    <div class="project-media">${project.featured ? '<span class="featured-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span>Destacado</span></span>' : ''}<img loading="lazy" decoding="async" src="${escape(project.image)}" alt="${escape(project.alt)}"${project.id === 'ltv-maestro' ? ' class="ltv-media"' : (['evidencia-visual','formatos-pdf-excel','control-gastos-pro'].includes(project.id) ? ' class="phone-shot"' : '')}></div>
+    <div class="project-media">${project.featured ? '<span class="featured-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span>Destacado</span></span>' : ''}<img loading="lazy" decoding="async" src="${escape(project.image)}" alt="${escape(project.alt)}"${mediaClass(project)}></div>
     <div class="project-body"><span class="project-type">${escape(project.type)}</span>
     <h3>${escape(project.title)}</h3><p>${escape(project.description)}</p>
     <div class="chips">${project.tags.map(tag => `<span class="chip">${escape(tag)}</span>`).join('')}</div>
@@ -76,6 +89,6 @@ export function projectPage(project, requestedLanguage = 'es') {
     <div class="detail-heading"><p class="eyebrow">${escape(tr(project?.type || 'Error 404'))}</p><h1>${escape(title)}</h1></div>
     ${project ? `<div class="detail-layout"><div><p class="lead">${escape(tr(project.description))}</p><h2>${escape(tr('Tecnologías y capacidades'))}</h2><div class="chips">${project.tags.map(tag => `<span class="chip">${escape(tr(tag))}</span>`).join('')}</div>
     <div class="detail-actions">${project.links.map(link => `<a class="btn dark" href="${escape(link.url)}" target="_blank" rel="noreferrer">${escape(tr(link.label))}</a>`).join('')}${project.privacy ? `<a class="btn light" href="/privacidad${languageQuery}#${project.privacy}">${escape(tr('Política de privacidad'))}</a>` : ''}</div></div>
-    <img class="detail-image" src="${escape(project.image)}" alt="${escape(tr(project.alt))}"></div>${project.certification ? certificate(project.certification, tr) : ''}` : `<p>${escape(tr('Este proyecto no existe. Vuelve al catálogo para explorar las soluciones disponibles.'))}</p>`}
+    <div class="detail-media"><img class="detail-image${detailMediaClass(project)}" src="${escape(project.image)}" alt="${escape(tr(project.alt))}"></div></div>${project.certification ? certificate(project.certification, tr) : ''}` : `<p>${escape(tr('Este proyecto no existe. Vuelve al catálogo para explorar las soluciones disponibles.'))}</p>`}
     </main><footer><span>© 2026 Extreme Solutions · Erik Sanchez</span> <span class="footer-links"><a href="/privacidad${languageQuery}">${escape(tr('Privacidad'))}</a><a href="/privacidad${languageQuery}#aviso-legal">${escape(tr('Aviso legal'))}</a></span> <span class="footer-legal">${escape(tr('Sitio informativo, sin garantías. Las marcas de terceros pertenecen a sus titulares.'))}</span></footer></body></html>`;
 }

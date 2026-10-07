@@ -190,15 +190,16 @@ html[data-theme="dark"] .tool-card[data-tilt]::before { background: radial-gradi
 .project-links .project-video { margin-top: 0; }
 @media (min-width: 1200px) { .project-body { padding: 1.25rem; } }
 /* El logotipo de la plataforma se muestra completo dentro del mismo marco que las capturas. */
-.project-media img.ltv-media { padding: 1.25rem; }
 
 /* Productos destacados (MCP Dual LLM Guard y Lentes): primeros en el catálogo, con distintivo y
    borde luminoso. Escritorio: fila de 2 destacados, luego 3 y 4 tarjetas (cuadrícula de 12);
    tablet: 2 columnas; móvil: 1 columna. Con filtros activos todas vuelven a la cuadrícula uniforme. */
 .projects > .project.project-featured { display: flex; grid-column: auto; grid-template-columns: none; position: relative; border-color: rgba(56, 189, 248, .45); box-shadow: 0 0 0 1px rgba(56, 189, 248, .18), 0 22px 60px rgba(37, 99, 235, .16); }
 html[data-theme="dark"] .projects > .project.project-featured { border-color: rgba(103, 232, 249, .35); box-shadow: 0 0 0 1px rgba(103, 232, 249, .12), 0 26px 70px rgba(37, 99, 235, .28); background: linear-gradient(180deg, rgba(56, 189, 248, .08), transparent 40%), #152338; }
-.project-featured .project-media { position: relative; min-height: 0; aspect-ratio: 2 / 1; }
+.project-featured .project-media { position: relative; height: 16rem; min-height: 14rem; aspect-ratio: auto; }
 .project-featured .project-media img { object-fit: cover; }
+/* Logo LTV: padding reducido; el inset del bezel ya centra el asset */
+.project-media img.ltv-media { padding: 0; }
 .project-featured .project-body h3 { font-size: clamp(1.25rem, 1.1rem + .5vw, 1.5rem); }
 .featured-badge {
   position: absolute; top: .75rem; left: .75rem; z-index: 1;

@@ -370,17 +370,35 @@
       box-shadow: 0 14px 40px rgba(15, 23, 42, .07);
     }
 
+    /* Marco premium uniforme: altura fija, pozo con viñeta, imagen con bezel suave */
     .project-media {
-      aspect-ratio: 16 / 10;
-      background: var(--ink);
+      position: relative;
+      aspect-ratio: auto;
+      height: 14.5rem;
+      min-height: 12rem;
       overflow: hidden;
       border-radius: 8px 8px 0 0;
+      box-sizing: border-box;
+      background:
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .06), transparent 62%),
+        #071827;
     }
 
     .project-media img {
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      inset: .7rem .8rem;
+      width: calc(100% - 1.6rem);
+      height: calc(100% - 1.4rem);
+      margin: auto;
       object-fit: cover;
+      object-position: center center;
+      border-radius: 14px;
+      border: 1px solid rgba(15, 23, 42, .14);
+      background: #0b1220;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, .05),
+        inset 0 1px 0 rgba(255, 255, 255, .14),
+        0 14px 32px rgba(15, 23, 42, .28);
     }
 
     .project-body {
@@ -400,18 +418,13 @@
     }
 
     .project-media img.phone-shot {
-      position: absolute;
       inset: .85rem .95rem;
       width: auto;
       height: auto;
       max-width: calc(100% - 1.9rem);
       max-height: calc(100% - 1.7rem);
-      margin: auto;
       object-fit: contain;
-      object-position: center center;
       border-radius: 18px;
-      border: 1px solid rgba(15, 23, 42, .14);
-      background: #0b1220;
       box-shadow:
         0 0 0 1px rgba(255, 255, 255, .05),
         inset 0 1px 0 rgba(255, 255, 255, .16),
@@ -437,6 +450,12 @@
         #e8eef4;
     }
 
+    .project[data-project-id="reporte-servicio-pro"] .project-media {
+      background:
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .08), transparent 62%),
+        #0a1622;
+    }
+
     .project.project-featured {
       display: grid;
       grid-column: 1 / -1;
@@ -444,15 +463,37 @@
     }
 
     .project-featured .project-media {
-      min-height: 300px;
+      height: 16rem;
+      min-height: 14rem;
       aspect-ratio: auto;
-      background: #071827;
+      background:
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .06), transparent 62%),
+        #071827;
+    }
+
+    /* Diagramas SVG: contain para no recortar el arte */
+    .project-media img[src$=".svg"] {
+      width: auto;
+      height: auto;
+      max-width: calc(100% - 1.6rem);
+      max-height: calc(100% - 1.4rem);
+      object-fit: contain;
+      background: transparent;
+      border-color: rgba(255, 255, 255, .08);
     }
 
     .project-media img.ltv-media {
-      padding: 2.5rem;
+      width: auto;
+      height: auto;
+      max-width: calc(100% - 2.4rem);
+      max-height: calc(100% - 2.2rem);
+      inset: 1.1rem 1.2rem;
       object-fit: contain;
-      background: #071827;
+      background: transparent;
+      border-color: rgba(255, 255, 255, .08);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, .04),
+        0 12px 28px rgba(0, 0, 0, .35);
     }
 
     .project-featured .project-body {
@@ -761,17 +802,27 @@
       }
 
       .project-media {
-        aspect-ratio: 4 / 3;
+        aspect-ratio: auto;
+        height: 15rem;
+        min-height: 13rem;
+      }
+
+      .project-media img {
+        inset: .65rem .7rem;
+        width: calc(100% - 1.4rem);
+        height: calc(100% - 1.3rem);
+        border-radius: 12px;
       }
 
       .project-media:has(img.phone-shot) {
-        aspect-ratio: auto;
         height: 28rem;
         min-height: 24rem;
       }
 
       .project-media img.phone-shot {
         inset: .75rem .8rem;
+        width: auto;
+        height: auto;
         max-width: calc(100% - 1.6rem);
         max-height: calc(100% - 1.5rem);
         border-radius: 16px;
@@ -783,8 +834,8 @@
       }
 
       .project-featured .project-media {
-        min-height: 0;
-        aspect-ratio: 4 / 3;
+        height: 14rem;
+        min-height: 12rem;
       }
 
       .btn {
@@ -803,10 +854,19 @@
   /* Servicio: integración de pasarelas de pago (tarjeta discreta, mismo componente que .capability) */
   .section.section-compact{padding:2.75rem 0}
 
-    html[data-theme="dark"] .project-media:has(img.phone-shot) {
+    html[data-theme="dark"] .project-media {
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .04), transparent 62%),
         #152338;
+    }
+
+    html[data-theme="dark"] .project-media img {
+      border-color: rgba(255, 255, 255, .1);
+      background: #07111d;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, .04),
+        inset 0 1px 0 rgba(255, 255, 255, .12),
+        0 18px 40px rgba(0, 0, 0, .5);
     }
 
     html[data-theme="dark"] .project[data-project-id="control-gastos-pro"] .project-media {
@@ -821,19 +881,16 @@
         #0a1622;
     }
 
-    html[data-theme="dark"] .project[data-project-id="formatos-pdf-excel"] .project-media {
+    html[data-theme="dark"] .project[data-project-id="formatos-pdf-excel"] .project-media,
+    html[data-theme="dark"] .project[data-project-id="reporte-servicio-pro"] .project-media {
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .04), transparent 62%),
         #152338;
     }
 
-    html[data-theme="dark"] .project-media img.phone-shot {
-      border-color: rgba(255, 255, 255, .1);
-      background: #07111d;
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, .04),
-        inset 0 1px 0 rgba(255, 255, 255, .12),
-        0 18px 40px rgba(0, 0, 0, .5);
+    html[data-theme="dark"] .project-media img.ltv-media {
+      background: transparent;
+      border-color: rgba(255, 255, 255, .08);
     }
 
   .capability.capability-wide{min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:1.5rem;align-items:center}

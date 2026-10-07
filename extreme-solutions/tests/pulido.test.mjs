@@ -34,25 +34,29 @@ test('el revelado al hacer scroll es mejora progresiva', () => {
   assert.match(js, /!reduced\.matches/);
 });
 
-test('capturas de teléfono del catálogo: contain, marco de altura fija, bezel suave, sin 9/20', () => {
-  const css = read('base.css') + read('dynamic.css');
+test('catálogo: marco premium en todas las tarjetas + phone-shot contain + detalle', () => {
+  const css = read('base.css') + read('dynamic.css') + read('portada.css');
   const page = read('index.html');
+  const projects = read('lib/projects.js');
+  assert.match(css, /\.project-media\s*\{[^}]*height:\s*14\.5rem/s);
+  assert.match(css, /\.project-media\s*\{[^}]*min-height:\s*12rem/s);
+  assert.match(css, /\.project-media img\s*\{[^}]*border-radius:\s*14px/s);
+  assert.match(css, /\.project-media img\s*\{[^}]*background:\s*#0b1220/s);
   assert.match(css, /\.project-media img\.phone-shot\s*\{[^}]*object-fit:\s*contain/s);
-  assert.match(css, /\.project-media:has\(img\.phone-shot\)/);
-  assert.match(css, /data-project-id="evidencia-visual"[^\n]*\.project-media/);
-  assert.match(css, /data-project-id="formatos-pdf-excel"[^\n]*\.project-media/);
-  assert.match(css, /data-project-id="control-gastos-pro"[^\n]*\.project-media/);
-  assert.doesNotMatch(css, /aspect-ratio:\s*9\s*\/\s*20/);
-  assert.doesNotMatch(css, /\.project-media:has\(img\.phone-shot\)\s*\{[^}]*aspect-ratio:\s*9\s*\/\s*16/s);
   assert.match(css, /\.project-media:has\(img\.phone-shot\)\s*\{[^}]*height:\s*28rem/s);
   assert.match(css, /\.project-media:has\(img\.phone-shot\)\s*\{[^}]*min-height:\s*22rem/s);
   assert.match(css, /\.project-media img\.phone-shot\s*\{[^}]*border-radius:\s*18px/s);
-  assert.match(css, /\.project-media img\.phone-shot\s*\{[^}]*background:\s*#0b1220/s);
+  assert.doesNotMatch(css, /aspect-ratio:\s*9\s*\/\s*20/);
+  assert.doesNotMatch(css, /\.project-media:has\(img\.phone-shot\)\s*\{[^}]*aspect-ratio:\s*9\s*\/\s*16/s);
+  assert.match(css, /\.project::after/);
+  assert.match(css, /\.detail-media\s*\{/);
+  assert.match(css, /\.detail-image--phone/);
+  assert.match(projects, /reporte-servicio-pro/);
+  assert.match(projects, /detail-media/);
   assert.match(css, /#eef3f0/);
   assert.match(css, /#0a1622/);
   assert.match(css, /#e8eef4/);
-  assert.match(css, /\.project::after/);
-  for (const id of ['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro']) {
+  for (const id of ['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro']) {
     assert.match(page, new RegExp(`data-project-id="${id}"[\\s\\S]*?class="phone-shot"`), id);
   }
 });
