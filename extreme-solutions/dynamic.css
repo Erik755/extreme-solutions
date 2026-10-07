@@ -134,8 +134,8 @@ html[data-theme="dark"] .detail-image[src$=".svg"] {
 }
 html[data-theme="dark"] .detail-media:has(.detail-image[src$=".svg"]) {
   background:
-    radial-gradient(80% 70% at 50% 40%, rgba(14, 155, 184, .14), transparent 58%),
-    linear-gradient(180deg, #1c334d 0%, #152338 100%);
+    radial-gradient(80% 70% at 50% 40%, rgba(56, 189, 248, .2), transparent 58%),
+    linear-gradient(180deg, #24608a 0%, #182536 100%);
 }
 html[data-theme="dark"] .detail-image--logo { background: transparent; }
 @media (max-width: 768px) {
@@ -144,9 +144,9 @@ html[data-theme="dark"] .detail-image--logo { background: transparent; }
   .detail-image--phone { max-height: min(560px, 72vh); }
 }
 .detail-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
-html[data-theme="dark"] { color-scheme: dark; --ink: #edf2fa; --ink-2: #dce6f5; --muted: #afbdd1; --paper: #0b1220; --paper-2: #111e30; --line: #ffffff30; --blue: #8bb5ff; }
-html[data-theme="dark"] :is(.capability, .tool-card, .method-step, .project, .play-card, .image-panel, footer) { background: #152338; }
-html[data-theme="dark"] :is(.filter-button, .btn.light) { background: #152338; color: #edf2fa; }
+html[data-theme="dark"] { color-scheme: dark; --ink: #f0f4fa; --ink-2: #e2eaf6; --muted: #b8c5d8; --paper: #0c1018; --paper-2: #121a26; --line: #ffffff35; --blue: #8bb5ff; }
+html[data-theme="dark"] :is(.capability, .tool-card, .method-step, .project, .play-card, .image-panel, footer) { background: #182536; }
+html[data-theme="dark"] :is(.filter-button, .btn.light) { background: #182536; color: #f0f4fa; }
 html[data-theme="dark"] .filter-button[aria-pressed="true"] { background: #dbeafe; color: #0b1220; }
 html[data-theme="dark"] .btn.dark { background: #dbeafe; color: #0b1220; }
 html[data-theme="dark"] .btn.primary { background: #2563eb; border-color: #2563eb; }
@@ -258,3 +258,8 @@ html[data-theme="dark"] .chip { border-color: rgba(255, 255, 255, .14); backgrou
 }
 
 .footer-links a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+/* Rendimiento: diferir pintado de tarjetas fuera de pantalla (Baseline). */
+@supports (content-visibility: auto) {
+  .projects > .project { content-visibility: auto; contain-intrinsic-size: 420px; }
+}

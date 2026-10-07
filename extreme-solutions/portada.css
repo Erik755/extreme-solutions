@@ -174,42 +174,49 @@ html[data-theme="dark"] .tool-card[data-tilt]::before { background: radial-gradi
   .hero-stage { opacity: .7; }
 }
 
-/* Catálogo de proyectos: todas las tarjetas con el mismo diseño (incluida la plataforma web)
-   y la misma altura; 9 tarjetas en 3×3 (escritorio), 2 columnas (tablet y laptop estrecha) y 1 columna en móvil. */
-.projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (min-width: 1200px) { .projects { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-/* En 2 columnas, la última tarjeta impar (sin filtros activos) queda centrada con el mismo ancho. */
-@media (min-width: 681px) and (max-width: 1199px) {
-  .projects:not(:has(> .project[hidden])) > .project:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc((100% - 1rem) / 2); }
+/* Catálogo bento asimétrico (2026): héroe MCP + Lentes de apoyo, luego filas 3 y 4.
+   Tablet 2 cols; móvil 1 col. Con filtros activos, celdas uniformes. */
+.projects {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6, 1.5rem);
 }
 @media (max-width: 680px) { .projects { grid-template-columns: 1fr; } }
-.project { display: flex; flex-direction: column; }
+.project { display: flex; flex-direction: column; min-width: 0; }
 .project-body { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; }
 .project-body .chips { margin-bottom: .25rem; }
-.project-links { margin-top: auto; padding-top: 1rem; gap: .75rem; }
+.project-links { margin-top: auto; padding-top: var(--space-4, 1rem); gap: .75rem; }
 .project-links .project-video { margin-top: 0; }
-@media (min-width: 1200px) { .project-body { padding: var(--space-5); } }
-/* El logotipo de la plataforma se muestra completo dentro del mismo marco que las capturas. */
+.project-body { padding: var(--space-6, 1.5rem); }
 
-/* Productos destacados (MCP Dual LLM Guard y Lentes): primeros en el catálogo, con distintivo y
-   borde luminoso. Escritorio: fila de 2 destacados, luego 3 y 4 tarjetas (cuadrícula de 12);
-   tablet: 2 columnas; móvil: 1 columna. Con filtros activos todas vuelven a la cuadrícula uniforme. */
-.projects > .project.project-featured { display: flex; grid-column: auto; grid-template-columns: none; position: relative; border-color: rgba(56, 189, 248, .45); box-shadow: 0 0 0 1px rgba(56, 189, 248, .18), 0 22px 60px rgba(37, 99, 235, .16); }
-html[data-theme="dark"] .projects > .project.project-featured { border-color: rgba(103, 232, 249, .35); box-shadow: 0 0 0 1px rgba(103, 232, 249, .12), 0 26px 70px rgba(37, 99, 235, .28); background: linear-gradient(180deg, rgba(56, 189, 248, .08), transparent 40%), #152338; }
-.project-featured .project-media { position: relative; height: 16rem; min-height: 14rem; aspect-ratio: auto; }
+/* Destacados: borde luminoso; layout en columna (media arriba) para bento. */
+.projects > .project.project-featured {
+  display: flex;
+  flex-direction: column;
+  grid-column: auto;
+  grid-template-columns: none;
+  position: relative;
+  border-color: rgba(56, 189, 248, .5);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, .2), 0 22px 60px rgba(37, 99, 235, .16);
+}
+html[data-theme="dark"] .projects > .project.project-featured {
+  border-color: rgba(103, 232, 249, .4);
+  box-shadow: 0 0 0 1px rgba(103, 232, 249, .16), 0 26px 70px rgba(37, 99, 235, .3);
+  background: linear-gradient(180deg, rgba(56, 189, 248, .1), transparent 42%), #182536;
+}
+.project-featured .project-media { position: relative; height: 15rem; min-height: 13rem; aspect-ratio: auto; }
 .project-featured .project-media img { object-fit: cover; }
-/* Diagramas SVG (MCP): contain siempre; cover recorta el arte en destacados */
-.project-featured .project-media img[src$=".svg"] {
+/* Diagramas SVG (MCP): contain; nunca cover */
+.project-featured .project-media img[src$=".svg"],
+.project-media img[src$=".svg"] {
   object-fit: contain;
   width: auto;
   height: auto;
-  max-width: calc(100% - 1.6rem);
-  max-height: calc(100% - 1.4rem);
+  max-width: calc(100% - 1.4rem);
+  max-height: calc(100% - 1.2rem);
   background: transparent;
 }
-/* Logo LTV: padding reducido; el inset del bezel ya centra el asset */
 .project-media img.ltv-media { padding: 0; }
-.project-featured .project-body h3 { font-size: clamp(1.25rem, 1.1rem + .5vw, 1.5rem); }
+.project-featured .project-body h3 { font-size: clamp(1.35rem, 1.15rem + .55vw, 1.75rem); letter-spacing: -0.02em; }
 .featured-badge {
   position: absolute; top: .75rem; left: .75rem; z-index: 1;
   display: inline-flex; align-items: center; gap: .35rem; min-height: 28px; padding: 0 .7rem;
@@ -220,14 +227,47 @@ html[data-theme="dark"] .projects > .project.project-featured { border-color: rg
   font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
 }
 .featured-badge svg { width: 14px; height: 14px; fill: #67e8f9; filter: drop-shadow(0 0 6px rgba(103, 232, 249, .7)); }
+
+/* Escritorio: bento 12 cols — héroe 8 + apoyo 4; fila media ×3; fila compacta ×4 */
 @media (min-width: 1200px) {
-  .projects { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .projects { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-6); }
   .projects > .project { grid-column: span 4; }
-  .projects > .project.project-featured { grid-column: span 6; }
+  /* Sin filtros: asimetría intencional */
+  .projects:not(:has(> .project[hidden])) > .project.project-featured:nth-child(1) {
+    grid-column: span 8;
+  }
+  .projects:not(:has(> .project[hidden])) > .project.project-featured:nth-child(2) {
+    grid-column: span 4;
+  }
+  .projects:not(:has(> .project[hidden])) > .project.project-featured:nth-child(1) .project-media {
+    height: 18.5rem; min-height: 16rem;
+  }
+  .projects:not(:has(> .project[hidden])) > .project.project-featured:nth-child(2) .project-media {
+    height: 18.5rem; min-height: 16rem;
+  }
+  .projects:not(:has(> .project[hidden])) > .project:nth-child(n+3):nth-child(-n+5) { grid-column: span 4; }
   .projects:not(:has(> .project[hidden])) > .project:nth-child(n+6) { grid-column: span 3; }
-  .projects:has(> .project[hidden]) > .project.project-featured { grid-column: span 4; }
-  .projects:not(:has(> .project[hidden])) > .project:nth-child(n+6) .project-body { padding: 1.1rem; }
+  .projects:not(:has(> .project[hidden])) > .project:nth-child(n+6) .project-body { padding: var(--space-5); }
+  .projects:not(:has(> .project[hidden])) > .project:nth-child(n+6) .project-body h3 { font-size: 1.05rem; }
+  /* Con filtros: celdas uniformes (no aplastar destacados visualmente: conservan borde) */
+  .projects:has(> .project[hidden]) > .project { grid-column: span 4; }
+  .projects:has(> .project[hidden]) > .project.project-featured .project-media { height: 15rem; }
 }
+
+/* Tablet: 2 columnas; destacados a ancho completo en secuencia */
+@media (min-width: 681px) and (max-width: 1199px) {
+  .projects { gap: var(--space-5); }
+  .projects:not(:has(> .project[hidden])) > .project.project-featured {
+    grid-column: 1 / -1;
+  }
+  .projects:not(:has(> .project[hidden])) > .project.project-featured .project-media {
+    height: 16rem; min-height: 14rem;
+  }
+  .projects:not(:has(> .project[hidden])) > .project:last-child:nth-child(odd):not(.project-featured) {
+    grid-column: 1 / -1; justify-self: center; width: calc((100% - var(--space-5, 1.25rem)) / 2);
+  }
+}
+
 @media (prefers-reduced-transparency: reduce) { .featured-badge { background: #071220; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 @media (prefers-contrast: more) { .featured-badge { background: #000; border-color: #fff; } .projects > .project.project-featured { border-color: currentColor; } }
 

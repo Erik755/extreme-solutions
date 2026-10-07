@@ -66,6 +66,6 @@ test('privacidad: tarjetas con elevación y foco accesible', () => {
   assert.match(css, /\.privacy-card::after/);
   assert.match(css, /\.privacy-toc a:focus-visible/);
   assert.match(css, /\.privacy-back:focus-visible/);
-  assert.match(css, /border-radius:\s*12px/);
+  assert.match(css, /border-radius:\s*var\(--radius-card,\s*16px\)/);
   assert.match(css, /\.footer-links/);
 });

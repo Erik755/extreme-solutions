@@ -23,7 +23,7 @@
       --space-8: 2.75rem;
       --space-9: 4rem;
       --space-10: 5rem;
-      --radius-card: 12px;
+      --radius-card: 16px;
       --radius-control: 8px;
       /* Movimiento: curvas ease-out fuertes y duraciones cortas (feedback inmediato). */
       --ease-out: cubic-bezier(.23, 1, .32, 1);
@@ -249,9 +249,10 @@
     }
 
     h2 {
-      font-size: clamp(2.2rem, 4.6vw, 4rem);
-      line-height: 1.06;
-      letter-spacing: -0.026em;
+      font-size: clamp(2.35rem, 4.8vw, 4.15rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 780;
     }
 
     .lead {
@@ -374,7 +375,7 @@
     .projects {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-5);
+      gap: var(--space-6);
     }
 
     .project {
@@ -478,30 +479,40 @@
         #0a1622;
     }
 
+    /* Destacados: el layout bento vive en portada.css; aquí solo el marco media. */
     .project.project-featured {
-      display: grid;
-      grid-column: 1 / -1;
-      grid-template-columns: minmax(260px, .7fr) minmax(0, 1.3fr);
+      display: flex;
+      flex-direction: column;
+      grid-column: auto;
     }
 
     .project-featured .project-media {
-      height: 16rem;
-      min-height: 14rem;
+      height: 15rem;
+      min-height: 13rem;
       aspect-ratio: auto;
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .06), transparent 62%),
-        #071827;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .08), transparent 62%),
+        #1a4a6e;
     }
 
-    /* Diagramas SVG: contain para no recortar el arte */
+    /* Diagramas SVG: contain; borde visible en ambos temas */
     .project-media img[src$=".svg"] {
       width: auto;
       height: auto;
-      max-width: calc(100% - 1.6rem);
-      max-height: calc(100% - 1.4rem);
+      max-width: calc(100% - 1.4rem);
+      max-height: calc(100% - 1.2rem);
       object-fit: contain;
       background: transparent;
-      border-color: rgba(255, 255, 255, .08);
+      border-color: rgba(56, 189, 248, .35);
+      box-shadow:
+        0 0 0 1px rgba(56, 189, 248, .2),
+        0 14px 32px rgba(15, 23, 42, .28);
+    }
+
+    .project[data-project-id="mcp-dual-llm-guard"] .project-media {
+      background:
+        radial-gradient(80% 70% at 50% 40%, rgba(56, 189, 248, .18), transparent 58%),
+        linear-gradient(180deg, #245a82 0%, #1a4a6e 100%);
     }
 
     .project-media img.ltv-media {
@@ -761,7 +772,7 @@
       }
 
       .project.project-featured {
-        grid-template-columns: minmax(220px, .7fr) minmax(0, 1.3fr);
+        grid-template-columns: none;
       }
 
       .play-card img {
@@ -852,7 +863,6 @@
 
       .project.project-featured {
         grid-column: auto;
-        grid-template-columns: 1fr;
       }
 
       .project-featured .project-media {
@@ -891,19 +901,18 @@
         0 18px 40px rgba(0, 0, 0, .5);
     }
 
-    /* Diagramas SVG en tema oscuro: pozo más claro + borde cian para evitar dark-on-dark */
     html[data-theme="dark"] .project-media img[src$=".svg"] {
       background: transparent;
-      border-color: rgba(103, 232, 249, .28);
+      border-color: rgba(125, 211, 252, .45);
       box-shadow:
-        0 0 0 1px rgba(56, 189, 248, .18),
+        0 0 0 1px rgba(56, 189, 248, .28),
         0 16px 36px rgba(0, 0, 0, .45);
     }
 
     html[data-theme="dark"] .project[data-project-id="mcp-dual-llm-guard"] .project-media {
       background:
-        radial-gradient(80% 70% at 50% 40%, rgba(14, 155, 184, .16), transparent 58%),
-        linear-gradient(180deg, #1c334d 0%, #152338 100%);
+        radial-gradient(80% 70% at 50% 40%, rgba(56, 189, 248, .22), transparent 58%),
+        linear-gradient(180deg, #24608a 0%, #182536 100%);
     }
 
     html[data-theme="dark"] .project[data-project-id="control-gastos-pro"] .project-media {
