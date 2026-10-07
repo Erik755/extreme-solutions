@@ -52,7 +52,7 @@ function certificate(cert, tr) {
 }
 
 
-const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro']);
+const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'museum-of-you']);
 function mediaClass(project) {
   if (project.id === 'ltv-maestro') return ' class="ltv-media"';
   if (PHONE_SHOT_IDS.has(project.id)) return ' class="phone-shot"';

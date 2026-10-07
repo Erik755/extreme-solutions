@@ -56,7 +56,7 @@ test('catálogo: marco premium en todas las tarjetas + phone-shot contain + deta
   assert.match(css, /#eef3f0/);
   assert.match(css, /#0a1622/);
   assert.match(css, /#e8eef4/);
-  for (const id of ['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro']) {
+  for (const id of ['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'museum-of-you']) {
     assert.match(page, new RegExp(`data-project-id="${id}"[\\s\\S]*?class="phone-shot"`), id);
   }
 });

@@ -120,7 +120,7 @@
     "title": "The Museum of You",
     "type": "PWA · Experiencia creativa con IA",
     "description": "Diseñamos una experiencia instalable que convierte objetos cotidianos en piezas de museo: fotografía, curaduría generada con IA, colección local y recursos listos para compartir.",
-    "image": "/assets/museum-of-you.png",
+    "image": "/assets/museum-of-you.webp",
     "alt": "Interfaz de The Museum of You para convertir objetos cotidianos en piezas de museo con IA",
     "tags": [
       "PWA",

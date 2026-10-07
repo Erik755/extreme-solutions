@@ -479,6 +479,12 @@
         #0a1622;
     }
 
+    .project[data-project-id="museum-of-you"] .project-media {
+      background:
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .05), transparent 62%),
+        #0c0c0d;
+    }
+
     /* Destacados: el layout bento vive en portada.css; aquí solo el marco media. */
     .project.project-featured {
       display: flex;
@@ -932,6 +938,12 @@
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .04), transparent 62%),
         #152338;
+    }
+
+    html[data-theme="dark"] .project[data-project-id="museum-of-you"] .project-media {
+      background:
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .03), transparent 62%),
+        #0c0c0d;
     }
 
     html[data-theme="dark"] .project-media img.ltv-media {
