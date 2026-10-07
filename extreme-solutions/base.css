@@ -12,6 +12,19 @@
       --amber: #c77912;
       --white: #ffffff;
       --shadow: 0 22px 60px rgba(15, 23, 42, .16);
+      /* Escala de espaciado (4px base): ritmo tipográfico y densidad de tarjetas. */
+      --space-1: .25rem;
+      --space-2: .5rem;
+      --space-3: .75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-7: 2rem;
+      --space-8: 2.75rem;
+      --space-9: 4rem;
+      --space-10: 5rem;
+      --radius-card: 12px;
+      --radius-control: 8px;
       /* Movimiento: curvas ease-out fuertes y duraciones cortas (feedback inmediato). */
       --ease-out: cubic-bezier(.23, 1, .32, 1);
       --press-duration: .12s;
@@ -220,7 +233,7 @@
     }
 
     .section {
-      padding: 5rem 0;
+      padding: var(--space-10) 0;
     }
 
     .section.alt {
@@ -230,9 +243,9 @@
     .section-head {
       display: grid;
       grid-template-columns: minmax(0, .86fr) minmax(260px, .5fr);
-      gap: 2.75rem;
+      gap: var(--space-8);
       align-items: end;
-      margin-bottom: 2rem;
+      margin-bottom: var(--space-7);
     }
 
     h2 {
@@ -245,20 +258,21 @@
       margin: 0;
       color: var(--muted);
       font-size: 1.08rem;
-      line-height: 1.55;
+      line-height: 1.6;
+      max-width: 42rem;
     }
 
     .capability-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
+      gap: var(--space-5);
     }
 
     .capability {
       min-height: 224px;
-      padding: 1.5rem;
+      padding: var(--space-6);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius-card);
       background: var(--white);
       box-shadow: 0 10px 32px rgba(15, 23, 42, .06);
     }
@@ -308,13 +322,13 @@
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
+      gap: var(--space-5);
     }
 
     .metric {
-      padding: 1.5rem;
+      padding: var(--space-6);
       border: 1px solid rgba(255, 255, 255, .16);
-      border-radius: 8px;
+      border-radius: var(--radius-card);
       background: rgba(255, 255, 255, .08);
       backdrop-filter: blur(10px);
     }
@@ -334,15 +348,15 @@
     .method {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
+      gap: var(--space-5);
     }
 
     .method-step {
       position: relative;
       min-height: 226px;
-      padding: 1.5rem;
+      padding: var(--space-6);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius-card);
       background: var(--white);
     }
 
@@ -360,12 +374,12 @@
     .projects {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
+      gap: var(--space-5);
     }
 
     .project {
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius-card);
       background: var(--white);
       box-shadow: 0 14px 40px rgba(15, 23, 42, .07);
     }
@@ -377,7 +391,7 @@
       height: 14.5rem;
       min-height: 12rem;
       overflow: hidden;
-      border-radius: 8px 8px 0 0;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
       box-sizing: border-box;
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .06), transparent 62%),
@@ -402,7 +416,15 @@
     }
 
     .project-body {
-      padding: 1.5rem;
+      padding: var(--space-6);
+    }
+
+    .project-body h3 {
+      margin-bottom: var(--space-2);
+    }
+
+    .project-body > p {
+      line-height: 1.55;
     }
 
     /* Capturas de teléfono: pozo inset + bezel suave; altura de marco estable entre columnas */
@@ -542,14 +564,14 @@
     .tool-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 1rem;
+      gap: var(--space-5);
     }
 
     .tool-card {
       min-height: 210px;
-      padding: 1.5rem;
+      padding: var(--space-6);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius-card);
       background: var(--white);
     }
 
@@ -594,7 +616,7 @@
     .image-panel {
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, .14);
-      border-radius: 8px;
+      border-radius: var(--radius-card);
       background: rgba(255, 255, 255, .08);
     }
 
@@ -612,7 +634,7 @@
       align-items: center;
       padding: 2rem;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius-card);
       background: var(--white);
       box-shadow: var(--shadow);
     }
@@ -856,17 +878,32 @@
 
     html[data-theme="dark"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .04), transparent 62%),
-        #152338;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 255, 255, .05), transparent 62%),
+        #1a2b40;
     }
 
     html[data-theme="dark"] .project-media img {
-      border-color: rgba(255, 255, 255, .1);
+      border-color: rgba(255, 255, 255, .14);
       background: #07111d;
       box-shadow:
-        0 0 0 1px rgba(255, 255, 255, .04),
-        inset 0 1px 0 rgba(255, 255, 255, .12),
+        0 0 0 1px rgba(255, 255, 255, .06),
+        inset 0 1px 0 rgba(255, 255, 255, .14),
         0 18px 40px rgba(0, 0, 0, .5);
+    }
+
+    /* Diagramas SVG en tema oscuro: pozo más claro + borde cian para evitar dark-on-dark */
+    html[data-theme="dark"] .project-media img[src$=".svg"] {
+      background: transparent;
+      border-color: rgba(103, 232, 249, .28);
+      box-shadow:
+        0 0 0 1px rgba(56, 189, 248, .18),
+        0 16px 36px rgba(0, 0, 0, .45);
+    }
+
+    html[data-theme="dark"] .project[data-project-id="mcp-dual-llm-guard"] .project-media {
+      background:
+        radial-gradient(80% 70% at 50% 40%, rgba(14, 155, 184, .16), transparent 58%),
+        linear-gradient(180deg, #1c334d 0%, #152338 100%);
     }
 
     html[data-theme="dark"] .project[data-project-id="control-gastos-pro"] .project-media {

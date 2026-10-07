@@ -188,7 +188,7 @@ html[data-theme="dark"] .tool-card[data-tilt]::before { background: radial-gradi
 .project-body .chips { margin-bottom: .25rem; }
 .project-links { margin-top: auto; padding-top: 1rem; gap: .75rem; }
 .project-links .project-video { margin-top: 0; }
-@media (min-width: 1200px) { .project-body { padding: 1.25rem; } }
+@media (min-width: 1200px) { .project-body { padding: var(--space-5); } }
 /* El logotipo de la plataforma se muestra completo dentro del mismo marco que las capturas. */
 
 /* Productos destacados (MCP Dual LLM Guard y Lentes): primeros en el catálogo, con distintivo y
@@ -198,6 +198,15 @@ html[data-theme="dark"] .tool-card[data-tilt]::before { background: radial-gradi
 html[data-theme="dark"] .projects > .project.project-featured { border-color: rgba(103, 232, 249, .35); box-shadow: 0 0 0 1px rgba(103, 232, 249, .12), 0 26px 70px rgba(37, 99, 235, .28); background: linear-gradient(180deg, rgba(56, 189, 248, .08), transparent 40%), #152338; }
 .project-featured .project-media { position: relative; height: 16rem; min-height: 14rem; aspect-ratio: auto; }
 .project-featured .project-media img { object-fit: cover; }
+/* Diagramas SVG (MCP): contain siempre; cover recorta el arte en destacados */
+.project-featured .project-media img[src$=".svg"] {
+  object-fit: contain;
+  width: auto;
+  height: auto;
+  max-width: calc(100% - 1.6rem);
+  max-height: calc(100% - 1.4rem);
+  background: transparent;
+}
 /* Logo LTV: padding reducido; el inset del bezel ya centra el asset */
 .project-media img.ltv-media { padding: 0; }
 .project-featured .project-body h3 { font-size: clamp(1.25rem, 1.1rem + .5vw, 1.5rem); }
@@ -227,15 +236,15 @@ html[data-theme="dark"] .projects > .project.project-featured { border-color: rg
 .hero-featured-label { color: #67e8f9; font-size: .74rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-right: .15rem; }
 .hero-feature {
   display: inline-flex; align-items: baseline; gap: .45rem; min-height: 36px; padding: .45rem .85rem;
-  border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px;
-  color: #fff; background: rgba(255, 255, 255, .06); text-decoration: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .28); border-radius: 999px;
+  color: #fff; background: rgba(255, 255, 255, .1); text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
   -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%);
   font-size: .9rem; line-height: 1.2;
   transition: border-color var(--hover-duration, .2s) var(--ease-out), background-color var(--hover-duration, .2s) var(--ease-out);
 }
 .hero-feature strong { font-weight: 760; }
-.hero-feature span { color: rgba(248, 250, 252, .7); font-size: .84rem; }
+.hero-feature span { color: rgba(248, 250, 252, .86); font-size: .84rem; }
 .hero-feature:hover { border-color: rgba(103, 232, 249, .55); background: rgba(103, 232, 249, .1); }
 .hero-feature:focus-visible { outline: 2px solid #67e8f9; outline-offset: 2px; }
 @media (min-width: 681px) and (max-height: 760px) { .hero .hero-featured { margin-top: 1rem; } }

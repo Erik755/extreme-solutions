@@ -53,7 +53,7 @@ html[data-theme="dark"] .project::after { box-shadow: 0 22px 48px rgba(0, 0, 0, 
 .theme-toggle, .language-toggle { min-height: 44px; padding: .5rem .75rem; border: 1px solid #ffffff66; border-radius: 6px; color: white; background: transparent; font: inherit; cursor: pointer; }
 .detail-preferences { display: flex; gap: .75rem; }
 .badge-base, .badge-base iframe { max-width: 100%; }
-.catalog-controls { padding: 1.5rem; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 1.5rem; background: var(--paper-2); }
+.catalog-controls { padding: var(--space-6, 1.5rem); border: 1px solid var(--line); border-radius: var(--radius-card, 12px); margin-bottom: var(--space-6, 1.5rem); background: var(--paper-2); }
 .catalog-controls label { display: block; font-weight: 700; margin-bottom: .75rem; }
 .catalog-search-row { display: flex; gap: .75rem; flex-wrap: wrap; }
 #project-search { flex: 1 1 250px; width: 100%; min-width: 0; min-height: 48px; border: 1px solid var(--line); padding: .75rem; border-radius: 6px; font: inherit; color: var(--ink); background: var(--paper); }
@@ -120,12 +120,22 @@ html[data-theme="dark"] .detail-media {
     #152338;
 }
 html[data-theme="dark"] .detail-image {
-  border-color: rgba(255, 255, 255, .1);
+  border-color: rgba(255, 255, 255, .12);
   background: #07111d;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, .04),
+    0 0 0 1px rgba(255, 255, 255, .05),
     inset 0 1px 0 rgba(255, 255, 255, .12),
     0 18px 40px rgba(0, 0, 0, .5);
+}
+html[data-theme="dark"] .detail-image[src$=".svg"] {
+  background: transparent;
+  border-color: rgba(103, 232, 249, .28);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, .16), 0 16px 36px rgba(0, 0, 0, .45);
+}
+html[data-theme="dark"] .detail-media:has(.detail-image[src$=".svg"]) {
+  background:
+    radial-gradient(80% 70% at 50% 40%, rgba(14, 155, 184, .14), transparent 58%),
+    linear-gradient(180deg, #1c334d 0%, #152338 100%);
 }
 html[data-theme="dark"] .detail-image--logo { background: transparent; }
 @media (max-width: 768px) {
@@ -208,8 +218,8 @@ html[data-theme="dark"] .chip { border-color: rgba(255, 255, 255, .14); backgrou
 }
 /* Revelado al hacer scroll: esta clase solo la pone dynamic.js en elementos aún fuera de pantalla
    (si el JS no carga, nada queda oculto). Mismo estado que el primer fotograma de la animación. */
-.reveal-pending { opacity: 0; transform: translateY(24px) scale(.985); }
-.reveal-pending:is(.capability, .tool-card, .project) { transform: perspective(900px) translateY(36px) rotateX(9deg) scale(.96); }
+.reveal-pending { opacity: 0; transform: translateY(14px); }
+.reveal-pending:is(.capability, .tool-card, .project) { transform: translateY(18px); }
 @media (prefers-reduced-motion: reduce) { .reveal-pending { opacity: 1 !important; transform: none !important; } }
 @media print { .reveal-pending { opacity: 1 !important; transform: none !important; } }
 
