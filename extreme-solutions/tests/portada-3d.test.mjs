@@ -16,6 +16,13 @@ test('la portada 3D tiene respaldo estático sin WebGL, sin JS y con reducir mov
   // El canvas solo se muestra (fundido) cuando la escena ya dibuja con fluidez; antes queda imperceptible (≤ .01).
   assert.match(css, /\.hero-canvas\s*\{[^}]*opacity:\s*(?:0|\.0[01])\s*;/);
   assert.match(css, /\.hero-stage\.is-live \.hero-canvas\s*\{\s*opacity:\s*1/);
+  // El fotograma estático no puede quedar visible con demora larga tras is-live (eso era el flash ~0.5s).
+  assert.match(css, /\.hero-stage\.is-live::before\s*\{[^}]*opacity:\s*0/);
+  assert.doesNotMatch(css, /\.hero-stage\.is-live::before\s*\{[^}]*transition:[^}]*\.8s/s);
+  assert.match(css, /\.hero-stage\.is-live::before\s*\{[^}]*transition:\s*none/);
+  const scene = read('src-3d/hero3d.src.js');
+  assert.match(scene, /time\s*>=\s*0\.22/, 'revelar solo con animación ya en marcha');
+  assert.match(scene, /smoothFrames\s*>=\s*3/);
   const loader = read('hero3d-loader.js');
   for (const reason of ['reduced-motion', 'save-data', 'no-webgl', 'error']) assert.ok(loader.includes(`'${reason}'`), `falta el respaldo ${reason}`);
   assert.match(loader, /prefers-reduced-motion: reduce/);

@@ -326,8 +326,8 @@ export function mount(stage) {
   }
 
   // Bucle de render: se pausa cuando la portada no se ve o la pestaña está oculta.
-  // La escena se muestra (fundido CSS) cuando ya hay cuadros listos y la intro está en marcha,
-  // así nunca se ve un primer cuadro estático ni el tirón de la compilación de shaders.
+  // La escena se muestra (fundido CSS) cuando ya hay cuadros fluidos y ~0.22s de animación,
+  // con el fotograma estático retirado al instante: nunca un pose congelado al revelar.
   let visible = true, raf = 0, last = 0, time = 0, renderedFrames = 0, smoothFrames = 0, shown = false, ready = false;
   let sampleTime = 0, sampleFrames = 0;
   const INTRO = 1.6;
@@ -360,10 +360,12 @@ export function mount(stage) {
     renderer.render(world.scene, camera);
 
     renderedFrames++;
-    // Se muestra cuando la cadena de cuadros ya fluye (el primer compuesto del canvas, que puede tardar,
-    // ocurre aún invisible): 3 cuadros seguidos fluidos o, como tope, 90 cuadros.
+    // Se muestra solo cuando la animación ya lleva frames fluidos Y tiempo real de movimiento
+    // (aún invisible): así el primer frame visible ya está en marcha, no un pose estático.
+    // Tope de seguridad a 90 cuadros por si el reloj del tab llega raro.
     smoothFrames = rawDt > 0 && rawDt < 0.1 ? smoothFrames + 1 : 0;
-    if (!shown && (smoothFrames >= 3 || renderedFrames >= 90)) {
+    const motionReady = smoothFrames >= 3 && time >= 0.22;
+    if (!shown && (motionReady || renderedFrames >= 90)) {
       shown = true;
       performance.mark?.('hero3d:live');
       stage.classList.add('is-live');
