@@ -53,7 +53,7 @@ function certificate(cert, tr) {
 
 export function card(project) {
   return `<article class="project${project.featured ? ' project-featured' : ''}" data-category="${project.category}" data-project-id="${project.id}">
-    <div class="project-media">${project.featured ? '<span class="featured-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span>Destacado</span></span>' : ''}<img loading="lazy" decoding="async" src="${escape(project.image)}" alt="${escape(project.alt)}"${project.id === 'ltv-maestro' ? ' class="ltv-media"' : ''}></div>
+    <div class="project-media">${project.featured ? '<span class="featured-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span>Destacado</span></span>' : ''}<img loading="lazy" decoding="async" src="${escape(project.image)}" alt="${escape(project.alt)}"${project.id === 'ltv-maestro' ? ' class="ltv-media"' : (['evidencia-visual','formatos-pdf-excel','control-gastos-pro'].includes(project.id) ? ' class="phone-shot"' : '')}></div>
     <div class="project-body"><span class="project-type">${escape(project.type)}</span>
     <h3>${escape(project.title)}</h3><p>${escape(project.description)}</p>
     <div class="chips">${project.tags.map(tag => `<span class="chip">${escape(tag)}</span>`).join('')}</div>

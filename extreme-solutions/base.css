@@ -387,8 +387,18 @@
       padding: 1.5rem;
     }
 
-    .project-media img.control-gastos-media {
-      object-position: center 27%;
+    /* Capturas de teléfono completas: contain + letterbox, sin recorte cover */
+    .project-media img.phone-shot {
+      object-fit: contain;
+      object-position: center center;
+      background: #071827;
+    }
+
+    .project[data-project-id="evidencia-visual"] .project-media,
+    .project[data-project-id="formatos-pdf-excel"] .project-media,
+    .project[data-project-id="control-gastos-pro"] .project-media {
+      aspect-ratio: 9 / 20;
+      background: #071827;
     }
 
     .project.project-featured {
@@ -716,6 +726,12 @@
 
       .project-media {
         aspect-ratio: 4 / 3;
+      }
+
+      .project[data-project-id="evidencia-visual"] .project-media,
+      .project[data-project-id="formatos-pdf-excel"] .project-media,
+      .project[data-project-id="control-gastos-pro"] .project-media {
+        aspect-ratio: 9 / 20;
       }
 
       .project.project-featured {

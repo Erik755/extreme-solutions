@@ -33,3 +33,16 @@ test('el revelado al hacer scroll es mejora progresiva', () => {
   assert.match(js, /rootMargin: '0px 0px -15% 0px'/);
   assert.match(js, /!reduced\.matches/);
 });
+
+test('capturas de teléfono del catálogo se muestran completas (contain, sin cover)', () => {
+  const css = read('base.css');
+  const page = read('index.html');
+  assert.match(css, /\.project-media img\.phone-shot\s*\{[^}]*object-fit:\s*contain/s);
+  assert.match(css, /data-project-id="evidencia-visual"[^\n]*\.project-media/);
+  assert.match(css, /data-project-id="formatos-pdf-excel"[^\n]*\.project-media/);
+  assert.match(css, /data-project-id="control-gastos-pro"[^\n]*\.project-media/);
+  assert.match(css, /aspect-ratio:\s*9\s*\/\s*20/);
+  for (const id of ['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro']) {
+    assert.match(page, new RegExp(`data-project-id="${id}"[\\s\\S]*?class="phone-shot"`), id);
+  }
+});
