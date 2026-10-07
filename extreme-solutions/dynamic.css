@@ -246,3 +246,6 @@ html[data-theme="dark"] .chip { border-color: rgba(255, 255, 255, .14); backgrou
   .cert-head { grid-template-columns: 1fr; }
   .cert-seal { width: 84px; height: 84px; }
 }
+
+.footer-links { display: inline-flex; flex-wrap: wrap; gap: .35rem 1rem; }
+.footer-links a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }

@@ -60,3 +60,12 @@ test('catálogo: marco premium en todas las tarjetas + phone-shot contain + deta
     assert.match(page, new RegExp(`data-project-id="${id}"[\\s\\S]*?class="phone-shot"`), id);
   }
 });
+
+test('privacidad: tarjetas con elevación y foco accesible', () => {
+  const css = read('privacy.css') + read('dynamic.css');
+  assert.match(css, /\.privacy-card::after/);
+  assert.match(css, /\.privacy-toc a:focus-visible/);
+  assert.match(css, /\.privacy-back:focus-visible/);
+  assert.match(css, /border-radius:\s*12px/);
+  assert.match(css, /\.footer-links/);
+});
