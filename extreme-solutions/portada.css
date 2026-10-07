@@ -23,25 +23,29 @@
   pointer-events: none;
   --stage-mask: radial-gradient(75% 70% at 55% 50%, #000 58%, transparent 100%);
 }
-/* Respaldo estático (sin WebGL, sin JS, reducir movimiento): fotograma de la misma escena. */
+/* Por defecto solo el fondo oscuro: el webp del still se parece al 3D congelado y
+   provocaba el flash static→animate. El fotograma solo aparece en data-state=fallback
+   (sin WebGL / reducir movimiento / error) o vía <noscript>. */
 .hero-stage::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: #04060b url("/assets/hero-3d-fallback.webp") center / cover no-repeat;
-  transition: opacity .9s var(--ease-out);
+  background: #04060b;
+  transition: none;
 }
+.hero-stage[data-state="fallback"]::before {
+  background: #04060b url("/assets/hero-3d-fallback.webp") center / cover no-repeat;
+}
+/* Por si acaso: loading/live nunca muestran still. */
+.hero-stage[data-state="loading"]::before,
+.hero-stage[data-state="live"]::before,
+.hero-stage.is-live::before { opacity: 0; visibility: hidden; }
 /* La máscara va en cada capa y no en el contenedor: así el fundido y la deriva se componen sin
    volver a pintar una superficie enmascarada en cada cuadro. */
 .hero-stage::before, .hero-canvas { -webkit-mask-image: var(--stage-mask); mask-image: var(--stage-mask); }
-/* El canvas queda oculto (opacity 0) hasta que la animación ya corre; .01 lo compone el
-   navegador sin verse. Al pasar a is-live el fotograma estático se retira de inmediato
-   (sin demora de ~0.8s): si se quedaba encima del canvas semitransparente se veía un
-   pose congelado ~0.5s y luego el movimiento. */
-.hero-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: .01; transition: opacity .28s cubic-bezier(.25, .6, .3, 1); }
-/* Retiro instantáneo del fotograma estático: cualquier demora/fundido sobre él se lee como pose congelado. */
-.hero-stage.is-live::before { opacity: 0; visibility: hidden; transition: none; }
-.hero-stage.is-live .hero-canvas { opacity: 1; }
+/* Canvas invisible hasta is-live; opacity 0 (no .01) para que no se filtre un cuadro congelado. */
+.hero-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: opacity .25s cubic-bezier(.25, .6, .3, 1), visibility 0s linear .25s; }
+.hero-stage.is-live .hero-canvas { opacity: 1; visibility: visible; transition: opacity .25s cubic-bezier(.25, .6, .3, 1), visibility 0s; }
 .hero h1 { max-width: min(780px, 7.2em); text-shadow: 0 2px 30px rgba(4, 6, 11, .45); }
 
 @media (max-width: 980px) {

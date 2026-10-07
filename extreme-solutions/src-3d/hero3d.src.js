@@ -326,11 +326,11 @@ export function mount(stage) {
   }
 
   // Bucle de render: se pausa cuando la portada no se ve o la pestaña está oculta.
-  // La escena se muestra (fundido CSS) cuando ya hay cuadros fluidos y ~0.22s de animación,
-  // con el fotograma estático retirado al instante: nunca un pose congelado al revelar.
-  let visible = true, raf = 0, last = 0, time = 0, renderedFrames = 0, smoothFrames = 0, shown = false, ready = false;
+  // Arranca a mitad del ciclo idle (mismo t que el still) para que el primer cuadro
+  // ya tenga rotación/pulso visibles; se revela tras unos frames fluidos, sin intro desde reposo.
+  let visible = true, raf = 0, last = 0, time = 2.4, renderedFrames = 0, smoothFrames = 0, shown = false, ready = false;
   let sampleTime = 0, sampleFrames = 0;
-  const INTRO = 1.6;
+  const INTRO = 0; // sin intro desde pose en reposo: el idle ya está en marcha
   const easeOut = t => 1 - Math.pow(1 - MathUtils.clamp(t, 0, 1), 3);
   function frame(now) {
     raf = requestAnimationFrame(frame);
@@ -338,8 +338,8 @@ export function mount(stage) {
     const dt = Math.min(0.05, rawDt || 0.016);
     last = now;
     time += dt;
-    // Intro: los nodos llegan desde fuera y el conjunto gira hasta su sitio.
-    const intro = easeOut(time / INTRO);
+    // Intro desactivada (INTRO=0 → intro=1): solo idle continuo.
+    const intro = INTRO > 0 ? easeOut(time / INTRO) : 1;
 
     input.spinVelocity = drag ? input.spinVelocity : damp(input.spinVelocity, 0, 2.5, dt);
     if (!drag) input.spin += input.spinVelocity * dt;
@@ -360,11 +360,10 @@ export function mount(stage) {
     renderer.render(world.scene, camera);
 
     renderedFrames++;
-    // Se muestra solo cuando la animación ya lleva frames fluidos Y tiempo real de movimiento
-    // (aún invisible): así el primer frame visible ya está en marcha, no un pose estático.
+    // Revelar tras frames fluidos (el idle ya corre desde t=2.4, aún invisible).
     // Tope de seguridad a 90 cuadros por si el reloj del tab llega raro.
     smoothFrames = rawDt > 0 && rawDt < 0.1 ? smoothFrames + 1 : 0;
-    const motionReady = smoothFrames >= 3 && time >= 0.22;
+    const motionReady = smoothFrames >= 4;
     if (!shown && (motionReady || renderedFrames >= 90)) {
       shown = true;
       performance.mark?.('hero3d:live');

@@ -11,6 +11,14 @@
     preload.rel = 'modulepreload';
     preload.href = '/hero3d.js';
     document.head.append(preload);
+    // Ocultar el still YA (antes de FCP/DOMContentLoaded si el stage existe): evita el flash
+    // del fotograma congelado mientras llega el módulo WebGL.
+    const hideStill = () => {
+      const stage = document.querySelector('.hero-stage');
+      if (stage && !stage.dataset.state) stage.dataset.state = 'loading';
+    };
+    hideStill();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hideStill, { once: true });
   }
   const hasWebGL2 = () => {
     try {

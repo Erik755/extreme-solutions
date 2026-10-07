@@ -11,19 +11,21 @@ test('la portada 3D tiene respaldo estático sin WebGL, sin JS y con reducir mov
   const html = read('index.html');
   assert.match(html, /<div class="hero-stage" aria-hidden="true"><canvas class="hero-canvas"><\/canvas><\/div>/);
   const css = read('portada.css');
-  assert.match(css, /\.hero-stage::before\s*\{[^}]*url\("\/assets\/hero-3d-fallback\.webp"\)/);
+  assert.match(css, /\.hero-stage\[data-state="fallback"\]::before\s*\{[^}]*url\("\/assets\/hero-3d-fallback\.webp"\)/);
+  assert.match(read('index.html'), /<noscript><style>\.hero-stage::before\{[^}]*hero-3d-fallback\.webp/);
   assert.ok(existsSync(new URL('assets/hero-3d-fallback.webp', site)), 'falta la imagen de respaldo');
-  // El canvas solo se muestra (fundido) cuando la escena ya dibuja con fluidez; antes queda imperceptible (≤ .01).
-  assert.match(css, /\.hero-canvas\s*\{[^}]*opacity:\s*(?:0|\.0[01])\s*;/);
+  // El canvas solo se muestra cuando la escena ya dibuja; antes opacity 0 + visibility hidden.
+  assert.match(css, /\.hero-canvas\s*\{[^}]*opacity:\s*0\s*;/);
   assert.match(css, /\.hero-stage\.is-live \.hero-canvas\s*\{\s*opacity:\s*1/);
-  // El fotograma estático no puede quedar visible con demora larga tras is-live (eso era el flash ~0.5s).
-  assert.match(css, /\.hero-stage\.is-live::before\s*\{[^}]*opacity:\s*0/);
-  assert.doesNotMatch(css, /\.hero-stage\.is-live::before\s*\{[^}]*transition:[^}]*\.8s/s);
-  assert.match(css, /\.hero-stage\.is-live::before\s*\{[^}]*transition:\s*none/);
+  // Mientras carga WebGL el still no puede verse (era el flash static→animate).
+  assert.match(css, /\.hero-stage\[data-state="loading"\]::before/);
+  assert.match(css, /\[data-state="loading"\]::before[\s\S]*?opacity:\s*0/);
+  assert.match(css, /\.hero-stage\.is-live::before/);
   const scene = read('src-3d/hero3d.src.js');
-  assert.match(scene, /time\s*>=\s*0\.22/, 'revelar solo con animación ya en marcha');
-  assert.match(scene, /smoothFrames\s*>=\s*3/);
+  assert.match(scene, /time\s*=\s*2\.4/, 'arranque mid-idle, no pose en reposo');
+  assert.match(scene, /smoothFrames\s*>=\s*4/);
   const loader = read('hero3d-loader.js');
+  assert.match(loader, /dataset\.state = 'loading'/, 'ocultar still lo antes posible');
   for (const reason of ['reduced-motion', 'save-data', 'no-webgl', 'error']) assert.ok(loader.includes(`'${reason}'`), `falta el respaldo ${reason}`);
   assert.match(loader, /prefers-reduced-motion: reduce/);
   assert.match(loader, /getContext\('webgl2'\)/);
