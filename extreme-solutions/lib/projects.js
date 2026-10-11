@@ -16,6 +16,7 @@ for (const project of projects) {
   if (!project.title || !project.description || !Array.isArray(project.tags)) throw new Error('Incomplete project');
   if (!/^\/assets\/[a-zA-Z0-9.-]+$/.test(project.image) && !project.image.startsWith('https://')) throw new Error('Invalid image');
   for (const link of project.links) if (new URL(link.url).protocol !== 'https:') throw new Error('Unsafe project link');
+  if (project.play !== undefined && !/^https:\/\/play\.google\.com\/store\/apps\/details\?id=[\w.]+$/.test(project.play)) throw new Error('Invalid Play link');
   if (project.privacy !== undefined && !/^[a-z0-9-]+$/.test(project.privacy)) throw new Error('Invalid privacy anchor');
   const cert = project.certification;
   if (cert !== undefined && (!/^[a-f0-9]{16}$/.test(cert.id) || !/^[a-f0-9]{64}$/.test(cert.codeHash) || !/^[a-f0-9]{64}$/.test(cert.signature)
@@ -52,6 +53,35 @@ function certificate(cert, tr) {
 }
 
 
+export const SITE_URL = 'https://extreme-solutions-eosin.vercel.app';
+const FAQS = { lentes: JSON.parse(readFileSync(new URL('../data/lentes-faq.json', import.meta.url), 'utf8')) };
+const jsonLd = data => JSON.stringify(data).replace(/</g, '\\u003c');
+
+// Metadatos de búsqueda y redes solo para proyectos publicados en Google Play.
+function storeHead(project, language, tr) {
+  if (!project?.play) return '';
+  const url = `${SITE_URL}/proyecto/${project.id}${language === 'en' ? '?lang=en' : ''}`;
+  const image = SITE_URL + project.image;
+  const title = escape(tr(project.title)), description = escape(tr(project.description));
+  const app = { '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: project.title, operatingSystem: 'Android',
+    applicationCategory: 'PhotographyApplication', url, downloadUrl: project.play, installUrl: project.play, image, inLanguage: ['es', 'en'],
+    author: { '@type': 'Organization', name: 'Extreme Solutions', url: SITE_URL }, offers: { '@type': 'Offer', price: '0', priceCurrency: 'MXN' } };
+  const faq = FAQS[project.id] && { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQS[project.id].map(([q, a]) =>
+    ({ '@type': 'Question', name: tr(q), acceptedAnswer: { '@type': 'Answer', text: tr(a) } })) };
+  return `<link rel="canonical" href="${url}"><link rel="alternate" hreflang="es" href="${SITE_URL}/proyecto/${project.id}"><link rel="alternate" hreflang="en" href="${SITE_URL}/proyecto/${project.id}?lang=en"><link rel="alternate" hreflang="x-default" href="${SITE_URL}/proyecto/${project.id}">
+    <meta property="og:type" content="website"><meta property="og:site_name" content="Extreme Solutions"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${url}"><meta property="og:image" content="${image}"><meta property="og:image:alt" content="${escape(tr(project.alt))}"><meta property="og:locale" content="${language === 'en' ? 'en_US' : 'es_MX'}">
+    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="${image}">
+    <script type="application/ld+json">${jsonLd(app)}</script>${faq ? `<script type="application/ld+json">${jsonLd(faq)}</script>` : ''}`;
+}
+function playBadge(project, language, tr) {
+  if (!project.play) return '';
+  return `<a class="play-badge" href="${escape(project.play)}" target="_blank" rel="noopener"><img src="/assets/google-play-badge-${language}.png" alt="${escape(tr('Disponible en Google Play'))}" width="646" height="250"></a>`;
+}
+function faqSection(project, tr) {
+  if (!FAQS[project.id]) return '';
+  return `<section class="detail-faq" aria-labelledby="faq-title"><h2 id="faq-title">${escape(tr('Preguntas frecuentes'))}</h2>${FAQS[project.id].map(([q, a]) => `<details><summary>${escape(tr(q))}</summary><p>${escape(tr(a))}</p></details>`).join('')}</section>`;
+}
+
 const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'museum-of-you']);
 function mediaClass(project) {
   if (project.id === 'ltv-maestro') return ' class="ltv-media"';
@@ -81,14 +111,14 @@ export function projectPage(project, requestedLanguage = 'es') {
   const languageQuery = language === 'en' ? '?lang=en' : '';
   return `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <title>${escape(title)} | Extreme Solutions</title><meta name="description" content="${escape(tr(project?.description || 'Consulta los proyectos de Extreme Solutions.'))}">
-    ${project ? '' : '<meta name="robots" content="noindex">'}
+    ${project ? storeHead(project, language, tr) : '<meta name="robots" content="noindex">'}
     <link rel="icon" type="image/png" href="/assets/embedded-1.png"><link rel="stylesheet" href="/base.css"><link rel="stylesheet" href="/dynamic.css"><script src="/i18n-data.js"></script><script src="/i18n.js"></script><script src="/preferences.js"></script></head>
     <body><a class="skip-link" href="#contenido">${escape(tr('Saltar al contenido'))}</a>
     <nav class="nav is-scrolled" aria-label="${escape(tr('Principal'))}"><div class="nav-inner"><a class="brand" href="/${languageQuery}"><span>Extreme Solutions</span></a><div class="detail-preferences"><button class="language-toggle" type="button" hidden>${escape(tr('Cambiar idioma'))}</button><button class="theme-toggle" type="button" hidden>${escape(tr('Cambiar tema'))}</button></div></div></nav>
     <main class="detail-page shell" id="contenido"><a href="/${languageQuery}#experiencia">${escape(tr('← Todos los proyectos'))}</a>
     <div class="detail-heading"><p class="eyebrow">${escape(tr(project?.type || 'Error 404'))}</p><h1>${escape(title)}</h1></div>
-    ${project ? `<div class="detail-layout"><div><p class="lead">${escape(tr(project.description))}</p><h2>${escape(tr('Tecnologías y capacidades'))}</h2><div class="chips">${project.tags.map(tag => `<span class="chip">${escape(tr(tag))}</span>`).join('')}</div>
+    ${project ? `<div class="detail-layout"><div><p class="lead">${escape(tr(project.description))}</p>${playBadge(project, language, tr)}<h2>${escape(tr('Tecnologías y capacidades'))}</h2><div class="chips">${project.tags.map(tag => `<span class="chip">${escape(tr(tag))}</span>`).join('')}</div>
     <div class="detail-actions">${project.links.map(link => `<a class="btn dark" href="${escape(link.url)}" target="_blank" rel="noreferrer">${escape(tr(link.label))}</a>`).join('')}${project.privacy ? `<a class="btn light" href="/privacidad${languageQuery}#${project.privacy}">${escape(tr('Política de privacidad'))}</a>` : ''}</div></div>
-    <div class="detail-media"><img class="detail-image${detailMediaClass(project)}" src="${escape(project.image)}" alt="${escape(tr(project.alt))}"></div></div>${project.certification ? certificate(project.certification, tr) : ''}` : `<p>${escape(tr('Este proyecto no existe. Vuelve al catálogo para explorar las soluciones disponibles.'))}</p>`}
+    <div class="detail-media"><img class="detail-image${detailMediaClass(project)}" src="${escape(project.image)}" alt="${escape(tr(project.alt))}"></div></div>${project.certification ? certificate(project.certification, tr) : ''}${faqSection(project, tr)}` : `<p>${escape(tr('Este proyecto no existe. Vuelve al catálogo para explorar las soluciones disponibles.'))}</p>`}
     </main><footer><span>© 2026 Extreme Solutions · Erik Sanchez</span> <span class="footer-links"><a href="/privacidad${languageQuery}">${escape(tr('Privacidad'))}</a><a href="/privacidad${languageQuery}#aviso-legal">${escape(tr('Aviso legal'))}</a></span> <span class="footer-legal">${escape(tr('Sitio informativo, sin garantías. Las marcas de terceros pertenecen a sus titulares.'))}</span></footer></body></html>`;
 }

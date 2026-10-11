@@ -29,7 +29,7 @@ test('destacados en el héroe y MCP/Lentes en las listas de herramientas y espec
   for (const fact of ['Python, MCP (Model Context Protocol)', 'Kotlin', 'WorkManager', 'Google Photos Library API', 'Google Identity Services', 'Google Play Billing']) assert.ok(tools.includes(fact), fact);
   for (const badge of ['Python y MCP', 'Seguridad de agentes de IA']) assert.ok(html.includes(`<span>${badge}</span>`), badge);
   const lentes = JSON.parse(readFileSync(new URL('../data/projects.json', import.meta.url), 'utf8')).find(item => item.id === 'lentes');
-  assert.match(lentes.type, /Prueba cerrada/);
+  assert.match(lentes.type, /Disponible en Google Play/);
   for (const text of ['Productos destacados', 'Destacados', 'Destacado', 'Seguridad para agentes de IA', 'Cámara por carpetas para Android', 'IA y seguridad', 'Agentes LLM protegidos', 'Python y MCP', 'Seguridad de agentes de IA', 'Patrón Dual LLM', lentes.type]) assert.ok(translations[text], text);
   for (const match of tools.matchAll(/<p>([^<]+)<\/p>/g)) assert.ok(translations[match[1]], match[1].slice(0, 60));
 });

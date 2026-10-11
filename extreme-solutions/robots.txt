@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://extreme-solutions-eosin.vercel.app/sitemap.xml

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const siteRoot = fileURLToPath(new URL('../', import.meta.url));
 const outDir = path.resolve(process.argv[2] || path.join(siteRoot, '..', 'dist'));
-const publicTopLevel = /^(?:index\.html|privacidad\.html|[\w-]+\.(?:css|js))$/;
+const publicTopLevel = /^(?:index\.html|privacidad\.html|robots\.txt|sitemap\.xml|[\w-]+\.(?:css|js))$/;
 const publicAsset = /^[\w.-]+\.(?:png|webp|jpe?g|svg|ico|gif)$/i;
 
 rmSync(outDir, { recursive: true, force: true });

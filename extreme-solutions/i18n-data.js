@@ -563,5 +563,15 @@ window.EXTREME_TRANSLATIONS = {
   "Producto Android · Disponible en Google Play": "Android product · Available on Google Play",
   "Desarrollamos captura de servicios, clientes, evidencias, firmas, historial y documentos PDF/Excel desde el celular. Disponible en Google Play.": "We build service capture, clients, evidence, signatures, history, and PDF/Excel documents from the phone. Available on Google Play.",
   "Ver en Google Play →": "View on Google Play →",
-  "Política 3.0 · app 2.0.15": "Policy 3.0 · app 2.0.15"
+  "Política 3.0 · app 2.0.15": "Policy 3.0 · app 2.0.15",
+  "¿Lentes reemplaza mi cámara?": "Does Lentes replace my camera?",
+  "No. Usa la cámara de tu teléfono; al volver a Lentes, cada captura nueva queda en la carpeta que elegiste.": "No. It uses your phone's camera; when you return to Lentes, each new capture lands in the folder you chose.",
+  "¿Es gratis?": "Is it free?",
+  "Sí, con las carpetas Trabajo y Personal. Los primeros 20 días incluyen carpetas ilimitadas y respaldo. Lentes Full es una compra única, no suscripción.": "Yes, with the Work and Personal folders. The first 20 days include unlimited folders and backup. Lentes Full is a one-time purchase, not a subscription.",
+  "¿Mis fotos se suben a algún servidor?": "Are my photos uploaded to a server?",
+  "No hay servidores propios ni anuncios. Las fotos solo se suben a tu Google Fotos cuando tú lo pides.": "There are no own servers and no ads. Photos are only uploaded to your Google Photos when you ask.",
+  "¿Puedo borrar las fotos del teléfono?": "Can I delete the photos from my phone?",
+  "Sí, pero solo después de que Lentes comprueba que cada archivo ya está respaldado en Google Fotos.": "Yes, but only after Lentes confirms that each file is already backed up in Google Photos.",
+  "Preguntas frecuentes": "Frequently asked questions",
+  "Disponible en Google Play": "Get it on Google Play"
 };

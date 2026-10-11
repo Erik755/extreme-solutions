@@ -263,3 +263,11 @@ html[data-theme="dark"] .chip { border-color: rgba(255, 255, 255, .14); backgrou
 @supports (content-visibility: auto) {
   .projects > .project { content-visibility: auto; contain-intrinsic-size: 420px; }
 }
+
+.play-badge { display: inline-block; margin: 1.25rem 0 .25rem; line-height: 0; }
+.play-badge img { height: 72px; width: auto; }
+.detail-faq { margin-top: 3rem; max-width: 760px; }
+.detail-faq details { border: 1px solid #8884; border-radius: 12px; padding: .8rem 1rem; margin: .6rem 0; }
+.detail-faq summary { font-weight: 700; cursor: pointer; }
+.detail-faq p { margin: .6rem 0 0; }
+.detail-faq h2 { font-size: clamp(1.5rem, 3vw, 2rem); }

@@ -45,7 +45,7 @@
     "id": "lentes",
     "category": "android",
     "title": "Lentes: cámara por carpetas",
-    "type": "Producto Android · Prueba cerrada en Google Play",
+    "type": "Producto Android · Disponible en Google Play",
     "description": "Convertimos la cámara nativa en un flujo organizado por contexto: cada lente separa fotos y videos en su propia carpeta y puede respaldarlos en un álbum equivalente de Google Fotos.",
     "image": "/assets/lentes-feature.png",
     "alt": "Lentes, aplicación Android para organizar fotos y videos por carpetas",
@@ -63,7 +63,8 @@
       }
     ],
     "featured": true,
-    "privacy": "lentes"
+    "privacy": "lentes",
+    "play": "https://play.google.com/store/apps/details?id=app.lentes.camaras"
   },
   {
     "id": "reporte-servicio-pro",

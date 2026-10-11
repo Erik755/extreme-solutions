@@ -100,3 +100,20 @@ test('home page loads LinkedIn only after consent and states the payment module 
   assert.ok(html.includes('no procesa pagos') && html.includes('/privacidad#aviso-legal'));
   assert.ok(!/<script>(?!<\/script>)|\sstyle="|\son[a-z]+="/i.test(html), 'no inline scripts, styles or handlers (CSP)');
 });
+
+test('Lentes: insignia de Google Play, canonical, Open Graph y JSON-LD válidos', () => {
+  const lentes = projects.find(p => p.id === 'lentes');
+  for (const lang of ['es', 'en']) {
+    const html = projectPage(lentes, lang);
+    assert.ok(html.includes('href="https://play.google.com/store/apps/details?id=app.lentes.camaras"'));
+    assert.ok(html.includes(`/assets/google-play-badge-${lang}.png`));
+    assert.ok(html.includes('rel="canonical"') && html.includes('og:image') && html.includes('twitter:card'));
+    const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+    assert.equal(blocks[0]['@type'], 'SoftwareApplication');
+    assert.equal(blocks[0].offers.price, '0');
+    assert.ok(!('aggregateRating' in blocks[0]));
+    assert.equal(blocks[1]['@type'], 'FAQPage');
+    assert.equal(blocks[1].mainEntity.length, 4);
+  }
+  assert.ok(!projectPage(projects.find(p => p.id === 'reporte-servicio-pro')).includes('rel="canonical"'));
+});
