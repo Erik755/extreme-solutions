@@ -10,7 +10,7 @@ import {
 } from 'three';
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
-const BRAND = { blue: 0x2563eb, sky: 0x60a5fa, cyan: 0x22d3ee, teal: 0x0e9bb8, green: 0x10b981, amber: 0xf59e0b };
+const BRAND = { blue: 0x6ba78c, sky: 0x5d8a77, cyan: 0xa9d9c4, teal: 0x78baa0, green: 0x8bcbb1, amber: 0xd9b977 };
 const damp = (current, target, lambda, dt) => MathUtils.lerp(current, target, 1 - Math.exp(-lambda * dt));
 
 function rendererInfo(gl) {
@@ -37,7 +37,7 @@ function brandEnvironment(renderer) {
   const env = new Scene();
   const disposables = [];
   const add = mesh => { env.add(mesh); disposables.push(mesh.geometry, mesh.material); return mesh; };
-  add(new Mesh(new SphereGeometry(12, 32, 16), new MeshBasicMaterial({ color: 0x03050a, side: BackSide })));
+  add(new Mesh(new SphereGeometry(12, 32, 16), new MeshBasicMaterial({ color: 0x1c2922, side: BackSide })));
   const panel = (color, intensity, position, size) => {
     const mesh = add(new Mesh(new PlaneGeometry(size[0], size[1]), new MeshBasicMaterial({ color: new Color(color).multiplyScalar(intensity) })));
     mesh.position.set(...position);
@@ -94,18 +94,18 @@ function spotlightTexture() {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = size;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#04060b';
+  ctx.fillStyle = '#ddefe6';
   ctx.fillRect(0, 0, size, size);
   const glow = (x, y, r, color) => {
     const g = ctx.createRadialGradient(x, y, 0, x, y, r);
     g.addColorStop(0, color);
-    g.addColorStop(1, 'rgba(4,6,11,0)');
+    g.addColorStop(1, 'rgba(221,239,230,0)');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, size, size);
   };
-  glow(256, 250, 250, 'rgba(37,99,235,.55)');
-  glow(360, 360, 150, 'rgba(34,211,238,.28)');
-  glow(170, 150, 140, 'rgba(96,165,250,.18)');
+  glow(256, 250, 250, 'rgba(139,203,177,.20)');
+  glow(360, 360, 150, 'rgba(169,217,196,.18)');
+  glow(170, 150, 140, 'rgba(185,226,209,.12)');
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   return texture;
@@ -115,9 +115,9 @@ function glassMaterial(tier, envMap) {
   const common = { envMap, envMapIntensity: 1.6, roughness: 0.04, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.03, iridescence: 0.9, iridescenceIOR: 1.3, iridescenceThicknessRange: [160, 560], specularIntensity: 1 };
   if (tier === 'low') {
     // Sin transmisión (pase de render extra): vidrio oscuro translúcido iridiscente.
-    return new MeshPhysicalMaterial({ ...common, color: 0x1c3f86, transparent: true, opacity: 0.86, roughness: 0.12, sheen: 0.6, sheenColor: new Color(BRAND.cyan) });
+    return new MeshPhysicalMaterial({ ...common, color: 0x78aa93, transparent: true, opacity: 0.86, roughness: 0.12, sheen: 0.6, sheenColor: new Color(BRAND.cyan) });
   }
-  return new MeshPhysicalMaterial({ ...common, color: 0xffffff, transmission: 1, thickness: 1.1, ior: 1.38, dispersion: tier === 'high' ? 0.4 : 0, attenuationColor: new Color(0x8bb5ff), attenuationDistance: 5 });
+  return new MeshPhysicalMaterial({ ...common, color: 0xffffff, transmission: 1, thickness: 1.1, ior: 1.38, dispersion: tier === 'high' ? 0.4 : 0, attenuationColor: new Color(0xb9e2d1), attenuationDistance: 5 });
 }
 
 function buildScene(renderer, tier) {
@@ -164,7 +164,7 @@ function buildScene(renderer, tier) {
     nodes.push({ base: new Vector3(Math.cos(theta) * radius, y * 0.82, Math.sin(theta) * radius).multiplyScalar(dist), phase: i * 1.7, speed: 0.4 + ((i * 13) % 7) / 10, size: 0.1 + ((i * 29) % 9) / 9 * 0.09, current: new Vector3() });
   }
   const palette = [BRAND.blue, BRAND.cyan, BRAND.sky, BRAND.blue, BRAND.green, BRAND.cyan, BRAND.amber];
-  const cubeMaterial = keep(new MeshStandardMaterial({ color: 0xffffff, metalness: 0.55, roughness: 0.22, envMap, envMapIntensity: 1.1, emissive: new Color(0x0b1b3a), emissiveIntensity: 0.6 }));
+  const cubeMaterial = keep(new MeshStandardMaterial({ color: 0xffffff, metalness: 0.55, roughness: 0.22, envMap, envMapIntensity: 1.1, emissive: new Color(0x22382d), emissiveIntensity: 0.6 }));
   const cubes = new InstancedMesh(keep(new BoxGeometry(1, 1, 1)), cubeMaterial, count);
   nodes.forEach((node, i) => cubes.setColorAt(i, new Color(palette[i % palette.length])));
   root.add(cubes);
@@ -191,11 +191,11 @@ function buildScene(renderer, tier) {
   }
   const dustGeometry = keep(new BufferGeometry());
   dustGeometry.setAttribute('position', new BufferAttribute(dustPositions, 3));
-  const points = new Points(dustGeometry, keep(new PointsMaterial({ color: 0x9cc3ff, size: 0.05, map: keep(dotTexture()), transparent: true, opacity: 0.7, depthWrite: false, blending: AdditiveBlending })));
+  const points = new Points(dustGeometry, keep(new PointsMaterial({ color: 0x8aaf9d, size: 0.05, map: keep(dotTexture()), transparent: true, opacity: 0.7, depthWrite: false, blending: AdditiveBlending })));
   scene.add(points);
 
   // Luces de marca.
-  scene.add(new AmbientLight(0x8fb4ff, 0.35));
+  scene.add(new AmbientLight(0xcfe4d9, 0.35));
   const lights = [[BRAND.blue, 40, [-4, 2.5, 3]], [BRAND.cyan, 28, [4, -1.5, 3.5]], [BRAND.green, 10, [0, -4, -2]]].map(([color, intensity, position]) => {
     const light = new PointLight(color, intensity, 16, 2);
     light.position.set(...position);
@@ -236,7 +236,7 @@ function buildScene(renderer, tier) {
 
 function makeRenderer(canvas, tier, extra = {}) {
   const renderer = new WebGLRenderer({ canvas, antialias: tier !== 'low', alpha: false, powerPreference: tier === 'high' ? 'high-performance' : 'default', ...extra });
-  renderer.setClearColor(0x04060b, 1);
+  renderer.setClearColor(0xddefe6, 1);
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = NeutralToneMapping;
   renderer.toneMappingExposure = 1.1;

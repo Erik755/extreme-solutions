@@ -6,9 +6,9 @@
       --paper: #F7F5F2;
       --paper-2: #EBE7DF;
       --line: rgba(31, 30, 28, .12);
-      --blue: #1E3A2F;
-      --cyan: #1E3A2F;
-      --green: #1E3A2F;
+      --blue: #356B58;
+      --cyan: #356B58;
+      --green: #356B58;
       --amber: #D97706;
       --white: #FFFDFA;
       --shadow: 0 22px 60px rgba(31, 30, 28, .16);
@@ -68,9 +68,9 @@
       min-height: 92vh;
       display: grid;
       align-items: end;
-      color: var(--white);
+      color: #1F1E1C;
       background:
-        linear-gradient(90deg, rgba(30, 58, 47, .94) 0%, rgba(30, 58, 47, .78) 44%, rgba(30, 58, 47, .26) 100%),
+        linear-gradient(90deg, rgba(139, 203, 177, .94) 0%, rgba(139, 203, 177, .78) 44%, rgba(139, 203, 177, .26) 100%),
         url("/assets/embedded-2.webp") center right / cover no-repeat;
       border-bottom: 1px solid rgba(244, 241, 236, .14);
     }
@@ -85,8 +85,8 @@
       left: 0;
       right: 0;
       z-index: 2;
-      border-bottom: 1px solid rgba(244, 241, 236, .12);
-      background: rgba(30, 58, 47, .52);
+      border-bottom: 1px solid rgba(53, 107, 88, .12);
+      background: rgba(221, 239, 230, .94);
       backdrop-filter: blur(18px);
     }
 
@@ -105,7 +105,7 @@
       align-items: center;
       gap: .75rem;
       min-width: 0;
-      color: var(--white);
+      color: #1F1E1C;
       text-decoration: none;
     }
 
@@ -117,7 +117,7 @@
     }
 
     .brand span {
-      color: rgba(244, 241, 236, .94);
+      color: #1F1E1C;
       font-size: .98rem;
       font-weight: 760;
       white-space: nowrap;
@@ -127,7 +127,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      color: rgba(244, 241, 236, .82);
+      color: #40574C;
       font-size: .94rem;
     }
 
@@ -151,7 +151,7 @@
     }
 
     .eyebrow {
-      color: #F4F1EC;
+      color: #356B58;
       font-size: .79rem;
       font-weight: 820;
       letter-spacing: .08em;
@@ -176,7 +176,7 @@
 
     .founder-line {
       margin: .75rem 0 0;
-      color: rgba(244, 241, 236, .76);
+      color: #40574C;
       font-size: clamp(1rem, 2vw, 1.34rem);
       font-weight: 720;
       letter-spacing: .02em;
@@ -185,7 +185,7 @@
     .hero-copy {
       max-width: 730px;
       margin: 1.5rem 0 0;
-      color: rgba(244, 241, 236, .86);
+      color: #40574C;
       font-size: clamp(1.1rem, 2vw, 1.42rem);
       line-height: 1.5;
       letter-spacing: -0.006em;
@@ -206,10 +206,10 @@
       justify-content: center;
       gap: .5rem;
       padding: 0 1rem;
-      border: 1px solid rgba(244, 241, 236, .28);
+      border: 1px solid rgba(53, 107, 88, .28);
       border-radius: 8px;
-      color: var(--white);
-      background: rgba(244, 241, 236, .09);
+      color: #1F1E1C;
+      background: rgba(255, 253, 250, .65);
       text-decoration: none;
       font-weight: 760;
     }
@@ -218,7 +218,7 @@
       border-color: var(--blue);
       background: var(--amber);
       color: #1F1E1C;
-      box-shadow: 0 18px 46px rgba(30, 58, 47, .32);
+      box-shadow: 0 18px 46px rgba(139, 203, 177, .32);
     }
 
     .btn.dark {
@@ -315,9 +315,9 @@
     }
 
     .proof-band {
-      color: var(--white);
+      color: #1F1E1C;
       background:
-        linear-gradient(90deg, rgba(30, 58, 47, .98), rgba(30, 58, 47, .84)),
+        linear-gradient(90deg, rgba(221, 239, 230, .98), rgba(221, 239, 230, .96)),
         url("/assets/embedded-3.webp") center / cover no-repeat;
     }
 
@@ -329,7 +329,7 @@
 
     .metric {
       padding: var(--space-6);
-      border: 1px solid rgba(244, 241, 236, .16);
+      border: 1px solid rgba(53, 107, 88, .16);
       border-radius: var(--radius-card);
       background: rgba(244, 241, 236, .08);
       backdrop-filter: blur(10px);
@@ -344,7 +344,7 @@
     }
 
     .metric span {
-      color: rgba(244, 241, 236, .76);
+      color: #40574C;
     }
 
     .method {
@@ -366,7 +366,7 @@
       position: absolute;
       top: 18px;
       right: 18px;
-      color: rgba(30, 58, 47, .18);
+      color: rgba(139, 203, 177, .18);
       font-size: 2.4rem;
       font-weight: 860;
       line-height: 1;
@@ -397,7 +397,7 @@
       box-sizing: border-box;
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .06), transparent 62%),
-        #243C30;
+        #23302A;
     }
 
     .project-media img {
@@ -451,7 +451,7 @@
       border-radius: 18px;
       box-shadow:
         0 0 0 1px rgba(244, 241, 236, .05),
-        inset 0 1px 0 rgba(244, 241, 236, .16),
+        inset 0 1px 0 rgba(53, 107, 88, .16),
         0 16px 36px rgba(31, 30, 28, .28);
     }
 
@@ -465,7 +465,7 @@
     .project[data-project-id="evidencia-visual"] .project-media {
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .04), transparent 62%),
-        #243C30;
+        #23302A;
     }
 
     .project[data-project-id="formatos-pdf-excel"] .project-media {
@@ -477,7 +477,7 @@
     .project[data-project-id="reporte-servicio-pro"] .project-media {
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .08), transparent 62%),
-        #243C30;
+        #23302A;
     }
 
     .project[data-project-id="museum-of-you"] .project-media {
@@ -499,7 +499,7 @@
       aspect-ratio: auto;
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .08), transparent 62%),
-        #2E5140;
+        #34483F;
     }
 
     /* Diagramas SVG: contain; borde visible en ambos temas */
@@ -519,7 +519,7 @@
     .project[data-project-id="mcp-dual-llm-guard"] .project-media {
       background:
         radial-gradient(80% 70% at 50% 40%, rgba(217, 119, 6, .18), transparent 58%),
-        linear-gradient(180deg, #355F49 0%, #2E5140 100%);
+        linear-gradient(180deg, #415A4E 0%, #34483F 100%);
     }
 
     .project-media img.ltv-media {
@@ -669,14 +669,14 @@
       gap: 1rem;
       width: 100%;
       padding: 1.5rem;
-      border: 1px solid rgba(244, 241, 236, .18);
+      border: 1px solid rgba(53, 107, 88, .18);
       border-radius: 8px;
       background: rgba(244, 241, 236, .08);
     }
 
     .linkedin-connect h3 {
       margin: .5rem 0 0;
-      color: var(--white);
+      color: #1F1E1C;
       font-size: 1.08rem;
     }
 
@@ -699,8 +699,8 @@
     }
 
     .closing {
-      color: var(--white);
-      background: linear-gradient(135deg, #1E3A2F, #244D3B 48%, #1E3A2F);
+      color: #1F1E1C;
+      background: linear-gradient(135deg, #DDEFE6, #CCE5D8 48%, #DDEFE6);
     }
 
     .closing .shell {
@@ -716,7 +716,7 @@
     }
 
     .closing p {
-      color: rgba(244, 241, 236, .78);
+      color: #40574C;
       margin: 1rem 0 0;
       font-size: 1.1rem;
     }
@@ -739,10 +739,10 @@
       justify-content: center;
       min-height: 54px;
       padding: .5rem .75rem;
-      border: 1px solid rgba(244, 241, 236, .18);
+      border: 1px solid rgba(53, 107, 88, .18);
       border-radius: 8px;
       background: rgba(244, 241, 236, .08);
-      color: rgba(244, 241, 236, .84);
+      color: #40574C;
       font-weight: 700;
       text-align: center;
     }
@@ -919,7 +919,7 @@
     html[data-theme="dark"] .project[data-project-id="mcp-dual-llm-guard"] .project-media {
       background:
         radial-gradient(80% 70% at 50% 40%, rgba(217, 119, 6, .22), transparent 58%),
-        linear-gradient(180deg, #355F49 0%, #25342B 100%);
+        linear-gradient(180deg, #415A4E 0%, #25342B 100%);
     }
 
     html[data-theme="dark"] .project[data-project-id="control-gastos-pro"] .project-media {
@@ -931,7 +931,7 @@
     html[data-theme="dark"] .project[data-project-id="evidencia-visual"] .project-media {
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .03), transparent 62%),
-        #243C30;
+        #23302A;
     }
 
     html[data-theme="dark"] .project[data-project-id="formatos-pdf-excel"] .project-media,

@@ -4,9 +4,10 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { createRequire } from 'node:module';
 
 // Baseline agreed for the color-only change. Git's clean filters handle CRLF on Windows.
-const BASELINE = 'd349b36a30b85c405276bfb5f9359ab24e767164';
+const BASELINE = '6f35babb4d20302b72e580fb603afa9b54841ec4';
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repositoryRoot = resolve(siteRoot, '..');
 const prefix = 'extreme-solutions/';
@@ -253,14 +254,15 @@ const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split(
   assert.ok(match, `Entrada Git inesperada: ${entry}`);
   return { hash: match[1], path: match[2] };
 });
-// These three test-only edits are explicitly allowed: existing color assertions and Windows URL paths.
-// They are not production content; all other baseline files remain protected.
+// Only the 3D color source and its two generated artifacts may change beyond the four CSS files.
+// All other photographs, logos, HTML, product data, scripts and build configuration are protected.
 const allowedFiles = new Set([
-  ...cssFiles.map(file => prefix + file), prefix + 'lib/projects.js',
-  prefix + 'tests/pulido.test.mjs', prefix + 'tests/portada-3d.test.mjs', prefix + 'tests/projects.test.mjs',
+  ...cssFiles.map(file => prefix + file),
+  prefix + 'src-3d/hero3d.src.js', prefix + 'hero3d.js', prefix + 'assets/hero-3d-fallback.webp',
+  prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs',
 ]);
 
-test('todos los activos, datos, JS, 3D, HTML y demás archivos existentes conservan su hash Git', () => {
+test('fotos, logos, datos, HTML, scripts y toda producción no autorizada conservan su hash Git', () => {
   const differences = [];
   for (const { hash, path } of tree.filter(entry => !allowedFiles.has(entry.path))) {
     if (!existsSync(resolve(repositoryRoot, path))) { differences.push(`${path}: eliminado`); continue; }
@@ -279,9 +281,80 @@ test('index.html y privacidad.html permanecen idénticos al commit base', () => 
   for (const file of ['index.html', 'privacidad.html']) assert.equal(normalizeEol(read(file)), normalizeEol(baseline(file)), file);
 });
 
-test('lib/projects.js solo permite hex de fill/stroke en SVG, sin cambiar lógica, textos ni geometría', () => {
-  const mask = source => normalizeEol(source).replace(/(<svg\b[\s\S]*?<\/svg>)/g, svg => svg.replace(/\b(fill|stroke)=(['"])#(?:[a-f\d]{8}|[a-f\d]{6}|[a-f\d]{4}|[a-f\d]{3})\2/gi, '$1=$2COLOR$2'));
-  assert.equal(mask(read('lib/projects.js')), mask(baseline('lib/projects.js')));
+test('lib/projects.js conserva exactamente lógica, textos, imágenes y SVG', () => {
+  assert.equal(normalizeEol(read('lib/projects.js')), normalizeEol(baseline('lib/projects.js')));
+});
+
+function colorOnlyScene(source) {
+  let result = '';
+  for (let i = 0; i < source.length;) {
+    if (source.startsWith('//', i)) {
+      const end = source.indexOf('\n', i + 2); i = end < 0 ? source.length : end; continue;
+    }
+    if (source.startsWith('/*', i)) {
+      const end = source.indexOf('*/', i + 2);
+      assert.notEqual(end, -1, 'Comentario 3D sin cerrar'); i = end + 2; result += ' '; continue;
+    }
+    const quote = source[i];
+    if (quote === '"' || quote === "'" || quote === '`') {
+      const start = ++i;
+      while (i < source.length && source[i] !== quote) i += source[i] === '\\' ? 2 : 1;
+      const value = source.slice(start, i);
+      const literal = /^(?:#(?:[a-f\d]{8}|[a-f\d]{6}|[a-f\d]{4}|[a-f\d]{3})|(?:rgb|rgba|hsl|hsla)\([^)]*\))$/i.test(value);
+      result += quote + (literal ? 'COLOR' : value) + quote; i++; continue;
+    }
+    const hexadecimal = source.slice(i).match(/^0x[a-f\d]{6}\b/i);
+    if (hexadecimal) { result += 'COLOR'; i += hexadecimal[0].length; continue; }
+    result += source[i++];
+  }
+  return normalizeEol(result).split('\n').map(line => line.trim()).filter(Boolean).join('\n');
+}
+
+test('fuente 3D: solo colores; geometría, luces, materiales, cámara, movimiento y lógica idénticos', () => {
+  assert.equal(colorOnlyScene(read('src-3d/hero3d.src.js')), colorOnlyScene(baseline('src-3d/hero3d.src.js')));
+  const fixture = 'const BRAND = { mint: 0xddefe6 };\nconst color = "rgba(53,107,88,.4)";\nconst speed = .12;\nconst camera = new PerspectiveCamera(34, 1, .1, 60);';
+  assert.equal(colorOnlyScene(fixture), colorOnlyScene(fixture.replace('0xddefe6', '0x8bcbb1').replace('rgba(53,107,88,.4)', '#356b58')));
+  assert.notEqual(colorOnlyScene(fixture), colorOnlyScene(fixture.replace('speed = .12', 'speed = .15')));
+  assert.notEqual(colorOnlyScene(fixture), colorOnlyScene(fixture.replace('(34, 1, .1, 60)', '(35, 1, .1, 60)')));
+});
+
+test('bundle 3D generado corresponde exactamente a la fuente y configuración protegidas', async () => {
+  const require3d = createRequire(resolve(siteRoot, 'src-3d/package.json'));
+  const { build } = require3d('esbuild');
+  const three = JSON.parse(readFileSync(resolve(siteRoot, 'src-3d/node_modules/three/package.json'), 'utf8'));
+  const generated = await build({
+    entryPoints: [resolve(siteRoot, 'src-3d/hero3d.src.js')], outfile: resolve(siteRoot, 'hero3d.js'),
+    bundle: true, format: 'esm', minify: true, target: ['es2020'], legalComments: 'eof', write: false,
+    banner: { js: `/*! Extreme Solutions · escena 3D de la portada. Incluye three.js ${three.version} (https://threejs.org), licencia MIT: /licenses/three-LICENSE.txt */` },
+  });
+  assert.equal(normalizeEol(generated.outputFiles[0].text), normalizeEol(read('hero3d.js')), 'Reconstruir hero3d.js desde la fuente recoloreada');
+});
+
+function webpSize(buffer) {
+  assert.equal(buffer.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(buffer.toString('ascii', 8, 12), 'WEBP');
+  for (let offset = 12; offset + 8 <= buffer.length;) {
+    const kind = buffer.toString('ascii', offset, offset + 4), size = buffer.readUInt32LE(offset + 4), start = offset + 8;
+    assert.ok(start + size <= buffer.length, 'Chunk WebP truncado');
+    if (kind === 'VP8X') return [buffer.readUIntLE(start + 4, 3) + 1, buffer.readUIntLE(start + 7, 3) + 1];
+    if (kind === 'VP8 ') {
+      assert.equal(buffer.subarray(start + 3, start + 6).toString('hex'), '9d012a');
+      return [buffer.readUInt16LE(start + 6) & 0x3fff, buffer.readUInt16LE(start + 8) & 0x3fff];
+    }
+    if (kind === 'VP8L') {
+      assert.equal(buffer[start], 0x2f);
+      const bits = buffer.readUInt32LE(start + 1);
+      return [(bits & 0x3fff) + 1, ((bits >>> 14) & 0x3fff) + 1];
+    }
+    offset = start + size + (size % 2);
+  }
+  assert.fail('WebP sin dimensiones');
+}
+
+test('solo el still generado puede recolorearse; conserva formato WebP y dimensiones', () => {
+  const original = git(['show', `${BASELINE}:${prefix}assets/hero-3d-fallback.webp`]);
+  const current = readFileSync(resolve(siteRoot, 'assets/hero-3d-fallback.webp'));
+  assert.deepEqual(webpSize(current), webpSize(original));
 });
 
 function color(value, variables = {}, seen = new Set()) {
@@ -348,10 +421,16 @@ const allCssRecords = cssFiles.flatMap(file => parseCss(read(file)));
 const lightVariables = declarationsFor(allCssRecords, ':root');
 const darkVariables = { ...lightVariables, ...declarationsFor(allCssRecords, 'html[data-theme="dark"]') };
 
-test('las cuatro identidades de color raíz corresponden a la paleta acordada', () => {
-  for (const [token, expected] of Object.entries({ '--paper': '#f7f5f2', '--ink': '#1f1e1c', '--green': '#1e3a2f', '--amber': '#d97706' })) {
+test('identidades claras y oscuras corresponden a la nueva paleta menta', () => {
+  for (const [token, expected] of Object.entries({ '--paper': '#f7f5f2', '--white': '#fffdfa', '--ink': '#1f1e1c', '--blue': '#356b58', '--amber': '#d97706' })) {
     assert.deepEqual(color(lightVariables[token], lightVariables), color(expected), token);
   }
+  for (const [token, expected] of Object.entries({ '--paper': '#17201c', '--blue': '#b9e2d1' })) {
+    assert.deepEqual(color(darkVariables[token], darkVariables), color(expected), `oscuro: ${token}`);
+  }
+  const cards = declarationsFor(allCssRecords, 'html[data-theme="dark"] :is(.capability, .tool-card, .method-step, .project, .play-card, .image-panel, footer)');
+  assert.deepEqual(color(cards.background, darkVariables), color('#23302a'), 'Superficie de tarjetas oscuras');
+  assert.ok([...cssFiles, 'src-3d/hero3d.src.js'].some(file => /#8bcbb1\b|0x8bcbb1\b|rgba?\(\s*139\s*,\s*203\s*,\s*177\s*[,)]/i.test(read(file))), 'El detalle menta está presente en estilos o escena 3D');
 });
 
 test('texto, texto secundario y enlaces tienen contraste 4.5:1 en temas claro y oscuro', () => {
@@ -361,22 +440,105 @@ test('texto, texto secundario y enlaces tienen contraste 4.5:1 en temas claro y 
     }
   }
   minimum(color(lightVariables['--muted'], lightVariables), color('#f7f5f2'), 4.5, 'Texto secundario sobre blanco cálido');
-  minimum(color('#f7f5f2'), color('#1e3a2f'), 4.5, 'Blanco cálido sobre verde');
+  minimum(color('#356b58'), color('#ddefe6'), 4.5, 'Texto verde sobre hero menta');
 });
 
-test('los textos derivados de paneles verdes y tarjetas oscuras conservan contraste', () => {
+function solidPaint(value, variables) {
+  const paints = value.match(/#[a-f\d]{3,8}\b|rgba?\([^)]*\)|var\([^)]*\)/gi);
+  assert.ok(paints?.length, `Falta color base en ${value}`);
+  return color(paints.at(-1), variables);
+}
+
+test('hero menta y sus textos, sin blanco invisible sobre la portada clara', () => {
+  const hero = declarationsFor(allCssRecords, '.hero');
+  const background = solidPaint(hero['background-color'] ?? hero.background, lightVariables);
+  assert.deepEqual(background, color('#ddefe6'), 'La portada usa el fondo menta acordado');
+  const heroVariables = { ...lightVariables, ...hero };
+  minimum(color(hero.color, heroVariables), background, 4.5, 'Texto principal del hero');
+  for (const selector of ['.hero-copy', '.founder-line', '.hero-featured-label']) {
+    const style = { ...declarationsFor(allCssRecords, selector), ...declarationsFor(allCssRecords, `.hero ${selector}`) };
+    minimum(color(style.color ?? hero.color, heroVariables), background, 4.5, selector);
+  }
+});
+
+test('los textos derivados de paneles y tarjetas oscuras conservan contraste', () => {
   const focusVariables = { ...lightVariables, ...declarationsFor(allCssRecords, '#enfoque') };
-  const green = color('#1e3a2f');
-  // Check both the green base and the brightest end of the existing translucent card gradient.
+  const panel = declarationsFor(allCssRecords, '#enfoque');
+  const green = solidPaint(panel['background-color'] ?? panel.background, focusVariables);
+  // Check the actual panel base and each existing translucent card gradient endpoint.
   const cardBackground = declarationsFor(allCssRecords, '#enfoque .capability').background;
   const overlays = cardBackground.match(/rgba?\([^)]*\)/g) ?? [];
   const surfaces = [green, ...overlays.map(value => over(color(value, focusVariables), green))];
   for (const foreground of ['--ink', '--ink-2', '--muted']) for (const surface of surfaces) {
-    minimum(color(focusVariables[foreground], focusVariables), surface, 4.5, `Panel verde: ${foreground}`);
+    minimum(color(focusVariables[foreground], focusVariables), surface, 4.5, `Panel de enfoque: ${foreground}`);
   }
   const cards = declarationsFor(allCssRecords, 'html[data-theme="dark"] :is(.capability, .tool-card, .method-step, .project, .play-card, .image-panel, footer)');
   for (const token of ['--ink', '--ink-2', '--muted', '--blue']) {
     minimum(color(darkVariables[token], darkVariables), color(cards['background-color'] ?? cards.background, darkVariables), 4.5, `Tarjeta oscura: ${token}`);
+  }
+});
+
+function paintEndpoints(value, variables, underlays = [color('#000'), color('#fff')]) {
+  const paints = value.match(/#[a-f\d]{3,8}\b|rgba?\([^)]*\)|var\([^)]*\)/gi);
+  assert.ok(paints?.length, `No se puede medir fondo: ${value}`);
+  return paints.flatMap(value => underlays.map(background => over(color(value, variables), background)));
+}
+
+test('navegación legible sobre menta, tanto en claro como oscuro', () => {
+  const nav = declarationsFor(allCssRecords, '.nav');
+  for (const [theme, variables] of [['claro', lightVariables], ['oscuro', darkVariables]]) {
+    const darkControls = theme === 'oscuro' ? declarationsFor(allCssRecords, 'html[data-theme="dark"] :is(.brand, .brand span, .nav-links, .menu-toggle, .theme-toggle, .language-toggle)') : {};
+    const backgrounds = paintEndpoints(nav['background-color'] ?? nav.background, variables, [color(variables['--paper'], variables), color('#ddefe6')]);
+    for (const selector of ['.brand', '.brand span', '.nav-links', '.menu-toggle', '.theme-toggle', '.language-toggle']) {
+      const control = { ...declarationsFor(allCssRecords, selector), ...darkControls };
+      for (const background of backgrounds) minimum(color(control.color, variables), background, 4.5, `${theme}: ${selector}`);
+    }
+    const hover = declarationsFor(allCssRecords, '.nav-links a:hover');
+    for (const background of backgrounds) minimum(color(hover.color, variables), background, 4.5, `${theme}: enlace de navegación hover`);
+  }
+});
+
+test('cierres, privacidad y bandas sobre foto conservan texto pequeño legible en ambos temas', () => {
+  const sections = [
+    { parent: '.closing', children: ['.closing p', '.closing .eyebrow'] },
+    { parent: '.proof-band', children: ['.proof-band .eyebrow'] },
+    { parent: '.privacy-hero', children: ['.privacy-back', '.privacy-back:hover', '.privacy-lead', '.privacy-hero .eyebrow'] },
+    { parent: '.privacy-contact', children: ['.privacy-contact h2', '.privacy-contact p', '.privacy-contact .eyebrow'] },
+  ];
+  for (const [theme, variables] of [['claro', lightVariables], ['oscuro', darkVariables]]) for (const section of sections) {
+    const parent = { ...declarationsFor(allCssRecords, section.parent), ...(theme === 'oscuro' ? declarationsFor(allCssRecords, `html[data-theme="dark"] ${section.parent}`) : {}) };
+    const surfaces = paintEndpoints(parent['background-color'] ?? parent.background, variables);
+    for (const selector of [section.parent, ...section.children]) {
+      const child = { ...declarationsFor(allCssRecords, selector), ...(theme === 'oscuro' ? declarationsFor(allCssRecords, `html[data-theme="dark"] ${selector}`) : {}) };
+      const foreground = child.color ?? parent.color;
+      assert.ok(foreground, `${theme}: falta color o herencia conocida para ${selector}`);
+      for (const surface of surfaces) minimum(color(foreground, variables), surface, 4.5, `${theme}: ${selector}`);
+    }
+    const toc = declarationsFor(allCssRecords, '.privacy-toc');
+    const tocBackground = color(toc.background ?? variables['--paper'], variables);
+    const tocLink = declarationsFor(allCssRecords, '.privacy-toc a');
+    minimum(color(tocLink.color, variables), tocBackground, 4.5, `${theme}: índice de privacidad`);
+    const active = { ...declarationsFor(allCssRecords, '.privacy-toc a[aria-current]'), ...(theme === 'oscuro' ? declarationsFor(allCssRecords, 'html[data-theme="dark"] .privacy-toc a[aria-current]') : {}) };
+    minimum(color(active.color ?? tocLink.color, variables), active.background ? color(active.background, variables) : tocBackground, 4.5, `${theme}: índice activo de privacidad`);
+    const mobileRecords = allCssRecords.filter(record => record.context.some(context => /max-width/.test(context))).map(record => ({ ...record, context: [] }));
+    const mobileToc = { ...toc, ...declarationsFor(mobileRecords, '.privacy-toc') };
+    const mobileLink = { ...tocLink, ...declarationsFor(mobileRecords, '.privacy-toc a') };
+    const mobileActive = { ...active, ...declarationsFor(mobileRecords, '.privacy-toc a[aria-current]'), ...(theme === 'oscuro' ? declarationsFor(mobileRecords, 'html[data-theme="dark"] .privacy-toc a[aria-current]') : {}) };
+    // The mobile index is translucent above the privacy body's paper surface, not an opaque paint.
+    const mobileBackground = over(color(mobileToc.background ?? variables['--paper'], variables), color(variables['--paper'], variables));
+    minimum(color(mobileLink.color, variables), mobileBackground, 4.5, `${theme}: índice móvil de privacidad`);
+    minimum(color(mobileActive.color, variables), color(mobileActive.background, variables), 4.5, `${theme}: índice móvil activo de privacidad`);
+  }
+});
+
+test('badge Destacado es legible sobre imágenes claras/oscuras y en contraste aumentado', () => {
+  const base = declarationsFor(allCssRecords, '.featured-badge');
+  const states = [base];
+  for (const record of allCssRecords) if (record.selector === '.featured-badge' && record.context.some(context => /prefers-(?:contrast|reduced-transparency)/.test(context))) {
+    states.push({ ...base, ...Object.fromEntries(record.declarations.map(({ property, value }) => [property, value])) });
+  }
+  for (const state of states) for (const background of paintEndpoints(state['background-color'] ?? state.background, lightVariables)) {
+    minimum(color(state.color, lightVariables), background, 4.5, 'Badge Destacado');
   }
 });
 
@@ -389,11 +551,18 @@ test('el botón principal ámbar usa texto oscuro; el verde da un foco legible s
     assert.deepEqual(color(button.color, variables), color('#1f1e1c'), `${theme}: texto del botón principal`);
     minimum(color(button.color, variables), color(fill, variables), 4.5, `${theme}: botón principal`);
   }
-  minimum(color('#1e3a2f'), color('#f7f5f2'), 3, 'Verde de foco sobre blanco cálido');
+  minimum(color('#356b58'), color('#f7f5f2'), 3, 'Verde de foco sobre blanco cálido');
   const focus = declarationsFor(allCssRecords, ':focus-visible');
   const focusColors = (focus['outline-color'] ?? focus.outline).match(/#[a-f\d]{3,8}\b|rgba?\([^)]*\)|var\([^)]*\)/gi);
   assert.ok(focusColors?.length, 'El foco global conserva un color explícito');
   minimum(color(focusColors.at(-1), lightVariables), color(lightVariables['--paper'], lightVariables), 3, 'Foco global sobre claro');
+  const darkFocus = {
+    ...focus,
+    ...declarationsFor(allCssRecords, 'html[data-theme="dark"] :focus-visible'),
+    ...declarationsFor(allCssRecords, ':where(html[data-theme="dark"]) :focus-visible'),
+  };
+  const darkFocusColors = (darkFocus['outline-color'] ?? darkFocus.outline).match(/#[a-f\d]{3,8}\b|rgba?\([^)]*\)|var\([^)]*\)/gi);
+  for (const surface of ['--paper', '--paper-2']) minimum(color(darkFocusColors.at(-1), darkVariables), color(darkVariables[surface], darkVariables), 3, `Foco global oscuro sobre ${surface}`);
   // Amber is intentionally unsuitable for small text on warm white. Do not round 2.928 up to 3.
   assert.ok(contrast(color('#d97706'), color('#f7f5f2')) < 3);
 });
