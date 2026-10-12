@@ -67,7 +67,8 @@ test('la exportación pública incluye la escena 3D y su licencia, pero no la fu
   const { tmpdir } = await import('node:os');
   const { join } = await import('node:path');
   const out = join(mkdtempSync(join(tmpdir(), 'es-3d-')), 'dist');
-  execFileSync(process.execPath, [new URL('../scripts/export-public.mjs', import.meta.url).pathname, out]);
+  const { fileURLToPath } = await import('node:url');
+  execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/export-public.mjs', import.meta.url)), out]);
   const files = readdirSync(out);
   for (const name of ['hero3d.js', 'hero3d-loader.js', 'tilt.js', 'portada.css', 'licenses']) assert.ok(files.includes(name), `falta ${name}`);
   assert.ok(readdirSync(join(out, 'licenses')).includes('three-LICENSE.txt'));

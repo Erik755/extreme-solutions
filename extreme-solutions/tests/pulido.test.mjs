@@ -41,7 +41,7 @@ test('catálogo: marco premium en todas las tarjetas + phone-shot contain + deta
   assert.match(css, /\.project-media\s*\{[^}]*height:\s*14\.5rem/s);
   assert.match(css, /\.project-media\s*\{[^}]*min-height:\s*12rem/s);
   assert.match(css, /\.project-media img\s*\{[^}]*border-radius:\s*14px/s);
-  assert.match(css, /\.project-media img\s*\{[^}]*background:\s*#0b1220/s);
+  assert.match(css, /\.project-media img\s*\{[^}]*background:\s*#1F1E1C/s);
   assert.match(css, /\.project-media img\.phone-shot\s*\{[^}]*object-fit:\s*contain/s);
   assert.match(css, /\.project-media:has\(img\.phone-shot\)\s*\{[^}]*height:\s*28rem/s);
   assert.match(css, /\.project-media:has\(img\.phone-shot\)\s*\{[^}]*min-height:\s*22rem/s);
@@ -53,9 +53,9 @@ test('catálogo: marco premium en todas las tarjetas + phone-shot contain + deta
   assert.match(css, /\.detail-image--phone/);
   assert.match(projects, /reporte-servicio-pro/);
   assert.match(projects, /detail-media/);
-  assert.match(css, /#eef3f0/);
-  assert.match(css, /#0a1622/);
-  assert.match(css, /#e8eef4/);
+  assert.match(css, /#E9E8E0/);
+  assert.match(css, /#243C30/);
+  assert.match(css, /#E9E8E0/);
   for (const id of ['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'museum-of-you']) {
     assert.match(page, new RegExp(`data-project-id="${id}"[\\s\\S]*?class="phone-shot"`), id);
   }

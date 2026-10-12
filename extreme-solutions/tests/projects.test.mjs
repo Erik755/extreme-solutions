@@ -49,7 +49,8 @@ test('public export excludes internal docs, tests, scripts and config', async ()
   const { tmpdir } = await import('node:os');
   const { join } = await import('node:path');
   const out = join(mkdtempSync(join(tmpdir(), 'es-export-')), 'dist');
-  execFileSync(process.execPath, [new URL('../scripts/export-public.mjs', import.meta.url).pathname, out]);
+  const { fileURLToPath } = await import('node:url');
+  execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/export-public.mjs', import.meta.url)), out]);
   const files = readdirSync(out);
   assert.ok(files.includes('index.html') && files.includes('base.css') && files.includes('i18n-data.js') && files.includes('assets'));
   assert.ok(files.includes('privacidad.html') && files.includes('privacy.js') && files.includes('privacy.css'));
