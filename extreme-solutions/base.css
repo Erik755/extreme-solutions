@@ -206,31 +206,31 @@
       justify-content: center;
       gap: .5rem;
       padding: 0 1rem;
-      border: 1px solid rgba(53, 107, 88, .28);
+      border: 1px solid #5E806D;
       border-radius: 8px;
-      color: #1F1E1C;
-      background: rgba(255, 253, 250, .65);
+      color: #356B58;
+      background: #EFF6F1;
       text-decoration: none;
       font-weight: 760;
     }
 
     .btn.primary {
-      border-color: var(--blue);
-      background: var(--amber);
-      color: #1F1E1C;
+      border-color: #4F7868;
+      background: #4F7868;
+      color: #FFFDFA;
       box-shadow: 0 18px 46px rgba(139, 203, 177, .32);
     }
 
     .btn.dark {
-      color: var(--white);
-      border-color: var(--ink);
-      background: var(--ink);
+      color: #FFFDFA;
+      border-color: #4F7868;
+      background: #4F7868;
     }
 
     .btn.light {
-      color: var(--ink);
-      border-color: var(--line);
-      background: var(--white);
+      color: #356B58;
+      border-color: #5E806D;
+      background: #EFF6F1;
     }
 
     .section {
@@ -292,7 +292,7 @@
     }
 
     .capability:nth-child(3) svg {
-      color: var(--amber);
+      color: var(--green);
     }
 
     .capability:nth-child(4) svg {
@@ -386,7 +386,7 @@
       box-shadow: 0 14px 40px rgba(31, 30, 28, .07);
     }
 
-    /* Marco premium uniforme: altura fija, pozo con viñeta, imagen con bezel suave */
+    /* Marco uniforme menta: conserva la captura original y su tamaño. */
     .project-media {
       position: relative;
       aspect-ratio: auto;
@@ -396,8 +396,8 @@
       border-radius: var(--radius-card) var(--radius-card) 0 0;
       box-sizing: border-box;
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .06), transparent 62%),
-        #23302A;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     .project-media img {
@@ -410,7 +410,7 @@
       object-position: center center;
       border-radius: 14px;
       border: 1px solid rgba(31, 30, 28, .14);
-      background: #1F1E1C;
+      background: #E2EEE7;
       box-shadow:
         0 0 0 1px rgba(244, 241, 236, .05),
         inset 0 1px 0 rgba(244, 241, 236, .14),
@@ -437,8 +437,8 @@
       min-height: 22rem;
       box-sizing: border-box;
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .06), transparent 62%),
-        var(--paper-2);
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     .project-media img.phone-shot {
@@ -455,35 +455,35 @@
         0 16px 36px rgba(31, 30, 28, .28);
     }
 
-    /* Pozo alineado al tono de cada captura (bordes del asset) + viñeta suave */
+    /* Misma superficie para todos los productos, sin recolorear sus imágenes. */
     .project[data-project-id="control-gastos-pro"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .35), transparent 62%),
-        #E9E8E0;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     .project[data-project-id="evidencia-visual"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .04), transparent 62%),
-        #23302A;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     .project[data-project-id="formatos-pdf-excel"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .4), transparent 62%),
-        #E9E8E0;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     .project[data-project-id="reporte-servicio-pro"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .08), transparent 62%),
-        #23302A;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     .project[data-project-id="museum-of-you"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .05), transparent 62%),
-        #1F1E1C;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     /* Destacados: el layout bento vive en portada.css; aquí solo el marco media. */
@@ -498,8 +498,8 @@
       min-height: 13rem;
       aspect-ratio: auto;
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .08), transparent 62%),
-        #34483F;
+        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
+        #E2EEE7;
     }
 
     /* Diagramas SVG: contain; borde visible en ambos temas */
@@ -510,16 +510,16 @@
       max-height: calc(100% - 1.2rem);
       object-fit: contain;
       background: transparent;
-      border-color: rgba(217, 119, 6, .35);
+      border-color: rgba(53, 107, 88, .35);
       box-shadow:
-        0 0 0 1px rgba(217, 119, 6, .2),
+        0 0 0 1px rgba(53, 107, 88, .2),
         0 14px 32px rgba(31, 30, 28, .28);
     }
 
     .project[data-project-id="mcp-dual-llm-guard"] .project-media {
       background:
-        radial-gradient(80% 70% at 50% 40%, rgba(217, 119, 6, .18), transparent 58%),
-        linear-gradient(180deg, #415A4E 0%, #34483F 100%);
+        radial-gradient(80% 70% at 50% 40%, rgba(255, 253, 250, .36), transparent 58%),
+        linear-gradient(180deg, #E2EEE7 0%, #E2EEE7 100%);
     }
 
     .project-media img.ltv-media {
@@ -895,13 +895,13 @@
 
     html[data-theme="dark"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .05), transparent 62%),
-        #25342B;
+        radial-gradient(90% 70% at 50% 42%, rgba(185, 226, 209, .06), transparent 62%),
+        #2B3E34;
     }
 
     html[data-theme="dark"] .project-media img {
       border-color: rgba(244, 241, 236, .14);
-      background: #18291F;
+      background: #2B3E34;
       box-shadow:
         0 0 0 1px rgba(244, 241, 236, .06),
         inset 0 1px 0 rgba(244, 241, 236, .14),
@@ -910,41 +910,41 @@
 
     html[data-theme="dark"] .project-media img[src$=".svg"] {
       background: transparent;
-      border-color: rgba(232, 184, 109, .45);
+      border-color: rgba(185, 226, 209, .45);
       box-shadow:
-        0 0 0 1px rgba(217, 119, 6, .28),
+        0 0 0 1px rgba(185, 226, 209, .28),
         0 16px 36px rgba(0, 0, 0, .45);
     }
 
     html[data-theme="dark"] .project[data-project-id="mcp-dual-llm-guard"] .project-media {
       background:
-        radial-gradient(80% 70% at 50% 40%, rgba(217, 119, 6, .22), transparent 58%),
-        linear-gradient(180deg, #415A4E 0%, #25342B 100%);
+        radial-gradient(80% 70% at 50% 40%, rgba(185, 226, 209, .06), transparent 58%),
+        linear-gradient(180deg, #2B3E34 0%, #2B3E34 100%);
     }
 
     html[data-theme="dark"] .project[data-project-id="control-gastos-pro"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .045), transparent 62%),
-        #25342B;
+        radial-gradient(90% 70% at 50% 42%, rgba(185, 226, 209, .06), transparent 62%),
+        #2B3E34;
     }
 
     html[data-theme="dark"] .project[data-project-id="evidencia-visual"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .03), transparent 62%),
-        #23302A;
+        radial-gradient(90% 70% at 50% 42%, rgba(185, 226, 209, .06), transparent 62%),
+        #2B3E34;
     }
 
     html[data-theme="dark"] .project[data-project-id="formatos-pdf-excel"] .project-media,
     html[data-theme="dark"] .project[data-project-id="reporte-servicio-pro"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .04), transparent 62%),
-        #25342B;
+        radial-gradient(90% 70% at 50% 42%, rgba(185, 226, 209, .06), transparent 62%),
+        #2B3E34;
     }
 
     html[data-theme="dark"] .project[data-project-id="museum-of-you"] .project-media {
       background:
-        radial-gradient(90% 70% at 50% 42%, rgba(244, 241, 236, .03), transparent 62%),
-        #1F1E1C;
+        radial-gradient(90% 70% at 50% 42%, rgba(185, 226, 209, .06), transparent 62%),
+        #2B3E34;
     }
 
     html[data-theme="dark"] .project-media img.ltv-media {

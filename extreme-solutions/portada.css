@@ -146,7 +146,7 @@ html[data-theme="dark"] .tool-card {
 html[data-theme="dark"] .section:has(> .shell > .tool-grid) {
   background:
     radial-gradient(40% 50% at 85% 10%, rgba(139, 203, 177, .18), transparent 70%),
-    radial-gradient(35% 45% at 10% 90%, rgba(217, 119, 6, .10), transparent 70%),
+    radial-gradient(35% 45% at 10% 90%, rgba(169, 217, 196, .10), transparent 70%),
     var(--paper);
 }
 
@@ -205,13 +205,13 @@ html[data-theme="dark"] .tool-card[data-tilt]::before { background: radial-gradi
   grid-column: auto;
   grid-template-columns: none;
   position: relative;
-  border-color: rgba(217, 119, 6, .5);
-  box-shadow: 0 0 0 1px rgba(217, 119, 6, .2), 0 22px 60px rgba(139, 203, 177, .16);
+  border-color: rgba(53, 107, 88, .42);
+  box-shadow: 0 0 0 1px rgba(53, 107, 88, .12), 0 22px 60px rgba(139, 203, 177, .16);
 }
 html[data-theme="dark"] .projects > .project.project-featured {
   border-color: rgba(139, 203, 177, .4);
   box-shadow: 0 0 0 1px rgba(139, 203, 177, .16), 0 26px 70px rgba(139, 203, 177, .3);
-  background: linear-gradient(180deg, rgba(217, 119, 6, .1), transparent 42%), #23302A;
+  background: linear-gradient(180deg, rgba(139, 203, 177, .1), transparent 42%), #23302A;
 }
 .project-featured .project-media { position: relative; height: 15rem; min-height: 13rem; aspect-ratio: auto; }
 .project-featured .project-media img { object-fit: cover; }

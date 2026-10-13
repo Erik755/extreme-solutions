@@ -8,6 +8,8 @@ import { createRequire } from 'node:module';
 
 // Baseline agreed for the color-only change. Git's clean filters handle CRLF on Windows.
 const BASELINE = '6f35babb4d20302b72e580fb603afa9b54841ec4';
+// The second refinement changes CSS paint only; the accepted mint 3D and assets stay intact.
+const CONTROL_BASELINE = 'b8462c6d4111014aaf710d2965b7c8a336c3cce9';
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repositoryRoot = resolve(siteRoot, '..');
 const prefix = 'extreme-solutions/';
@@ -277,6 +279,25 @@ test('fotos, logos, datos, HTML, scripts y toda producción no autorizada conser
   assert.deepEqual(differences, [], 'Cambios fuera del alcance de paleta');
 });
 
+test('refinamiento de controles: conserva también la escena menta y todos los recursos del sitio publicado', () => {
+  const allowed = new Set([...cssFiles.map(file => prefix + file), prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs']);
+  const original = git(['ls-tree', '-r', '-z', CONTROL_BASELINE], { encoding: 'utf8' }).split('\0').filter(Boolean);
+  const differences = [];
+  for (const entry of original) {
+    const [, hash, path] = entry.match(/^\d+ blob ([a-f\d]+)\t(.+)$/s) ?? [];
+    assert.ok(path, `Entrada Git inesperada: ${entry}`);
+    if (allowed.has(path)) continue;
+    if (!existsSync(resolve(repositoryRoot, path))) { differences.push(`${path}: eliminado`); continue; }
+    const actual = git(['hash-object', `--path=${path}`, path], { encoding: 'utf8' }).trim();
+    if (actual !== hash) differences.push(`${path}: contenido modificado`);
+  }
+  assert.deepEqual(differences, [], 'Esta corrección no toca escenas, capturas, logos, contenidos, estructura ni funcionamiento');
+  for (const file of cssFiles) {
+    const before = git(['show', `${CONTROL_BASELINE}:${prefix}${file}`], { encoding: 'utf8' });
+    assertColorOnly(before, read(file), file);
+  }
+});
+
 test('index.html y privacidad.html permanecen idénticos al commit base', () => {
   for (const file of ['index.html', 'privacidad.html']) assert.equal(normalizeEol(read(file)), normalizeEol(baseline(file)), file);
 });
@@ -542,14 +563,18 @@ test('badge Destacado es legible sobre imágenes claras/oscuras y en contraste a
   }
 });
 
-test('el botón principal ámbar usa texto oscuro; el verde da un foco legible sobre claro', () => {
+test('el botón principal es verde sereno, distinguible y legible en reposo y hover', () => {
   const baseButton = { ...declarationsFor(allCssRecords, '.btn'), ...declarationsFor(allCssRecords, '.btn.primary') };
   for (const [theme, variables] of [['claro', lightVariables], ['oscuro', darkVariables]]) {
     const button = theme === 'oscuro' ? { ...baseButton, ...declarationsFor(allCssRecords, 'html[data-theme="dark"] .btn.primary') } : baseButton;
     const fill = button['background-color'] ?? button.background;
-    assert.deepEqual(color(fill, variables), color('#d97706'), `${theme}: relleno del botón principal`);
-    assert.deepEqual(color(button.color, variables), color('#1f1e1c'), `${theme}: texto del botón principal`);
+    assert.deepEqual(color(fill, variables), color('#4f7868'), `${theme}: relleno del botón principal`);
+    assert.deepEqual(color(button.color, variables), color('#fffdfa'), `${theme}: texto del botón principal`);
     minimum(color(button.color, variables), color(fill, variables), 4.5, `${theme}: botón principal`);
+    const hover = { ...button, ...declarationsFor(allCssRecords, '.btn.primary:hover'), ...(theme === 'oscuro' ? declarationsFor(allCssRecords, 'html[data-theme="dark"] .btn.primary:hover') : {}) };
+    const hoverFill = hover['background-color'] ?? hover.background;
+    assert.deepEqual(color(hoverFill, variables), color('#426757'), `${theme}: variación de hover`);
+    minimum(color(hover.color, variables), color(hoverFill, variables), 4.5, `${theme}: botón principal hover`);
   }
   minimum(color('#356b58'), color('#f7f5f2'), 3, 'Verde de foco sobre blanco cálido');
   const focus = declarationsFor(allCssRecords, ':focus-visible');
@@ -563,6 +588,30 @@ test('el botón principal ámbar usa texto oscuro; el verde da un foco legible s
   };
   const darkFocusColors = (darkFocus['outline-color'] ?? darkFocus.outline).match(/#[a-f\d]{3,8}\b|rgba?\([^)]*\)|var\([^)]*\)/gi);
   for (const surface of ['--paper', '--paper-2']) minimum(color(darkFocusColors.at(-1), darkVariables), color(darkVariables[surface], darkVariables), 3, `Foco global oscuro sobre ${surface}`);
-  // Amber is intentionally unsuitable for small text on warm white. Do not round 2.928 up to 3.
+  // Amber remains available for legacy semantic details, never for primary actions or small text.
   assert.ok(contrast(color('#d97706'), color('#f7f5f2')) < 3);
+});
+
+test('todos los pozos de imágenes usan la misma familia menta sin alterar las capturas', () => {
+  const lightSelectors = [
+    '.project-media', '.project-media:has(img.phone-shot)', '.project-featured .project-media',
+    ...['control-gastos-pro', 'evidencia-visual', 'formatos-pdf-excel', 'reporte-servicio-pro', 'museum-of-you', 'mcp-dual-llm-guard'].map(id => `.project[data-project-id="${id}"] .project-media`),
+    '.detail-media',
+  ];
+  for (const selector of lightSelectors) {
+    const style = declarationsFor(allCssRecords, selector);
+    assert.deepEqual(solidPaint(style['background-color'] ?? style.background, lightVariables), color('#e2eee7'), `Claro: ${selector}`);
+  }
+  const darkSelectors = [
+    'html[data-theme="dark"] .project-media',
+    ...['control-gastos-pro', 'evidencia-visual', 'formatos-pdf-excel', 'reporte-servicio-pro', 'museum-of-you', 'mcp-dual-llm-guard'].map(id => `html[data-theme="dark"] .project[data-project-id="${id}"] .project-media`),
+    'html[data-theme="dark"] .detail-media',
+    'html[data-theme="dark"] .detail-media:has(.detail-image[src$=".svg"])',
+  ];
+  for (const selector of darkSelectors) {
+    const style = declarationsFor(allCssRecords, selector);
+    assert.deepEqual(solidPaint(style['background-color'] ?? style.background, darkVariables), color('#2b3e34'), `Oscuro: ${selector}`);
+  }
+  const featured = declarationsFor(allCssRecords, '.projects > .project.project-featured');
+  assert.deepEqual(color(featured['border-color'], lightVariables), color('rgba(53,107,88,.42)'), 'Borde destacado sin naranja');
 });
