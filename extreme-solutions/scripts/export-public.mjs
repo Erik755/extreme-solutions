@@ -24,6 +24,14 @@ for (const entry of readdirSync(path.join(siteRoot, 'assets'), { withFileTypes: 
     copied.push('assets/' + entry.name);
   }
 }
+// Páginas estáticas del blog.
+mkdirSync(path.join(outDir, 'blog'), { recursive: true });
+for (const entry of readdirSync(path.join(siteRoot, 'blog'), { withFileTypes: true })) {
+  if (entry.isFile() && /^[\w-]+\.html$/.test(entry.name)) {
+    cpSync(path.join(siteRoot, 'blog', entry.name), path.join(outDir, 'blog', entry.name));
+    copied.push('blog/' + entry.name);
+  }
+}
 // Licencias de terceros incluidas en el sitio (p. ej. three.js, MIT).
 mkdirSync(path.join(outDir, 'licenses'), { recursive: true });
 for (const entry of readdirSync(path.join(siteRoot, 'licenses'), { withFileTypes: true })) {
