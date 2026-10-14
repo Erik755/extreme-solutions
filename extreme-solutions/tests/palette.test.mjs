@@ -6,9 +6,9 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 
-// Accepted published mint site before the separately authorized phone-header replacement.
-// Git's clean filters handle CRLF on Windows; original production and 3D backup stay protected.
-const BASELINE = '31dbe1954c09bcb200b17941c4f816e1b28540e0';
+// Accepted phone header before its separately authorized 30-degree/pointer refinement, removal
+// of the founder subtitle, WhatsApp action and intact move of #apps. Other production stays protected.
+const BASELINE = 'ba569652723de1654c01cdc108e59eb51d5d6b1d';
 const CONTROL_BASELINE = BASELINE;
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repositoryRoot = resolve(siteRoot, '..');
@@ -256,8 +256,8 @@ const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split(
   assert.ok(match, `Entrada Git inesperada: ${entry}`);
   return { hash: match[1], path: match[2] };
 });
-// The user separately authorized only the phone header and its two new local resources.
-// The accepted app showcase, blog, photographs, data, scripts and original 3D stay protected.
+// Only phone CSS/JS and moving the intact app showcase within index are authorized.
+// The accepted blog, photographs, app contents, other scripts and original 3D stay protected.
 const allowedFiles = new Set([
   ...cssFiles.map(file => prefix + file),
   prefix + 'index.html', prefix + 'hero-phone.css', prefix + 'hero-phone.js',
@@ -298,22 +298,36 @@ test('refinamiento de controles: conserva también la escena menta y todos los r
   }
 });
 
-function withoutPhoneHeader(html) {
-  return normalizeEol(html)
-    .replace(/<header id="inicio" class="hero">[\s\S]*?<\/header>/, '<!-- phone header authorized -->')
-    .replace(/^\s*<link rel="(?:stylesheet|preload)"[^\n]*(?:hero-phone\.css|hero-3d-fallback\.webp|embedded-6\.webp)[^\n]*\n/gm, '')
-    .replace(/^\s*<script src="\/(?:hero3d-loader|hero-phone)\.js"[^\n]*\n/gm, '');
+function section(html, id) {
+  return normalizeEol(html).match(new RegExp(`<section id="${id}"(?=[\\s>])[\\s\\S]*?<\\/section>`))?.[0];
 }
 
-test('solo el encabezado y sus recursos cambian; privacidad y todo el resto de index son idénticos', () => {
-  assert.equal(withoutPhoneHeader(read('index.html')), withoutPhoneHeader(baseline('index.html')), 'index fuera del encabezado');
+function withoutAppsSection(html) {
+  return normalizeEol(html).replace(/^[\t ]*<section id="apps"(?=[\s>])[\s\S]*?<\/section>[\t ]*\n?/m, '')
+    .replace(/^[\t ]*<section id="experiencia"(?=[\s>])[\s\S]*?<\/section>[\t ]*\n?/m, '')
+    .replace(/^[\t ]*<p class="founder-line">by Erik Sanchez<\/p>[\t ]*\n?/m, '')
+    .replace(/^[\t ]*<a class="[^"]*\bhero-whatsapp\b[^"]*"[^>]*href="https:\/\/wa\.me\/5214422858759"[^>]*>[\s\S]*?<\/a>[\t ]*\n?/m, '')
+    .replace(/\n[\t ]*\n+/g, '\n');
+}
+
+test('Apps y Experiencia suben intactas y en ese orden; el resto de index permanece idéntico', () => {
+  assert.ok(section(read('index.html'), 'apps'), 'la sección Apps existe');
+  for (const id of ['apps', 'experiencia']) assert.equal(section(read('index.html'), id), section(baseline('index.html'), id), `mismo contenido completo de ${id}`);
+  assert.match(read('index.html'), /<main id="contenido" tabindex="-1">\s*<section id="apps"(?=[\s>])/, 'Apps inmediatamente después de abrir main');
+  const current = normalizeEol(read('index.html'));
+  const afterApps = current.slice(current.indexOf(section(current, 'apps')) + section(current, 'apps').length);
+  assert.match(afterApps, /^\s*<section id="experiencia"(?=[\s>])/, 'Experiencia inmediatamente después de Apps');
+  assert.equal(withoutAppsSection(read('index.html')), withoutAppsSection(baseline('index.html')), 'no cambian encabezado, head, navegación, bloques restantes ni footer');
   assert.equal(normalizeEol(read('privacidad.html')), normalizeEol(baseline('privacidad.html')), 'privacidad');
-  const originalHeader = normalizeEol(baseline('index.html')).match(/<header id="inicio" class="hero">[\s\S]*?<\/header>/)?.[0];
-  const originalIntro = originalHeader?.match(/<div class="shell">([\s\S]*?)\n\s*<\/div>\n\s*<\/header>/)?.[1];
-  const currentIntro = normalizeEol(read('index.html')).match(/<div class="hero-intro">([\s\S]*?)\n\s*<\/div>\n\s*<figure/)?.[1];
-  assert.ok(originalIntro && currentIntro, 'contenido introductorio original y actual identificados');
-  const normalizeHtmlSpacing = html => html.trim().replace(/>\s+</g, '><');
-  assert.equal(normalizeHtmlSpacing(currentIntro), normalizeHtmlSpacing(originalIntro), 'título, descripción, botones, imágenes, enlaces y destacados originales sin cambios');
+});
+
+test('solo desaparece el subtítulo del fundador y se agrega WhatsApp al grupo de acciones del encabezado', () => {
+  const html = read('index.html');
+  const header = html.match(/<header id="inicio" class="hero">[\s\S]*?<\/header>/)?.[0];
+  assert.ok(header, 'encabezado existente');
+  assert.doesNotMatch(header, /class="founder-line"|by Erik Sanchez/);
+  assert.match(header, /<div class="hero-actions">[\s\S]*?<a class="[^"]*\bhero-whatsapp\b[^"]*"[^>]*href="https:\/\/wa\.me\/5214422858759"/);
+  assert.equal([...html.matchAll(/href="https:\/\/wa\.me\/5214422858759"/g)].length, 1, 'una sola acción WhatsApp nueva');
 });
 
 test('el nuevo encabezado conserva íntegros todos los estilos originales de la paleta', () => {

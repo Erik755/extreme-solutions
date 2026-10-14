@@ -51,6 +51,17 @@ test('la pantalla del teléfono usa capturas reales locales, con vista inicial s
   assert.doesNotMatch(read('hero-phone.js'), /setInterval|WebGL|hero3d\.js/);
 });
 
+test('el giro permanece a 30 grados y la respuesta al puntero cubre el encabezado completo', () => {
+  const css = read('hero-phone.css');
+  const script = read('hero-phone.js');
+  assert.match(css, /transform:\s*rotateX\(var\(--phone-x,\s*6deg\)\)\s*rotateY\(var\(--phone-y,\s*-10deg\)\)\s*rotateZ\(30deg\)/);
+  assert.doesNotMatch(css, /rotateZ\((?!30deg\))[^)]*\)/, 'no se cambia el giro en móvil o movimiento reducido');
+  assert.match(script, /header\.addEventListener\('pointermove'/, 'el puntero no se limita a la pantalla del teléfono');
+  assert.match(script, /header\.getBoundingClientRect\(\)/);
+  assert.match(script, /6 - y \* 44/);
+  assert.match(script, /-10 \+ x \* 56/);
+});
+
 test('sin CDN: todos los scripts y estilos se sirven desde el propio sitio', () => {
   const pages = [read('index.html'), read('privacidad.html'), ...projects.map(p => projectPage(p)), projectPage(projects[0], 'en')];
   for (const html of pages) {
