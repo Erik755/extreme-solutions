@@ -52,6 +52,7 @@ def page(title,desc,path,main,typ='article'):
   <meta property="og:image" content="{SITE}/assets/lentes-feature.png"><meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/webp" href="/assets/embedded-4.webp">
   <link rel="stylesheet" href="/base.css">
+  <link rel="stylesheet" href="/showcase.css">
   {ld}
 </head>
 <body class="blog-page">

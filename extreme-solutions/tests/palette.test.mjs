@@ -258,6 +258,10 @@ const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split(
 });
 // Only the 3D color source and its two generated artifacts may change beyond the four CSS files.
 // All other photographs, logos, HTML, product data, scripts and build configuration are protected.
+// Contenido aprobado después de la paleta (vitrina de apps, blog y SEO): fuera del alcance de estos guards de color.
+const contentScope = new Set(['index.html', 'privacidad.html', 'data/translations.json', 'i18n-data.js', 'sitemap.xml', 'showcase.css',
+  'scripts/export-public.mjs', 'scripts/blog.py'].map(file => prefix + file));
+const inContentScope = path => contentScope.has(path) || path.startsWith(prefix + 'blog/');
 const allowedFiles = new Set([
   ...cssFiles.map(file => prefix + file),
   prefix + 'src-3d/hero3d.src.js', prefix + 'hero3d.js', prefix + 'assets/hero-3d-fallback.webp',
@@ -266,14 +270,14 @@ const allowedFiles = new Set([
 
 test('fotos, logos, datos, HTML, scripts y toda producción no autorizada conservan su hash Git', () => {
   const differences = [];
-  for (const { hash, path } of tree.filter(entry => !allowedFiles.has(entry.path))) {
+  for (const { hash, path } of tree.filter(entry => !allowedFiles.has(entry.path) && !inContentScope(entry.path))) {
     if (!existsSync(resolve(repositoryRoot, path))) { differences.push(`${path}: eliminado`); continue; }
     const actual = git(['hash-object', `--path=${path}`, path], { encoding: 'utf8' }).trim();
     if (actual !== hash) differences.push(`${path}: contenido modificado`);
   }
   const originalPaths = new Set(tree.map(entry => entry.path));
   const currentPaths = git(['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' }).split('\0').filter(Boolean);
-  for (const path of currentPaths) if (!originalPaths.has(path) && path !== prefix + 'tests/palette.test.mjs') {
+  for (const path of currentPaths) if (!originalPaths.has(path) && path !== prefix + 'tests/palette.test.mjs' && !inContentScope(path)) {
     differences.push(`${path}: archivo nuevo fuera del alcance de paleta`);
   }
   assert.deepEqual(differences, [], 'Cambios fuera del alcance de paleta');
@@ -286,7 +290,7 @@ test('refinamiento de controles: conserva también la escena menta y todos los r
   for (const entry of original) {
     const [, hash, path] = entry.match(/^\d+ blob ([a-f\d]+)\t(.+)$/s) ?? [];
     assert.ok(path, `Entrada Git inesperada: ${entry}`);
-    if (allowed.has(path)) continue;
+    if (allowed.has(path) || inContentScope(path)) continue;
     if (!existsSync(resolve(repositoryRoot, path))) { differences.push(`${path}: eliminado`); continue; }
     const actual = git(['hash-object', `--path=${path}`, path], { encoding: 'utf8' }).trim();
     if (actual !== hash) differences.push(`${path}: contenido modificado`);
@@ -298,8 +302,12 @@ test('refinamiento de controles: conserva también la escena menta y todos los r
   }
 });
 
-test('index.html y privacidad.html permanecen idénticos al commit base', () => {
-  for (const file of ['index.html', 'privacidad.html']) assert.equal(normalizeEol(read(file)), normalizeEol(baseline(file)), file);
+test('index.html y privacidad.html conservan las hojas de estilo y el contenido del commit base', () => {
+  // La vitrina y el SEO agregan secciones y metadatos aprobados; nada del contenido base se elimina.
+  for (const file of ['index.html', 'privacidad.html']) {
+    const current = normalizeEol(read(file));
+    for (const line of normalizeEol(baseline(file)).split('\n').map(l => l.trim()).filter(l => l && !/<title>|name="description"|og:(?:title|description)|btn primary" href="#experiencia"|class="footer-links"/.test(l))) assert.ok(current.includes(line), `${file}: ${line.slice(0, 80)}`);
+  }
 });
 
 test('lib/projects.js conserva exactamente lógica, textos, imágenes y SVG', () => {

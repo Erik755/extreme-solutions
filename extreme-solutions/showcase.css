@@ -1,0 +1,17 @@
+/* Vitrina de apps publicadas */
+.app-showcase{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
+.app-card .project-body{display:flex;flex-direction:column;gap:.6rem}
+.app-benefits{margin:.25rem 0 .5rem;padding-left:1.1rem;line-height:1.5}
+.app-benefits li+li{margin-top:.3rem}
+.app-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:auto}
+.app-youtube{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem;margin-top:1.5rem}
+@media (max-width:860px){.app-showcase{grid-template-columns:1fr}}
+
+/* Blog */
+.blog-shell{max-width:760px}
+.blog-article h1{margin:.4rem 0 1.2rem}
+.blog-article h2{margin-top:2rem}
+.blog-article p,.blog-article li{line-height:1.65}
+.blog-cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2rem}
+.blog-list{display:grid;gap:1rem}
+.blog-card h2{font-size:1.2rem;margin:0 0 .4rem}
