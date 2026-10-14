@@ -62,9 +62,9 @@ function storeHead(project, language, tr) {
   if (!project?.play) return '';
   const url = `${SITE_URL}/proyecto/${project.id}${language === 'en' ? '?lang=en' : ''}`;
   const image = SITE_URL + project.image;
-  const title = escape(tr(project.title)), description = escape(tr(project.description));
+  const title = escape(tr(project.title)), description = escape(tr(project.seoDescription || project.description));
   const app = { '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: project.title, operatingSystem: 'Android',
-    applicationCategory: 'PhotographyApplication', url, downloadUrl: project.play, installUrl: project.play, image, inLanguage: ['es', 'en'],
+    applicationCategory: project.appCategory || 'PhotographyApplication', url, downloadUrl: project.play, installUrl: project.play, image, inLanguage: ['es', 'en'],
     author: { '@type': 'Organization', name: 'Extreme Solutions', url: SITE_URL }, offers: { '@type': 'Offer', price: '0', priceCurrency: 'MXN' } };
   const faq = FAQS[project.id] && { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQS[project.id].map(([q, a]) =>
     ({ '@type': 'Question', name: tr(q), acceptedAnswer: { '@type': 'Answer', text: tr(a) } })) };
@@ -76,6 +76,12 @@ function storeHead(project, language, tr) {
 function playBadge(project, language, tr) {
   if (!project.play) return '';
   return `<a class="play-badge" href="${escape(project.play)}" target="_blank" rel="noopener"><img src="/assets/google-play-badge-${language}.png" alt="${escape(tr('Disponible en Google Play'))}" width="646" height="250"></a>`;
+}
+// Bloque de landing: público, beneficios y oferta, solo con texto confirmado en la ficha de Google Play.
+function landingSection(project, tr) {
+  const landing = project.landing;
+  if (!landing) return '';
+  return `<section class="detail-landing" aria-labelledby="landing-title">${project.seoDescription ? `<p class="lead">${escape(tr(project.seoDescription))}</p>` : ''}${landing.audience ? `<p class="lead">${escape(tr(landing.audience))}</p>` : ''}<h2 id="landing-title">${escape(tr('Beneficios'))}</h2><ul class="app-benefits">${landing.benefits.map(item => `<li>${escape(tr(item))}</li>`).join('')}</ul>${landing.trial ? `<div class="detail-offer"><h3>${escape(tr('Prueba gratis de 10 días'))}</h3><p>${escape(tr(landing.trial))}</p></div>` : ''}<div class="detail-actions"><a class="btn primary" href="${escape(project.play)}" target="_blank" rel="noopener">${escape(tr('Descargar en Google Play'))}</a></div></section>`;
 }
 function faqSection(project, tr) {
   if (!FAQS[project.id]) return '';
@@ -110,15 +116,15 @@ export function projectPage(project, requestedLanguage = 'es') {
   const title = tr(project ? project.title : 'Proyecto no encontrado');
   const languageQuery = language === 'en' ? '?lang=en' : '';
   return `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>${escape(title)} | Extreme Solutions</title><meta name="description" content="${escape(tr(project?.description || 'Consulta los proyectos de Extreme Solutions.'))}">
+    <title>${escape(title)} | Extreme Solutions</title><meta name="description" content="${escape(tr(project?.seoDescription || project?.description || 'Consulta los proyectos de Extreme Solutions.'))}">
     ${project ? storeHead(project, language, tr) : '<meta name="robots" content="noindex">'}
-    <link rel="icon" type="image/png" href="/assets/embedded-1.png"><link rel="stylesheet" href="/base.css"><link rel="stylesheet" href="/dynamic.css"><script src="/i18n-data.js"></script><script src="/i18n.js"></script><script src="/preferences.js"></script></head>
+    <link rel="icon" type="image/png" href="/assets/embedded-1.png"><link rel="stylesheet" href="/base.css"><link rel="stylesheet" href="/dynamic.css"><link rel="stylesheet" href="/showcase.css"><script src="/i18n-data.js"></script><script src="/i18n.js"></script><script src="/preferences.js"></script></head>
     <body><a class="skip-link" href="#contenido">${escape(tr('Saltar al contenido'))}</a>
     <nav class="nav is-scrolled" aria-label="${escape(tr('Principal'))}"><div class="nav-inner"><a class="brand" href="/${languageQuery}"><span>Extreme Solutions</span></a><div class="detail-preferences"><button class="language-toggle" type="button" hidden>${escape(tr('Cambiar idioma'))}</button><button class="theme-toggle" type="button" hidden>${escape(tr('Cambiar tema'))}</button></div></div></nav>
     <main class="detail-page shell" id="contenido"><a href="/${languageQuery}#experiencia">${escape(tr('← Todos los proyectos'))}</a>
     <div class="detail-heading"><p class="eyebrow">${escape(tr(project?.type || 'Error 404'))}</p><h1>${escape(title)}</h1></div>
     ${project ? `<div class="detail-layout"><div><p class="lead">${escape(tr(project.description))}</p>${playBadge(project, language, tr)}<h2>${escape(tr('Tecnologías y capacidades'))}</h2><div class="chips">${project.tags.map(tag => `<span class="chip">${escape(tr(tag))}</span>`).join('')}</div>
     <div class="detail-actions">${project.links.map(link => `<a class="btn dark" href="${escape(link.url)}" target="_blank" rel="noreferrer">${escape(tr(link.label))}</a>`).join('')}${project.privacy ? `<a class="btn light" href="/privacidad${languageQuery}#${project.privacy}">${escape(tr('Política de privacidad'))}</a>` : ''}</div></div>
-    <div class="detail-media"><img class="detail-image${detailMediaClass(project)}" src="${escape(project.image)}" alt="${escape(tr(project.alt))}"></div></div>${project.certification ? certificate(project.certification, tr) : ''}${faqSection(project, tr)}` : `<p>${escape(tr('Este proyecto no existe. Vuelve al catálogo para explorar las soluciones disponibles.'))}</p>`}
+    <div class="detail-media"><img class="detail-image${detailMediaClass(project)}" src="${escape(project.image)}" alt="${escape(tr(project.alt))}"></div></div>${landingSection(project, tr)}${project.certification ? certificate(project.certification, tr) : ''}${faqSection(project, tr)}` : `<p>${escape(tr('Este proyecto no existe. Vuelve al catálogo para explorar las soluciones disponibles.'))}</p>`}
     </main><footer><span>© 2026 Extreme Solutions · Erik Sanchez</span> <span class="footer-links"><a href="/privacidad${languageQuery}">${escape(tr('Privacidad'))}</a><a href="/privacidad${languageQuery}#aviso-legal">${escape(tr('Aviso legal'))}</a></span> <span class="footer-legal">${escape(tr('Sitio informativo, sin garantías. Las marcas de terceros pertenecen a sus titulares.'))}</span></footer></body></html>`;
 }

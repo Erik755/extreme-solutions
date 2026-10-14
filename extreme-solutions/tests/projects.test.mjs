@@ -116,5 +116,7 @@ test('Lentes: insignia de Google Play, canonical, Open Graph y JSON-LD válidos'
     assert.equal(blocks[1]['@type'], 'FAQPage');
     assert.equal(blocks[1].mainEntity.length, 4);
   }
-  assert.ok(!projectPage(projects.find(p => p.id === 'reporte-servicio-pro')).includes('rel="canonical"'));
+  // Reporte Servicio Pro también es app publicada: canonical propio y botón a su ficha de Google Play.
+  const rsp = projectPage(projects.find(p => p.id === 'reporte-servicio-pro'));
+  assert.ok(rsp.includes('<link rel="canonical" href="https://extreme-solutions-eosin.vercel.app/proyecto/reporte-servicio-pro">') && rsp.includes('href="https://play.google.com/store/apps/details?id=com.reporteservicio.pro"'));
 });

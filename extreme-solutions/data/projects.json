@@ -91,7 +91,24 @@
       }
     ],
     "featured": false,
-    "privacy": "reporte-servicio-pro"
+    "privacy": "reporte-servicio-pro",
+    "play": "https://play.google.com/store/apps/details?id=com.reporteservicio.pro",
+    "appCategory": "BusinessApplication",
+    "landing": {
+      "audience": "Para técnicos de campo y de mantenimiento: aire acondicionado y refrigeración, electricistas, mantenimiento industrial, instaladores, CCTV, elevadores, soporte de cómputo y empresas de servicio.",
+      "benefits": [
+        "Sin crear cuentas ni registrarte: abres la app y empiezas.",
+        "Haz el reporte en el sitio aunque no tengas internet: el reporte, las fotos, las firmas y los archivos PDF y Excel se crean sin conexión.",
+        "Marca el problema en cada foto con flechas, círculos, rectángulos, líneas, trazo libre y texto, y agrega una nota que aparece debajo de la imagen.",
+        "Firma del técnico y del cliente directamente en la pantalla.",
+        "PDF tamaño A4 y Excel (.xlsx) con tu logotipo, color de marca, datos del cliente y del equipo, actividades, fotos y firmas.",
+        "Compártelo por WhatsApp, correo u otras apps; también se guarda una copia en Descargas/Reportes_Servicio.",
+        "Catálogo de clientes con importación desde Excel o desde los contactos del teléfono, e historial de reportes con filtro por mes.",
+        "Ubicación GPS opcional, dictado por voz y app en español e inglés."
+      ],
+      "trial": "La descarga es gratis e incluye 10 días de prueba con todas las funciones. Después, guardar y exportar PDF o Excel, firmar, compartir y editar fotos requieren el Plan Pro, una suscripción anual de Google Play; puedes cancelar cuando quieras desde Google Play."
+    },
+    "seoDescription": "Haz tu reporte de servicio u orden de trabajo en el sitio, aunque no tengas internet, y entrégalo en PDF o Excel con evidencia fotográfica, firmas y el logotipo de tu empresa."
   },
   {
     "id": "control-gastos-pro",

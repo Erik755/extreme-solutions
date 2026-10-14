@@ -260,7 +260,7 @@ const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split(
 // All other photographs, logos, HTML, product data, scripts and build configuration are protected.
 // Contenido aprobado después de la paleta (vitrina de apps, blog y SEO): fuera del alcance de estos guards de color.
 const contentScope = new Set(['index.html', 'privacidad.html', 'data/translations.json', 'i18n-data.js', 'sitemap.xml', 'showcase.css',
-  'scripts/export-public.mjs', 'scripts/blog.py'].map(file => prefix + file));
+  'scripts/export-public.mjs', 'scripts/blog.py', 'lib/projects.js', 'data/projects.json', 'tests/projects.test.mjs'].map(file => prefix + file));
 const inContentScope = path => contentScope.has(path) || path.startsWith(prefix + 'blog/');
 const allowedFiles = new Set([
   ...cssFiles.map(file => prefix + file),
@@ -310,8 +310,10 @@ test('index.html y privacidad.html conservan las hojas de estilo y el contenido 
   }
 });
 
-test('lib/projects.js conserva exactamente lógica, textos, imágenes y SVG', () => {
-  assert.equal(normalizeEol(read('lib/projects.js')), normalizeEol(baseline('lib/projects.js')));
+test('lib/projects.js conserva exactamente las tarjetas del catálogo (textos, imágenes y SVG)', () => {
+  // Las páginas /proyecto reciben contenido aprobado (landing de app); las tarjetas del catálogo no cambian.
+  const cardSource = source => source.slice(source.indexOf('export function card('), source.indexOf('export function projectPage('));
+  assert.equal(normalizeEol(cardSource(read('lib/projects.js'))), normalizeEol(cardSource(baseline('lib/projects.js'))));
 });
 
 function colorOnlyScene(source) {
