@@ -14,14 +14,12 @@ test('las dos imágenes redundantes sobre la demo de pagos ya no están (ni su c
   for (const part of ['id="pagos"', 'class="demo-badge">Demostración<', 'id="pay-note"', '>Realizar pago<']) assert.ok(html.includes(part), part);
 });
 
-test('la escena 3D se precarga desde el propio sitio y solo cuando habrá escena', () => {
-  assert.ok(!/<link rel="modulepreload"/.test(html), 'la precarga la decide el cargador (no en el HTML)');
-  assert.match(html, /<script src="\/hero3d-loader\.js" async><\/script>/);
-  assert.match(html, /<link rel="preload" as="image" href="\/assets\/hero-3d-fallback\.webp"/);
-  const loader = read('hero3d-loader.js');
-  assert.match(loader, /preload\.rel = 'modulepreload'/);
-  assert.match(loader, /preload\.href = '\/hero3d\.js'/);
-  assert.match(loader, /first-contentful-paint/, 'el módulo se ejecuta tras el primer pintado');
+test('el teléfono precarga su captura original sin descargar WebGL ni la escena anterior', () => {
+  assert.ok(!/<link rel="modulepreload"/.test(html), 'el teléfono no requiere un módulo 3D');
+  assert.match(html, /<script src="\/hero-phone\.js" defer><\/script>/);
+  assert.match(html, /<link rel="preload" as="image" href="\/assets\/embedded-6\.webp"/);
+  assert.doesNotMatch(html, /hero3d-loader\.js|hero-3d-fallback\.webp/);
+  assert.doesNotMatch(read('hero-phone.js'), /modulepreload|hero3d\.js|WebGL/);
 });
 
 test('el revelado al hacer scroll es mejora progresiva', () => {

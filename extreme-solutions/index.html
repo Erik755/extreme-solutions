@@ -21,7 +21,8 @@
   <link rel="stylesheet" href="dynamic.css">
   <link rel="stylesheet" href="/portada.css">
   <link rel="stylesheet" href="/showcase.css">
-  <link rel="preload" as="image" href="/assets/hero-3d-fallback.webp" type="image/webp" fetchpriority="high">
+  <link rel="stylesheet" href="/hero-phone.css">
+  <link rel="preload" as="image" href="/assets/embedded-6.webp" type="image/webp" fetchpriority="high">
   <script src="/i18n-data.js"></script>
   <script src="/i18n.js"></script>
   <script src="/preferences.js"></script>
@@ -29,7 +30,7 @@
   <script src="/catalog.js" defer></script>
   <script src="/linkedin-consent.js" defer></script>
   <script src="/tilt.js" defer></script>
-  <script src="/hero3d-loader.js" async></script>
+  <script src="/hero-phone.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -55,9 +56,8 @@
   </nav>
 
   <header id="inicio" class="hero">
-    <div class="hero-stage" aria-hidden="true"><canvas class="hero-canvas"></canvas></div>
-    <noscript><style>.hero-stage::before{background:#04060b url("/assets/hero-3d-fallback.webp") center/cover no-repeat}</style></noscript>
-    <div class="shell">
+    <div class="shell hero-shell">
+      <div class="hero-intro">
       <div class="profile-lockup">
         <img loading="lazy" decoding="async" src="assets/embedded-5.webp" alt="Icono de perfil de Erik Sanchez">
         <div>
@@ -76,6 +76,32 @@
         <a class="hero-feature" href="/proyecto/mcp-dual-llm-guard"><strong>MCP Dual LLM Guard</strong><span>Seguridad para agentes de IA</span></a>
         <a class="hero-feature" href="/proyecto/lentes"><strong>Lentes</strong><span>Cámara por carpetas para Android</span></a>
       </div>
+      </div>
+      <figure class="hero-phone" aria-label="Capturas reales de Reporte Servicio Pro">
+        <figcaption class="hero-phone-heading">
+          <a href="/proyecto/reporte-servicio-pro">Reporte Servicio Pro <span aria-hidden="true">↗</span></a>
+          <span data-phone-label="subtitle">Android · Capturas reales de la app</span>
+        </figcaption>
+        <div class="hero-phone-stage">
+          <div class="hero-phone-rig">
+            <div class="hero-phone-body">
+              <span class="hero-phone-camera" aria-hidden="true"></span>
+              <span class="hero-phone-hardware" aria-hidden="true"></span>
+              <div class="hero-phone-screen">
+                <img class="hero-phone-slide" data-phone-slide="0" src="/assets/embedded-6.webp" width="900" height="2000" alt="Formulario de Reporte Servicio Pro con datos de demostración" decoding="async" fetchpriority="high">
+                <img class="hero-phone-slide" data-phone-slide="1" src="/assets/embedded-7.webp" width="900" height="1999" alt="Editor de evidencia con una fotografía industrial anotada" loading="lazy" decoding="async" hidden>
+                <img class="hero-phone-slide" data-phone-slide="2" src="/assets/embedded-8.webp" width="900" height="1600" alt="Ejemplo real de un reporte exportado a Excel" loading="lazy" decoding="async" hidden>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-phone-controls" data-phone-controls role="group" aria-label="Cambiar captura del teléfono" hidden>
+          <button type="button" data-phone-view="0" aria-pressed="true">Reporte</button>
+          <button type="button" data-phone-view="1" aria-pressed="false">Evidencia</button>
+          <button type="button" data-phone-view="2" aria-pressed="false">Excel</button>
+        </div>
+        <p class="hero-phone-caption" data-phone-caption aria-live="polite">Tu servicio, documentado desde el teléfono.</p>
+      </figure>
     </div>
   </header>
 

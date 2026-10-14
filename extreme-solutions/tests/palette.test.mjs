@@ -6,10 +6,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 
-// Baseline agreed for the color-only change. Git's clean filters handle CRLF on Windows.
-const BASELINE = '6f35babb4d20302b72e580fb603afa9b54841ec4';
-// The second refinement changes CSS paint only; the accepted mint 3D and assets stay intact.
-const CONTROL_BASELINE = 'b8462c6d4111014aaf710d2965b7c8a336c3cce9';
+// Accepted published mint site before the separately authorized phone-header replacement.
+// Git's clean filters handle CRLF on Windows; original production and 3D backup stay protected.
+const BASELINE = '31dbe1954c09bcb200b17941c4f816e1b28540e0';
+const CONTROL_BASELINE = BASELINE;
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repositoryRoot = resolve(siteRoot, '..');
 const prefix = 'extreme-solutions/';
@@ -256,58 +256,68 @@ const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split(
   assert.ok(match, `Entrada Git inesperada: ${entry}`);
   return { hash: match[1], path: match[2] };
 });
-// Only the 3D color source and its two generated artifacts may change beyond the four CSS files.
-// All other photographs, logos, HTML, product data, scripts and build configuration are protected.
-// Contenido aprobado después de la paleta (vitrina de apps, blog y SEO): fuera del alcance de estos guards de color.
-const contentScope = new Set(['index.html', 'privacidad.html', 'data/translations.json', 'i18n-data.js', 'sitemap.xml', 'showcase.css',
-  'scripts/export-public.mjs', 'scripts/blog.py', 'lib/projects.js', 'data/projects.json', 'tests/projects.test.mjs'].map(file => prefix + file));
-const inContentScope = path => contentScope.has(path) || path.startsWith(prefix + 'blog/');
+// The user separately authorized only the phone header and its two new local resources.
+// The accepted app showcase, blog, photographs, data, scripts and original 3D stay protected.
 const allowedFiles = new Set([
   ...cssFiles.map(file => prefix + file),
-  prefix + 'src-3d/hero3d.src.js', prefix + 'hero3d.js', prefix + 'assets/hero-3d-fallback.webp',
-  prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs',
+  prefix + 'index.html', prefix + 'hero-phone.css', prefix + 'hero-phone.js',
+  prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs', prefix + 'tests/portada-3d.test.mjs',
 ]);
 
 test('fotos, logos, datos, HTML, scripts y toda producción no autorizada conservan su hash Git', () => {
   const differences = [];
-  for (const { hash, path } of tree.filter(entry => !allowedFiles.has(entry.path) && !inContentScope(entry.path))) {
+  for (const { hash, path } of tree.filter(entry => !allowedFiles.has(entry.path))) {
     if (!existsSync(resolve(repositoryRoot, path))) { differences.push(`${path}: eliminado`); continue; }
     const actual = git(['hash-object', `--path=${path}`, path], { encoding: 'utf8' }).trim();
     if (actual !== hash) differences.push(`${path}: contenido modificado`);
   }
   const originalPaths = new Set(tree.map(entry => entry.path));
   const currentPaths = git(['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' }).split('\0').filter(Boolean);
-  for (const path of currentPaths) if (!originalPaths.has(path) && path !== prefix + 'tests/palette.test.mjs' && !inContentScope(path)) {
+  for (const path of currentPaths) if (!originalPaths.has(path) && !allowedFiles.has(path)) {
     differences.push(`${path}: archivo nuevo fuera del alcance de paleta`);
   }
   assert.deepEqual(differences, [], 'Cambios fuera del alcance de paleta');
 });
 
 test('refinamiento de controles: conserva también la escena menta y todos los recursos del sitio publicado', () => {
-  const allowed = new Set([...cssFiles.map(file => prefix + file), prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs']);
+  const allowed = allowedFiles;
   const original = git(['ls-tree', '-r', '-z', CONTROL_BASELINE], { encoding: 'utf8' }).split('\0').filter(Boolean);
   const differences = [];
   for (const entry of original) {
     const [, hash, path] = entry.match(/^\d+ blob ([a-f\d]+)\t(.+)$/s) ?? [];
     assert.ok(path, `Entrada Git inesperada: ${entry}`);
-    if (allowed.has(path) || inContentScope(path)) continue;
+    if (allowed.has(path)) continue;
     if (!existsSync(resolve(repositoryRoot, path))) { differences.push(`${path}: eliminado`); continue; }
     const actual = git(['hash-object', `--path=${path}`, path], { encoding: 'utf8' }).trim();
     if (actual !== hash) differences.push(`${path}: contenido modificado`);
   }
-  assert.deepEqual(differences, [], 'Esta corrección no toca escenas, capturas, logos, contenidos, estructura ni funcionamiento');
+  assert.deepEqual(differences, [], 'El teléfono solo reemplaza el encabezado; escena de respaldo, capturas, logos y resto del sitio permanecen intactos');
   for (const file of cssFiles) {
     const before = git(['show', `${CONTROL_BASELINE}:${prefix}${file}`], { encoding: 'utf8' });
     assertColorOnly(before, read(file), file);
   }
 });
 
-test('index.html y privacidad.html conservan las hojas de estilo y el contenido del commit base', () => {
-  // La vitrina y el SEO agregan secciones y metadatos aprobados; nada del contenido base se elimina.
-  for (const file of ['index.html', 'privacidad.html']) {
-    const current = normalizeEol(read(file));
-    for (const line of normalizeEol(baseline(file)).split('\n').map(l => l.trim()).filter(l => l && !/<title>|name="description"|og:(?:title|description)|btn primary" href="#experiencia"|class="footer-links"/.test(l))) assert.ok(current.includes(line), `${file}: ${line.slice(0, 80)}`);
-  }
+function withoutPhoneHeader(html) {
+  return normalizeEol(html)
+    .replace(/<header id="inicio" class="hero">[\s\S]*?<\/header>/, '<!-- phone header authorized -->')
+    .replace(/^\s*<link rel="(?:stylesheet|preload)"[^\n]*(?:hero-phone\.css|hero-3d-fallback\.webp|embedded-6\.webp)[^\n]*\n/gm, '')
+    .replace(/^\s*<script src="\/(?:hero3d-loader|hero-phone)\.js"[^\n]*\n/gm, '');
+}
+
+test('solo el encabezado y sus recursos cambian; privacidad y todo el resto de index son idénticos', () => {
+  assert.equal(withoutPhoneHeader(read('index.html')), withoutPhoneHeader(baseline('index.html')), 'index fuera del encabezado');
+  assert.equal(normalizeEol(read('privacidad.html')), normalizeEol(baseline('privacidad.html')), 'privacidad');
+  const originalHeader = normalizeEol(baseline('index.html')).match(/<header id="inicio" class="hero">[\s\S]*?<\/header>/)?.[0];
+  const originalIntro = originalHeader?.match(/<div class="shell">([\s\S]*?)\n\s*<\/div>\n\s*<\/header>/)?.[1];
+  const currentIntro = normalizeEol(read('index.html')).match(/<div class="hero-intro">([\s\S]*?)\n\s*<\/div>\n\s*<figure/)?.[1];
+  assert.ok(originalIntro && currentIntro, 'contenido introductorio original y actual identificados');
+  const normalizeHtmlSpacing = html => html.trim().replace(/>\s+</g, '><');
+  assert.equal(normalizeHtmlSpacing(currentIntro), normalizeHtmlSpacing(originalIntro), 'título, descripción, botones, imágenes, enlaces y destacados originales sin cambios');
+});
+
+test('el nuevo encabezado conserva íntegros todos los estilos originales de la paleta', () => {
+  for (const file of [...cssFiles, 'showcase.css']) assert.equal(normalizeEol(read(file)), normalizeEol(baseline(file)), file);
 });
 
 test('lib/projects.js conserva exactamente las tarjetas del catálogo (textos, imágenes y SVG)', () => {

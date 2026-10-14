@@ -7,12 +7,14 @@ const site = new URL('../', import.meta.url);
 const read = file => readFileSync(new URL(file, site), 'utf8');
 const CDN = /(?:cdn\.|unpkg\.com|jsdelivr|cdnjs|esm\.sh|skypack|googleapis\.com\/ajax|threejs\.org\/build)/i;
 
-test('la portada 3D tiene respaldo estático sin WebGL, sin JS y con reducir movimiento', () => {
+test('el teléfono reemplaza solo la portada y conserva intacto el respaldo 3D original', () => {
   const html = read('index.html');
-  assert.match(html, /<div class="hero-stage" aria-hidden="true"><canvas class="hero-canvas"><\/canvas><\/div>/);
+  assert.doesNotMatch(html, /hero-stage|hero-canvas|hero3d-loader\.js|hero-3d-fallback\.webp/);
+  assert.match(html, /<figure[^>]*class="hero-phone"/);
+  assert.match(html, /<link rel="stylesheet" href="\/hero-phone\.css"/);
+  assert.match(html, /<script src="\/hero-phone\.js" defer><\/script>/);
   const css = read('portada.css');
   assert.match(css, /\.hero-stage\[data-state="fallback"\]::before\s*\{[^}]*url\("\/assets\/hero-3d-fallback\.webp"\)/);
-  assert.match(read('index.html'), /<noscript><style>\.hero-stage::before\{[^}]*hero-3d-fallback\.webp/);
   assert.ok(existsSync(new URL('assets/hero-3d-fallback.webp', site)), 'falta la imagen de respaldo');
   // El canvas solo se muestra cuando la escena ya dibuja; antes opacity 0 + visibility hidden.
   assert.match(css, /\.hero-canvas\s*\{[^}]*opacity:\s*0\s*;/);
@@ -30,6 +32,23 @@ test('la portada 3D tiene respaldo estático sin WebGL, sin JS y con reducir mov
   assert.match(loader, /prefers-reduced-motion: reduce/);
   assert.match(loader, /getContext\('webgl2'\)/);
   assert.match(loader, /import\('\/hero3d\.js'\)/, 'el módulo 3D debe cargarse de forma diferida desde el propio sitio');
+});
+
+test('la pantalla del teléfono usa capturas reales locales, con vista inicial sin JavaScript', () => {
+  const html = read('index.html');
+  const phone = html.match(/<figure[^>]*class="hero-phone"[\s\S]*?<\/figure>/)?.[0];
+  assert.ok(phone, 'teléfono presente');
+  for (const [index, name] of ['embedded-6.webp', 'embedded-7.webp', 'embedded-8.webp'].entries()) {
+    assert.ok(phone.includes(name), `captura original ${name}`);
+    assert.ok(phone.includes(`data-phone-slide="${index}"`), `vista ${index}`);
+    assert.ok(phone.includes(`data-phone-view="${index}"`), `selector ${index}`);
+    assert.ok(existsSync(new URL('assets/' + name, site)), `falta ${name}`);
+  }
+  assert.match(phone, /data-phone-controls[^>]*hidden|hidden[^>]*data-phone-controls/);
+  assert.match(phone, /aria-pressed="true"/);
+  assert.match(phone, /href="\/proyecto\/reporte-servicio-pro"/);
+  assert.match(read('hero-phone.css'), /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(read('hero-phone.js'), /setInterval|WebGL|hero3d\.js/);
 });
 
 test('sin CDN: todos los scripts y estilos se sirven desde el propio sitio', () => {
@@ -61,7 +80,7 @@ test('three.js está vendorizado con versión fija y licencia MIT', () => {
   assert.equal(pkg.devDependencies.three, '0.186.1');
 });
 
-test('la exportación pública incluye la escena 3D y su licencia, pero no la fuente', async () => {
+test('la exportación pública incluye el teléfono y conserva escena 3D/licencia de respaldo, pero no la fuente', async () => {
   const { execFileSync } = await import('node:child_process');
   const { mkdtempSync } = await import('node:fs');
   const { tmpdir } = await import('node:os');
@@ -70,8 +89,9 @@ test('la exportación pública incluye la escena 3D y su licencia, pero no la fu
   const { fileURLToPath } = await import('node:url');
   execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/export-public.mjs', import.meta.url)), out]);
   const files = readdirSync(out);
-  for (const name of ['hero3d.js', 'hero3d-loader.js', 'tilt.js', 'portada.css', 'licenses']) assert.ok(files.includes(name), `falta ${name}`);
+  for (const name of ['hero-phone.js', 'hero-phone.css', 'hero3d.js', 'hero3d-loader.js', 'tilt.js', 'portada.css', 'licenses']) assert.ok(files.includes(name), `falta ${name}`);
   assert.ok(readdirSync(join(out, 'licenses')).includes('three-LICENSE.txt'));
   assert.ok(readdirSync(join(out, 'assets')).includes('hero-3d-fallback.webp'));
+  for (const name of ['embedded-6.webp', 'embedded-7.webp', 'embedded-8.webp']) assert.ok(readdirSync(join(out, 'assets')).includes(name), `falta captura ${name}`);
   assert.ok(!files.includes('src-3d'));
 });
