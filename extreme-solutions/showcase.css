@@ -9,6 +9,8 @@
 
 /* Blog */
 .blog-shell{max-width:760px}
+.blog-page .blog-shell>.section-head{grid-template-columns:minmax(0,1fr);margin-bottom:1.5rem}
+.blog-page .blog-shell>.section-head h1{max-width:100%;margin:.4rem 0 0;font-size:clamp(2rem,3.5vw,3rem);line-height:1.12;letter-spacing:-.025em}
 .blog-article h1{margin:.4rem 0 1.2rem}
 .blog-article h2{margin-top:2rem}
 .blog-article p,.blog-article li{line-height:1.65}

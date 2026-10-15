@@ -6,9 +6,9 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 
-// Accepted phone header before its separately authorized 30-degree/pointer refinement, removal
-// of the founder subtitle, WhatsApp action and intact move of #apps. Other production stays protected.
-const BASELINE = 'ba569652723de1654c01cdc108e59eb51d5d6b1d';
+// Accepted published site before removing its payment demo and adding the four proof-card
+// entrances. The phone, apps, photographs and actual app policies remain protected.
+const BASELINE = '0e777c2356e90b3c37fde6bc14e046a4fbf1984b';
 const CONTROL_BASELINE = BASELINE;
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const repositoryRoot = resolve(siteRoot, '..');
@@ -247,8 +247,30 @@ test('el guard acepta recoloración/comentarios y detecta cambios de distribuci�
   assert.throws(() => assertColorOnly('.a { border: 1px solid #000; }', '.a { border: 1px solid #000; } .a { border: #fff; }'), /restablece imagen/);
 });
 
-for (const file of cssFiles) test(`${file}: misma estructura, imágenes, medidas y tipografía; solo cambia color`, () => {
-  assertColorOnly(baseline(file), read(file), file);
+function scopedCss(source, file) {
+  source = normalizeEol(source);
+  if (file === 'base.css') return source.replace(/\.pay-note\b/g, '.capability-note')
+    .replace(/(img\s*\{\s*display: block;\s*max-width: 100%;)\s*height: auto;/, '$1')
+    .replace('color: rgba(139, 203, 177, .18);', 'color: var(--blue);');
+  if (file === 'dynamic.css') return source.replace(/\.proof-band\s*\{[^}]*--assemble-duration:[^}]*\}/, '')
+    .replace(/(\.footer-legal\s*\{[^}]*opacity:)\s*\.85/, '$1 1');
+  if (file === 'showcase.css') return source.replace(/\.blog-page \.blog-shell>\.section-head(?: h1)?\s*\{[^}]*\}/g, '');
+  return source;
+}
+
+function scopedCssRecords(source, file) {
+  return parseCss(scopedCss(source, file)).flatMap(record => {
+    if (file !== 'dynamic.css' || !record.selector?.includes('.save-project')) return [record];
+    const selectors = splitTopLevel(record.selector, ',').flatMap(selector => {
+      if (selector.startsWith(':where(')) return [selector.replace(/,\.save-project\b/g, '')];
+      return selector.includes('.save-project') ? [] : [selector];
+    });
+    return selectors.length ? [{ ...record, selector: selectors.join(',') }] : [];
+  });
+}
+
+for (const file of cssFiles) test(`${file}: conserva paleta, medidas y estructura excepto el rename y tokens de entrada autorizados`, () => {
+  assert.deepEqual(scopedCssRecords(read(file), file), scopedCssRecords(baseline(file), file), 'Ningún cambio de color o geometría fuera del alcance');
 });
 
 const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split('\0').filter(Boolean).map(entry => {
@@ -256,12 +278,16 @@ const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split(
   assert.ok(match, `Entrada Git inesperada: ${entry}`);
   return { hash: match[1], path: match[2] };
 });
-// Only phone CSS/JS and moving the intact app showcase within index are authorized.
-// The accepted blog, photographs, app contents, other scripts and original 3D stay protected.
+// Payment-demo cleanup and proof entrances only. Every original app, phone, photograph and
+// production file not explicitly owned by this task keeps its exact Git hash.
 const allowedFiles = new Set([
   ...cssFiles.map(file => prefix + file),
-  prefix + 'index.html', prefix + 'hero-phone.css', prefix + 'hero-phone.js',
-  prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs', prefix + 'tests/portada-3d.test.mjs',
+  prefix + 'index.html', prefix + 'privacidad.html', prefix + 'dynamic.js', prefix + 'data/translations.json', prefix + 'i18n-data.js',
+  prefix + 'lib/projects.js', prefix + 'catalog.js',
+  prefix + 'showcase.css',
+  prefix + 'sitemap.xml',
+  prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs', prefix + 'tests/projects.test.mjs',
+  'docs/ARCHITECTURE.md', 'docs/VERCEL_READY.md',
 ]);
 
 test('fotos, logos, datos, HTML, scripts y toda producción no autorizada conservan su hash Git', () => {
@@ -294,7 +320,7 @@ test('refinamiento de controles: conserva también la escena menta y todos los r
   assert.deepEqual(differences, [], 'El teléfono solo reemplaza el encabezado; escena de respaldo, capturas, logos y resto del sitio permanecen intactos');
   for (const file of cssFiles) {
     const before = git(['show', `${CONTROL_BASELINE}:${prefix}${file}`], { encoding: 'utf8' });
-    assertColorOnly(before, read(file), file);
+    assert.deepEqual(scopedCssRecords(read(file), file), scopedCssRecords(before, file), file);
   }
 });
 
@@ -302,23 +328,27 @@ function section(html, id) {
   return normalizeEol(html).match(new RegExp(`<section id="${id}"(?=[\\s>])[\\s\\S]*?<\\/section>`))?.[0];
 }
 
-function withoutAppsSection(html) {
-  return normalizeEol(html).replace(/^[\t ]*<section id="apps"(?=[\s>])[\s\S]*?<\/section>[\t ]*\n?/m, '')
-    .replace(/^[\t ]*<section id="experiencia"(?=[\s>])[\s\S]*?<\/section>[\t ]*\n?/m, '')
-    .replace(/^[\t ]*<p class="founder-line">by Erik Sanchez<\/p>[\t ]*\n?/m, '')
-    .replace(/^[\t ]*<a class="[^"]*\bhero-whatsapp\b[^"]*"[^>]*href="https:\/\/wa\.me\/5214422858759"[^>]*>[\s\S]*?<\/a>[\t ]*\n?/m, '')
+function withoutPaymentDemo(html) {
+  return normalizeEol(html)
+    .replace(/^[\t ]*<a href="#pagos">Pagos<\/a>[\t ]*\n?/m, '')
+    .replace(/^[\t ]*<section class="section section-compact" id="pagos"[\s\S]*?<\/section>[\t ]*\n?/m, '')
+    .replace(/class="pay-note"/g, 'class="capability-note"')
+    .replace(/<button class="save-project"[^>]*>[\s\S]*?<\/button>/g, '')
+    .replace(/<button id="saved-only"[^>]*>[\s\S]*?<\/button>/g, '')
+    .replace(/^[\t ]*<p class="catalog-hint">Guarda los proyectos que te interesan en este navegador\.<\/p>[\t ]*\n?/m, '')
+    .replace('>Más información</a>', '>Privacidad del distintivo de LinkedIn</a>')
+    .replace(/\n[\t ]*<\/div>/g, '\n</div>')
     .replace(/\n[\t ]*\n+/g, '\n');
 }
 
-test('Apps y Experiencia suben intactas y en ese orden; el resto de index permanece idéntico', () => {
+test('solo se elimina el módulo y enlace de pagos; Apps, Experiencia, teléfono y todo el resto de index son idénticos', () => {
   assert.ok(section(read('index.html'), 'apps'), 'la sección Apps existe');
-  for (const id of ['apps', 'experiencia']) assert.equal(section(read('index.html'), id), section(baseline('index.html'), id), `mismo contenido completo de ${id}`);
+  for (const id of ['apps', 'experiencia']) assert.equal(withoutPaymentDemo(section(read('index.html'), id)), withoutPaymentDemo(section(baseline('index.html'), id)), `mismo contenido completo de ${id}, excepto botones/filtro de guardado autorizados`);
   assert.match(read('index.html'), /<main id="contenido" tabindex="-1">\s*<section id="apps"(?=[\s>])/, 'Apps inmediatamente después de abrir main');
   const current = normalizeEol(read('index.html'));
   const afterApps = current.slice(current.indexOf(section(current, 'apps')) + section(current, 'apps').length);
   assert.match(afterApps, /^\s*<section id="experiencia"(?=[\s>])/, 'Experiencia inmediatamente después de Apps');
-  assert.equal(withoutAppsSection(read('index.html')), withoutAppsSection(baseline('index.html')), 'no cambian encabezado, head, navegación, bloques restantes ni footer');
-  assert.equal(normalizeEol(read('privacidad.html')), normalizeEol(baseline('privacidad.html')), 'privacidad');
+  assert.equal(withoutPaymentDemo(read('index.html')), withoutPaymentDemo(baseline('index.html')), 'solo retiro exacto del bloque/nav de pagos y rename de nota AnotaLab');
 });
 
 test('solo desaparece el subtítulo del fundador y se agrega WhatsApp al grupo de acciones del encabezado', () => {
@@ -330,14 +360,81 @@ test('solo desaparece el subtítulo del fundador y se agrega WhatsApp al grupo d
   assert.equal([...html.matchAll(/href="https:\/\/wa\.me\/5214422858759"/g)].length, 1, 'una sola acción WhatsApp nueva');
 });
 
-test('el nuevo encabezado conserva íntegros todos los estilos originales de la paleta', () => {
-  for (const file of [...cssFiles, 'showcase.css']) assert.equal(normalizeEol(read(file)), normalizeEol(baseline(file)), file);
+test('la entrada de métricas solo agrega los cuatro tokens/clip locales y conserva el resto de estilos', () => {
+  for (const file of [...cssFiles, 'showcase.css']) assert.deepEqual(scopedCssRecords(read(file), file), scopedCssRecords(baseline(file), file), file);
+  const band = parseCss(read('dynamic.css')).filter(record => record.selector === '.proof-band');
+  assert.equal(band.length, 1);
+  assert.deepEqual(band[0].declarations, [
+    { property: '--assemble-duration', value: '.6s' }, { property: '--assemble-stagger', value: '.08s' },
+    { property: '--assemble-ease', value: 'var(--ease-out)' }, { property: 'overflow', value: 'clip' },
+  ]);
+  const blog = parseCss(read('showcase.css')).filter(record => record.selector?.startsWith('.blog-page .blog-shell>.section-head'));
+  assert.equal(blog.length, 2, 'solo dos overrides scoped al encabezado del índice Blog');
+  assert.deepEqual(blog[0].declarations, [{ property: 'grid-template-columns', value: 'minmax(0,1fr)' }, { property: 'margin-bottom', value: '1.5rem' }]);
+  assert.deepEqual(blog[1].declarations, [
+    { property: 'max-width', value: '100%' }, { property: 'margin', value: '.4rem 0 0' }, { property: 'font-size', value: 'clamp(2rem,3.5vw,3rem)' },
+    { property: 'line-height', value: '1.12' }, { property: 'letter-spacing', value: '-.025em' },
+  ]);
 });
 
-test('lib/projects.js conserva exactamente las tarjetas del catálogo (textos, imágenes y SVG)', () => {
-  // Las páginas /proyecto reciben contenido aprobado (landing de app); las tarjetas del catálogo no cambian.
-  const cardSource = source => source.slice(source.indexOf('export function card('), source.indexOf('export function projectPage('));
-  assert.equal(normalizeEol(cardSource(read('lib/projects.js'))), normalizeEol(cardSource(baseline('lib/projects.js'))));
+test('privacidad solo retira los avisos del módulo de muestra y sus tres referencias a proveedores; políticas de apps exactas', () => {
+  const cleanup = html => normalizeEol(html)
+    .replace(/<li><span>Pagos: el módulo de pagos del sitio[\s\S]*?<\/li>/g, '')
+    .replace(/<li><span>Módulo de pagos de muestra:[\s\S]*?<\/li>/g, '')
+    .replace('Google, LinkedIn o Stripe', 'Google o LinkedIn')
+    .replace('LinkedIn, Stripe y otros sitios', 'LinkedIn y otros sitios')
+    .replace('Marcas de terceros: Stripe, PayPal, Mercado Pago, Google', 'Marcas de terceros: Google')
+    .replace('el idioma, el tema, los proyectos favoritos y tu decisión', 'el idioma, el tema y tu decisión');
+  assert.equal(cleanup(read('privacidad.html')), cleanup(baseline('privacidad.html')));
+  const policies = html => normalizeEol(html).slice(normalizeEol(html).indexOf('<section id="proyectos"'), normalizeEol(html).indexOf('<section id="otros-proyectos"'));
+  assert.equal(policies(read('privacidad.html')), policies(baseline('privacidad.html')), 'compras, precios y avisos de cada app no se modifican');
+  assert.doesNotMatch(read('privacidad.html'), /Stripe|PayPal|Mercado Pago|módulo de pagos/i);
+});
+
+test('traducciones solo eliminan diez claves de pago de muestra y actualizan tres referencias; i18n generado exacto', () => {
+  const previous = JSON.parse(baseline('data/translations.json'));
+  const expected = { ...previous };
+  let removed = 0, replaced = 0;
+  for (const [key, value] of Object.entries(previous)) {
+    if (!/Stripe|PayPal|Mercado Pago/.test(key) && !['Pagos', 'Integración de pasarelas de pago', 'Pasarelas y capacidades', 'Realizar pago'].includes(key) && !/^Pagos: el módulo de pagos del sitio/.test(key)) continue;
+    delete expected[key];
+    const nextKey = key.replace('Google, LinkedIn o Stripe', 'Google o LinkedIn').replace('LinkedIn, Stripe y otros sitios', 'LinkedIn y otros sitios').replace('Marcas de terceros: Stripe, PayPal, Mercado Pago, Google', 'Marcas de terceros: Google');
+    if (nextKey !== key) {
+      expected[nextKey] = value.replace('Google, LinkedIn or Stripe', 'Google or LinkedIn').replace('LinkedIn, Stripe and other', 'LinkedIn and other').replace('Third-party trademarks: Stripe, PayPal, Mercado Pago, Google', 'Third-party trademarks: Google');
+      replaced++;
+    } else removed++;
+  }
+  assert.equal(removed, 10); assert.equal(replaced, 3);
+  delete expected['Más información'];
+  expected['Privacidad del distintivo de LinkedIn'] = 'LinkedIn badge privacy';
+  for (const key of ['Mis favoritos', 'Guarda los proyectos que te interesan en este navegador.', 'Guardar', 'Guardado', 'Quitar de favoritos', 'favoritos']) delete expected[key];
+  for (const [key, value] of Object.entries(previous).filter(([key]) => key.startsWith('Preferencias locales:') && key.includes('proyectos favoritos'))) {
+    delete expected[key];
+    expected[key.replace('el idioma, el tema y los proyectos favoritos', 'el idioma y el tema').replace('el idioma, el tema, los proyectos favoritos y tu decisión', 'el idioma, el tema y tu decisión')] = value.replace('language, theme and favorite projects', 'language and theme').replace('language, theme, favorite projects and your LinkedIn choice', 'language, theme and your LinkedIn choice');
+  }
+  const translations = JSON.parse(read('data/translations.json'));
+  assert.deepEqual(translations, expected, 'todas las traducciones no relacionadas permanecen intactas');
+  assert.equal(normalizeEol(read('i18n-data.js')), `window.EXTREME_TRANSLATIONS = ${JSON.stringify(translations, null, 2)};\n`);
+});
+
+test('dynamic.js solo corrige hashes/orden del nav, excluye métricas del reveal genérico y añade acomodo dedicado', () => {
+  let expected = normalizeEol(baseline('dynamic.js'))
+    .replace('const section = document.querySelector(link.hash);', "const section = link.hash && document.getElementById(link.hash.slice(1));\n  if (!section) return; // Blog y otros enlaces de página mantienen su navegación normal.")
+    .replace('const sections = links.map(link => document.querySelector(link.hash));', 'const sections = links.map(link => link.hash && document.getElementById(link.hash.slice(1))).filter(Boolean);')
+    .replace('  let active;\n  sections.forEach(section => {\n    if (section.getBoundingClientRect().top <= nav.offsetHeight + 100) active = section.id;\n  });', '  let active;\n  let nearest = -Infinity;\n  sections.forEach(section => {\n    const top = section.getBoundingClientRect().top;\n    if (top <= nav.offsetHeight + 100 && top > nearest) {\n      active = section.id;\n      nearest = top;\n    }\n  });')
+    .replace('.method-step, .metric, .play-card', '.method-step, .metric:not(.proof-band .metric), .play-card');
+  const current = normalizeEol(read('dynamic.js'));
+  const marker = '// Producto completo: cada pieza llega desde un ángulo distinto y se asienta una sola vez.';
+  assert.equal(current.slice(0, current.indexOf(marker)).trimEnd(), expected.trimEnd(), 'todo el comportamiento original ajeno al nuevo acomodo se conserva');
+  const assembly = current.slice(current.indexOf(marker));
+  for (const feature of ["band.querySelectorAll('.metric')", 'observer.unobserve(target)', "band.addEventListener('focusin'", "window.addEventListener('beforeprint'", "navigator.connection?.saveData", 'animation.cancel()']) assert.ok(assembly.includes(feature), feature);
+  assert.doesNotMatch(assembly, /setInterval|fetch\(|innerHTML|display:\s*none|opacity:\s*0[,\s}]/);
+});
+
+test('lib/projects.js solo retira el botón Guardar; páginas de detalle, datos, textos e imágenes intactos', () => {
+  const cleanup = source => normalizeEol(source).replace(/<button class="save-project"[^>]*>[\s\S]*?<\/button>/g, '');
+  assert.equal(cleanup(read('lib/projects.js')), cleanup(baseline('lib/projects.js')));
+  assert.doesNotMatch(read('catalog.js'), /extreme-saved|localStorage|savedOnly|onlySaved|data-save|favorite/i);
 });
 
 function colorOnlyScene(source) {
@@ -475,6 +572,32 @@ function declarationsFor(records, selector) {
 const allCssRecords = cssFiles.flatMap(file => parseCss(read(file)));
 const lightVariables = declarationsFor(allCssRecords, ':root');
 const darkVariables = { ...lightVariables, ...declarationsFor(allCssRecords, 'html[data-theme="dark"]') };
+
+test('contraste reforzado en números de pasos y texto legal; imágenes mantienen proporción adaptable', () => {
+  const steps = declarationsFor(allCssRecords, '.step-number');
+  minimum(color(steps.color, lightVariables), color('#fffdfa'), 4.5, 'pasos claros');
+  minimum(color(steps.color, darkVariables), color('#23302a'), 4.5, 'pasos oscuros');
+  const legal = declarationsFor(allCssRecords, '.footer-legal');
+  assert.equal(legal.opacity, '1', 'no se atenúa el texto legal pequeño');
+  minimum(color('#625e57'), color('#fffdfa'), 4.5, 'pie legal claro');
+  minimum(color('#c6c1b6'), color('#23302a'), 4.5, 'pie legal oscuro');
+  const images = declarationsFor(allCssRecords, 'img');
+  assert.equal(images['max-width'], '100%');
+  assert.equal(images.height, 'auto');
+});
+
+test('SEO público existente se conserva: robots, quince URL canónicas y sin CORS comodín', () => {
+  assert.equal(normalizeEol(read('robots.txt')), normalizeEol(baseline('robots.txt')));
+  assert.match(read('robots.txt'), /Sitemap: https:\/\/extreme-solutions-eosin\.vercel\.app\/sitemap\.xml/);
+  const expected = normalizeEol(baseline('sitemap.xml'))
+    .replace('<loc>https://extreme-solutions-eosin.vercel.app/</loc><lastmod>2026-10-11</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/</loc><lastmod>2026-10-14</lastmod>')
+    .replace('<loc>https://extreme-solutions-eosin.vercel.app/privacidad</loc><lastmod>2026-10-10</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/privacidad</loc><lastmod>2026-10-14</lastmod>')
+    .replace('<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-13</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-14</lastmod>');
+  assert.equal(normalizeEol(read('sitemap.xml')), expected);
+  assert.equal([...expected.matchAll(/<loc>/g)].length, 15);
+  const config = JSON.parse(readFileSync(resolve(repositoryRoot, 'vercel.json'), 'utf8'));
+  assert.ok(config.headers.flatMap(rule => rule.headers).every(header => header.key.toLowerCase() !== 'access-control-allow-origin' || header.value !== '*'));
+});
 
 test('identidades claras y oscuras corresponden a la nueva paleta menta', () => {
   for (const [token, expected] of Object.entries({ '--paper': '#f7f5f2', '--white': '#fffdfa', '--ink': '#1f1e1c', '--blue': '#356b58', '--amber': '#d97706' })) {

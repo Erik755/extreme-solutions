@@ -22,10 +22,10 @@ catálogo se limitan a HTTPS.
 - El catálogo es versionado: actualizar JSON y desplegar. No hay CMS ni sincronización
   en tiempo real. Si se necesita edición por personas sin Git, elegir un CMS o Firebase
   con autenticación y reglas de acceso antes de implementarlo.
-- No hay cuentas de usuario ni favoritos entre dispositivos.
+- No hay cuentas de usuario ni función de guardar proyectos como favoritos.
 - No se añade una API de IA: faltan un caso de uso, proveedor y límites de gasto.
-- La integración de Stripe (Checkout y webhook) se retiró el 29 de septiembre de 2026; la sección
-  de pagos es solo de muestra y no procesa cobros.
+- No hay integración de Checkout ni webhook de pagos. El 14 de octubre de 2026 también
+  se retiró la antigua tarjeta de demostración, sus enlaces y referencias del sitio.
 - La skill instalada `skillspool-find-skill` descubre habilidades en Skills Pool;
   no proporciona permisos de GitHub ni migra aplicaciones. Su repositorio contiene
   documentación, no un instalador de código ejecutable. La habilidad que el PDF

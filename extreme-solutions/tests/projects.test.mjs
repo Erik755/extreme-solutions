@@ -93,12 +93,13 @@ test('privacy center includes the LFPDPPP notice, full app notices and legal not
   for (const link of html.match(/<a [^>]*target="_blank"[^>]*>/g)) assert.ok(link.includes('rel="noopener noreferrer"'), link);
 });
 
-test('home page loads LinkedIn only after consent and states the payment module is a sample', async () => {
+test('home page loads LinkedIn only after consent and has no payment module', async () => {
   const { readFileSync } = await import('node:fs');
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   assert.ok(!html.includes('<script src="https://platform.linkedin.com'), 'no static LinkedIn script');
   assert.ok(html.includes('data-linkedin-consent') && html.includes('/linkedin-consent.js'));
-  assert.ok(html.includes('no procesa pagos') && html.includes('/privacidad#aviso-legal'));
+  assert.ok(html.includes('/privacidad#aviso-legal'));
+  assert.ok(!html.includes('id="pagos"') && !html.includes('stripe.com') && !html.includes('PayPal') && !html.includes('Mercado Pago'));
   assert.ok(!/<script>(?!<\/script>)|\sstyle="|\son[a-z]+="/i.test(html), 'no inline scripts, styles or handlers (CSP)');
 });
 

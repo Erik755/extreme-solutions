@@ -107,7 +107,7 @@ export function card(project) {
     <h3>${escape(project.title)}</h3><p>${escape(project.description)}</p>
     <div class="chips">${project.tags.map(tag => `<span class="chip">${escape(tag)}</span>`).join('')}</div>
     <div class="project-links"><a class="project-video" href="/proyecto/${project.id}">Explorar proyecto →</a>
-    <button class="save-project" type="button" data-save="${project.id}" aria-pressed="false" aria-label="Guardar ${escape(project.title)}" hidden>Guardar</button></div></div></article>`;
+    </div></div></article>`;
 }
 
 export function projectPage(project, requestedLanguage = 'es') {

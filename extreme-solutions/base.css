@@ -53,6 +53,7 @@
     img {
       display: block;
       max-width: 100%;
+      height: auto;
     }
 
     a {
@@ -366,7 +367,7 @@
       position: absolute;
       top: 18px;
       right: 18px;
-      color: rgba(139, 203, 177, .18);
+      color: var(--blue);
       font-size: 2.4rem;
       font-weight: 860;
       line-height: 1;
@@ -890,7 +891,7 @@
       }
     }
   
-  /* Servicio: integración de pasarelas de pago (tarjeta discreta, mismo componente que .capability) */
+  /* Variante compacta para bloques informativos. */
   .section.section-compact{padding:2.75rem 0}
 
     html[data-theme="dark"] .project-media {
@@ -961,10 +962,10 @@
   .capability-wide-copy .chips{margin-top:1rem}
   .capability-wide-action{display:grid;justify-items:end;gap:.5rem;text-align:right}
   .capability-wide-action .btn{min-height:42px;padding:0 1rem;font-size:.95rem}
-  .pay-note{max-width:220px;color:var(--muted);font-size:.84rem;line-height:1.4}
+  .capability-note{max-width:220px;color:var(--muted);font-size:.84rem;line-height:1.4}
   @media (max-width:760px){
     .capability.capability-wide{grid-template-columns:1fr;gap:1rem}
     .capability-wide-action{justify-items:start;text-align:left}
-    .pay-note{max-width:none}
+    .capability-note{max-width:none}
   }
 

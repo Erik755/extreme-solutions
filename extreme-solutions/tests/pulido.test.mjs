@@ -5,13 +5,13 @@ import { readFileSync } from 'node:fs';
 const read = name => readFileSync(new URL(`../${name}`, import.meta.url), 'utf8');
 const html = read('index.html');
 
-test('las dos imágenes redundantes sobre la demo de pagos ya no están (ni su clave i18n)', () => {
+test('no regresan las imágenes redundantes ni el módulo/enlace de pagos eliminado', () => {
   assert.ok(!html.includes('image-grid'));
   assert.ok(!html.includes('embedded-11.webp') && !html.includes('embedded-12.jpeg'));
   assert.ok(!read('data/translations.json').includes('Visuales del perfil de desarrollador'));
   assert.ok(!read('i18n-data.js').includes('Visuales del perfil de desarrollador'));
-  // La demo de pagos conserva su etiqueta, su aviso y su botón.
-  for (const part of ['id="pagos"', 'class="demo-badge">Demostración<', 'id="pay-note"', '>Realizar pago<']) assert.ok(html.includes(part), part);
+  for (const part of ['id="pagos"', 'href="#pagos"', 'class="pay-note"', 'pay-link', '>Realizar pago<', 'stripe.com']) assert.ok(!html.includes(part), part);
+  assert.ok(html.includes('class="capability-note">Uso libre para capacitación personal.'));
 });
 
 test('el teléfono precarga su captura original sin descargar WebGL ni la escena anterior', () => {
