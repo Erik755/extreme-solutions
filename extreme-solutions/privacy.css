@@ -1,6 +1,6 @@
 /* Página de privacidad: mismo sistema visual (colores, tipografía, tarjetas .capability, chips y botones). */
 .privacy-hero { padding: 8.25rem 0 3.5rem; color: #1F1E1C; background: linear-gradient(90deg, rgba(221, 239, 230, .97), rgba(221, 239, 230, .96)), url("/assets/embedded-3.webp") center / cover no-repeat; }
-.privacy-hero h1 { max-width: 860px; margin-top: .5rem; font-size: clamp(2.4rem, 5.4vw, 4.4rem); }
+.privacy-hero h1 { max-width: 860px; margin-top: .5rem; font-size: var(--heading-page-size); }
 .privacy-back { display: inline-flex; min-height: 44px; align-items: center; margin-bottom: 1rem; color: #40574C; text-decoration: none; font-weight: 700; }
 .privacy-back:hover { color: #356B58; }
 .privacy-lead { max-width: 760px; margin: 1rem 0 0; color: #40574C; font-size: clamp(1.02rem, 1.8vw, 1.22rem); }
@@ -22,7 +22,7 @@
 .privacy-contact .btn:focus-visible { outline: 2px solid #356B58; outline-offset: 3px; }
 
 .privacy-section { padding-bottom: 4rem; scroll-margin-top: 100px; }
-.privacy-section h2 { margin: .5rem 0 1rem; font-size: clamp(1.7rem, 3.2vw, 2.5rem); line-height: 1.1; letter-spacing: -0.022em; }
+.privacy-section h2 { margin: .5rem 0 1rem; font-size: var(--heading-section-size); line-height: 1.18; letter-spacing: -0.022em; }
 .privacy-section > .lead { max-width: 780px; margin-bottom: 1.5rem; }
 .privacy-highlights { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .privacy-card {

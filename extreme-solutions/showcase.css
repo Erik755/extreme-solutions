@@ -8,11 +8,13 @@
 @media (max-width:860px){.app-showcase{grid-template-columns:1fr}}
 
 /* Blog */
+.blog-page > .section{padding-top:calc(73px + 2rem)}
 .blog-shell{max-width:760px}
 .blog-page .blog-shell>.section-head{grid-template-columns:minmax(0,1fr);margin-bottom:1.5rem}
-.blog-page .blog-shell>.section-head h1{max-width:100%;margin:.4rem 0 0;font-size:clamp(2rem,3.5vw,3rem);line-height:1.12;letter-spacing:-.025em}
+.blog-page .blog-shell>.section-head h1,.blog-article h1{max-width:100%;font-size:var(--heading-page-size);line-height:1.14;letter-spacing:-.025em}
+.blog-page .blog-shell>.section-head h1{margin:.4rem 0 0}
 .blog-article h1{margin:.4rem 0 1.2rem}
-.blog-article h2{margin-top:2rem}
+.blog-article h2{margin-top:2rem;font-size:var(--heading-section-size);line-height:1.18}
 .blog-article p,.blog-article li{line-height:1.65}
 .blog-cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2rem}
 .blog-list{display:grid;gap:1rem}

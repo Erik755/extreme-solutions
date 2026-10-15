@@ -260,6 +260,23 @@ function scopedCss(source, file) {
 
 function scopedCssRecords(source, file) {
   return parseCss(scopedCss(source, file)).flatMap(record => {
+    // This task changes heading typography only. Paint, body text, imagery, card sizes,
+    // and all unrelated declarations still participate in the exact comparison.
+    const headingSelectors = {
+      'base.css': new Set(['h1', 'h2']),
+      'dynamic.css': new Set(['.detail-heading h1']),
+      'portada.css': new Set(['.hero h1']),
+      'privacy.css': new Set(['.privacy-hero h1', '.privacy-section h2']),
+      'showcase.css': new Set(['.blog-page .blog-shell>.section-head h1,.blog-article h1', '.blog-article h2']),
+    };
+    const headingProperties = new Set(['font-size', 'line-height', 'letter-spacing', 'max-width', 'overflow-wrap']);
+    if (record.selector === ':root' && file === 'base.css') record = { ...record, declarations: record.declarations.filter(({ property }) => !['--heading-page-size', '--heading-section-size', '--heading-brand-size'].includes(property)) };
+    if (headingSelectors[file]?.has(record.selector)) record = { ...record, declarations: record.declarations.filter(({ property }) => !headingProperties.has(property)) };
+    if (file === 'showcase.css' && record.selector === '.blog-page>.section') {
+      assert.deepEqual(record.declarations, [{ property: 'padding-top', value: 'calc(73px + 2rem)' }], 'solo despeje concreto del menú fijo del Blog');
+      return [];
+    }
+    if (record.declarations && !record.declarations.length) return [];
     if (file !== 'dynamic.css' || !record.selector?.includes('.save-project')) return [record];
     const selectors = splitTopLevel(record.selector, ',').flatMap(selector => {
       if (selector.startsWith(':where(')) return [selector.replace(/,\.save-project\b/g, '')];
@@ -285,6 +302,7 @@ const allowedFiles = new Set([
   prefix + 'index.html', prefix + 'privacidad.html', prefix + 'dynamic.js', prefix + 'data/translations.json', prefix + 'i18n-data.js',
   prefix + 'lib/projects.js', prefix + 'catalog.js',
   prefix + 'showcase.css',
+  prefix + 'hero-phone.css', prefix + 'hero-phone.js', prefix + 'tests/headings-motion.test.mjs', prefix + 'tests/portada-3d.test.mjs',
   prefix + 'sitemap.xml',
   prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs', prefix + 'tests/projects.test.mjs',
   'docs/ARCHITECTURE.md', 'docs/VERCEL_READY.md',
@@ -369,12 +387,13 @@ test('la entrada de métricas solo agrega los cuatro tokens/clip locales y conse
     { property: '--assemble-ease', value: 'var(--ease-out)' }, { property: 'overflow', value: 'clip' },
   ]);
   const blog = parseCss(read('showcase.css')).filter(record => record.selector?.startsWith('.blog-page .blog-shell>.section-head'));
-  assert.equal(blog.length, 2, 'solo dos overrides scoped al encabezado del índice Blog');
+  assert.equal(blog.length, 3, 'índice y artículo comparten tamaño de título, conservando sus márgenes');
   assert.deepEqual(blog[0].declarations, [{ property: 'grid-template-columns', value: 'minmax(0,1fr)' }, { property: 'margin-bottom', value: '1.5rem' }]);
   assert.deepEqual(blog[1].declarations, [
-    { property: 'max-width', value: '100%' }, { property: 'margin', value: '.4rem 0 0' }, { property: 'font-size', value: 'clamp(2rem,3.5vw,3rem)' },
-    { property: 'line-height', value: '1.12' }, { property: 'letter-spacing', value: '-.025em' },
+    { property: 'max-width', value: '100%' }, { property: 'font-size', value: 'var(--heading-page-size)' },
+    { property: 'line-height', value: '1.14' }, { property: 'letter-spacing', value: '-.025em' },
   ]);
+  assert.deepEqual(blog[2].declarations, [{ property: 'margin', value: '.4rem 0 0' }]);
 });
 
 test('privacidad solo retira los avisos del módulo de muestra y sus tres referencias a proveedores; políticas de apps exactas', () => {

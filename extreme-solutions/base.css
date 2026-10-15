@@ -29,6 +29,10 @@
       --ease-out: cubic-bezier(.23, 1, .32, 1);
       --press-duration: .12s;
       --hover-duration: .2s;
+      /* Títulos de lectura: jerarquía clara sin convertirlos en una pantalla. */
+      --heading-page-size: clamp(1.75rem, 1.3rem + 1.6vw, 3rem);
+      --heading-section-size: clamp(1.5rem, 1.15rem + 1.1vw, 2.25rem);
+      --heading-brand-size: clamp(1.875rem, 1.35rem + 2vw, 3.25rem);
     }
 
     * {
@@ -169,10 +173,11 @@
     }
 
     h1 {
-      max-width: 780px;
-      font-size: clamp(3rem, 7vw, 6.6rem);
-      line-height: 1;
-      letter-spacing: -0.032em;
+      max-width: 100%;
+      font-size: var(--heading-page-size);
+      line-height: 1.14;
+      letter-spacing: -0.025em;
+      overflow-wrap: break-word;
     }
 
     .founder-line {
@@ -251,9 +256,9 @@
     }
 
     h2 {
-      font-size: clamp(2.35rem, 4.8vw, 4.15rem);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
+      font-size: var(--heading-section-size);
+      line-height: 1.18;
+      letter-spacing: -0.022em;
       font-weight: 780;
     }
 
@@ -816,10 +821,6 @@
       .profile-lockup img {
         width: 86px;
         height: 86px;
-      }
-
-      h1 {
-        font-size: clamp(2.58rem, 15vw, 4.6rem);
       }
 
       .section {

@@ -57,9 +57,9 @@ test('el giro permanece a 30 grados y la respuesta al puntero cubre el encabezad
   assert.match(css, /transform:\s*rotateX\(var\(--phone-x,\s*6deg\)\)\s*rotateY\(var\(--phone-y,\s*-10deg\)\)\s*rotateZ\(30deg\)/);
   assert.doesNotMatch(css, /rotateZ\((?!30deg\))[^)]*\)/, 'no se cambia el giro en móvil o movimiento reducido');
   assert.match(script, /header\.addEventListener\('pointermove'/, 'el puntero no se limita a la pantalla del teléfono');
-  assert.match(script, /header\.getBoundingClientRect\(\)/);
-  assert.match(script, /6 - y \* 44/);
-  assert.match(script, /-10 \+ x \* 56/);
+  assert.match(script, /\(touch \? stage : header\)\.getBoundingClientRect\(\)/);
+  assert.match(script, /6 - y \* \(touch \? 20 : 44\)/);
+  assert.match(script, /-10 \+ x \* \(touch \? 26 : 56\)/);
 });
 
 test('sin CDN: todos los scripts y estilos se sirven desde el propio sitio', () => {

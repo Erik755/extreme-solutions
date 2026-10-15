@@ -17,7 +17,7 @@
 .hero-intro { min-width: 0; }
 .hero .profile-lockup { gap: 1.25rem; margin-bottom: 1.75rem; }
 .hero .profile-lockup > img { width: 76px; height: 76px; border-radius: 16px; flex: none; }
-.hero h1 { font-size: clamp(2.7rem, 4.8vw, 5.15rem); text-shadow: none; }
+.hero h1 { font-size: var(--heading-brand-size); text-shadow: none; }
 .hero .hero-copy { max-width: 34rem; font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
 .hero .hero-actions { margin-top: 1.75rem; }
 .hero-whatsapp svg { width: 20px; height: 20px; flex: none; }
@@ -159,7 +159,7 @@
   .hero-phone-rig { width: 190px; }
   .hero-phone-heading { margin-bottom: .7rem; }
   .hero-phone-stage { padding-top: 2rem; padding-bottom: 2.25rem; }
-  .hero h1 { font-size: clamp(2.7rem, 4.8vw, 4.65rem); }
+  .hero h1 { font-size: var(--heading-brand-size); }
 }
 @media (max-width: 1100px) {
   .hero .hero-shell { grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); gap: 2rem; }
@@ -176,7 +176,6 @@
   .hero-phone-caption { max-width: 100%; }
 }
 @media (max-width: 360px) {
-  .hero h1 { font-size: 2.55rem; }
   .hero .profile-lockup > img { width: 48px; height: 48px; }
 }
 @media (prefers-reduced-motion: reduce) {
