@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
+import { approvedFiles, withoutApprovedCard, withoutApprovedTranslations, withoutApprovedSitemap, withoutApprovedProjectCode } from './approved-content.mjs';
 
 // Accepted published site before removing its payment demo and adding the four proof-card
 // entrances. The phone, apps, photographs and actual app policies remain protected.
@@ -306,6 +307,7 @@ const allowedFiles = new Set([
   prefix + 'sitemap.xml',
   prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs', prefix + 'tests/projects.test.mjs',
   'docs/ARCHITECTURE.md', 'docs/VERCEL_READY.md',
+  ...approvedFiles,
 ]);
 
 test('fotos, logos, datos, HTML, scripts y toda producción no autorizada conservan su hash Git', () => {
@@ -347,7 +349,7 @@ function section(html, id) {
 }
 
 function withoutPaymentDemo(html) {
-  return normalizeEol(html)
+  return withoutApprovedCard(normalizeEol(html))
     .replace(/^[\t ]*<a href="#pagos">Pagos<\/a>[\t ]*\n?/m, '')
     .replace(/^[\t ]*<section class="section section-compact" id="pagos"[\s\S]*?<\/section>[\t ]*\n?/m, '')
     .replace(/class="pay-note"/g, 'class="capability-note"')
@@ -432,7 +434,7 @@ test('traducciones solo eliminan diez claves de pago de muestra y actualizan tre
     expected[key.replace('el idioma, el tema y los proyectos favoritos', 'el idioma y el tema').replace('el idioma, el tema, los proyectos favoritos y tu decisión', 'el idioma, el tema y tu decisión')] = value.replace('language, theme and favorite projects', 'language and theme').replace('language, theme, favorite projects and your LinkedIn choice', 'language, theme and your LinkedIn choice');
   }
   const translations = JSON.parse(read('data/translations.json'));
-  assert.deepEqual(translations, expected, 'todas las traducciones no relacionadas permanecen intactas');
+  assert.deepEqual(withoutApprovedTranslations(translations), expected, 'todas las traducciones no relacionadas permanecen intactas');
   assert.equal(normalizeEol(read('i18n-data.js')), `window.EXTREME_TRANSLATIONS = ${JSON.stringify(translations, null, 2)};\n`);
 });
 
@@ -452,7 +454,7 @@ test('dynamic.js solo corrige hashes/orden del nav, excluye métricas del reveal
 
 test('lib/projects.js solo retira el botón Guardar; páginas de detalle, datos, textos e imágenes intactos', () => {
   const cleanup = source => normalizeEol(source).replace(/<button class="save-project"[^>]*>[\s\S]*?<\/button>/g, '');
-  assert.equal(cleanup(read('lib/projects.js')), cleanup(baseline('lib/projects.js')));
+  assert.equal(cleanup(withoutApprovedProjectCode(read('lib/projects.js'))), cleanup(baseline('lib/projects.js')));
   assert.doesNotMatch(read('catalog.js'), /extreme-saved|localStorage|savedOnly|onlySaved|data-save|favorite/i);
 });
 
@@ -612,7 +614,7 @@ test('SEO público existente se conserva: robots, quince URL canónicas y sin CO
     .replace('<loc>https://extreme-solutions-eosin.vercel.app/</loc><lastmod>2026-10-11</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/</loc><lastmod>2026-10-14</lastmod>')
     .replace('<loc>https://extreme-solutions-eosin.vercel.app/privacidad</loc><lastmod>2026-10-10</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/privacidad</loc><lastmod>2026-10-14</lastmod>')
     .replace('<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-13</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-14</lastmod>');
-  assert.equal(normalizeEol(read('sitemap.xml')), expected);
+  assert.equal(withoutApprovedSitemap(normalizeEol(read('sitemap.xml'))), expected);
   assert.equal([...expected.matchAll(/<loc>/g)].length, 15);
   const config = JSON.parse(readFileSync(resolve(repositoryRoot, 'vercel.json'), 'utf8'));
   assert.ok(config.headers.flatMap(rule => rule.headers).every(header => header.key.toLowerCase() !== 'access-control-allow-origin' || header.value !== '*'));

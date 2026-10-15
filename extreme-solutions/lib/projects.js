@@ -59,7 +59,7 @@ const jsonLd = data => JSON.stringify(data).replace(/</g, '\\u003c');
 
 // Metadatos de búsqueda y redes solo para proyectos publicados en Google Play.
 function storeHead(project, language, tr) {
-  if (!project?.play) return '';
+  if (!project?.play && !project?.canonical) return '';
   const url = `${SITE_URL}/proyecto/${project.id}${language === 'en' ? '?lang=en' : ''}`;
   const image = SITE_URL + project.image;
   const title = escape(tr(project.title)), description = escape(tr(project.seoDescription || project.description));
@@ -71,7 +71,7 @@ function storeHead(project, language, tr) {
   return `<link rel="canonical" href="${url}"><link rel="alternate" hreflang="es" href="${SITE_URL}/proyecto/${project.id}"><link rel="alternate" hreflang="en" href="${SITE_URL}/proyecto/${project.id}?lang=en"><link rel="alternate" hreflang="x-default" href="${SITE_URL}/proyecto/${project.id}">
     <meta property="og:type" content="website"><meta property="og:site_name" content="Extreme Solutions"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${url}"><meta property="og:image" content="${image}"><meta property="og:image:alt" content="${escape(tr(project.alt))}"><meta property="og:locale" content="${language === 'en' ? 'en_US' : 'es_MX'}">
     <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="${image}">
-    <script type="application/ld+json">${jsonLd(app)}</script>${faq ? `<script type="application/ld+json">${jsonLd(faq)}</script>` : ''}`;
+    ${project.play ? `<script type="application/ld+json">${jsonLd(app)}</script>` : ''}${faq ? `<script type="application/ld+json">${jsonLd(faq)}</script>` : ''}`;
 }
 function playBadge(project, language, tr) {
   if (!project.play) return '';
@@ -81,14 +81,14 @@ function playBadge(project, language, tr) {
 function landingSection(project, tr) {
   const landing = project.landing;
   if (!landing) return '';
-  return `<section class="detail-landing" aria-labelledby="landing-title">${project.seoDescription ? `<p class="lead">${escape(tr(project.seoDescription))}</p>` : ''}${landing.audience ? `<p class="lead">${escape(tr(landing.audience))}</p>` : ''}<h2 id="landing-title">${escape(tr('Beneficios'))}</h2><ul class="app-benefits">${landing.benefits.map(item => `<li>${escape(tr(item))}</li>`).join('')}</ul>${landing.trial ? `<div class="detail-offer"><h3>${escape(tr('Prueba gratis de 10 días'))}</h3><p>${escape(tr(landing.trial))}</p></div>` : ''}<div class="detail-actions"><a class="btn primary" href="${escape(project.play)}" target="_blank" rel="noopener">${escape(tr('Descargar en Google Play'))}</a></div></section>`;
+  return `<section class="detail-landing" aria-labelledby="landing-title">${project.seoDescription ? `<p class="lead">${escape(tr(project.seoDescription))}</p>` : ''}${landing.audience ? `<p class="lead">${escape(tr(landing.audience))}</p>` : ''}<h2 id="landing-title">${escape(tr('Beneficios'))}</h2><ul class="app-benefits">${landing.benefits.map(item => `<li>${escape(tr(item))}</li>`).join('')}</ul>${landing.trial ? `<div class="detail-offer"><h3>${escape(tr('Prueba gratis de 10 días'))}</h3><p>${escape(tr(landing.trial))}</p></div>` : ''}<div class="detail-actions"><a class="btn primary" href="${escape(project.play || project.appUrl)}" target="_blank" rel="noopener">${escape(tr(project.play ? 'Descargar en Google Play' : 'Abrir la app'))}</a></div></section>`;
 }
 function faqSection(project, tr) {
   if (!FAQS[project.id]) return '';
   return `<section class="detail-faq" aria-labelledby="faq-title"><h2 id="faq-title">${escape(tr('Preguntas frecuentes'))}</h2>${FAQS[project.id].map(([q, a]) => `<details><summary>${escape(tr(q))}</summary><p>${escape(tr(a))}</p></details>`).join('')}</section>`;
 }
 
-const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'museum-of-you']);
+const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'museum-of-you', 'calculadora-colores']);
 function mediaClass(project) {
   if (project.id === 'ltv-maestro') return ' class="ltv-media"';
   if (PHONE_SHOT_IDS.has(project.id)) return ' class="phone-shot"';
@@ -116,7 +116,7 @@ export function projectPage(project, requestedLanguage = 'es') {
   const title = tr(project ? project.title : 'Proyecto no encontrado');
   const languageQuery = language === 'en' ? '?lang=en' : '';
   return `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>${escape(title)} | Extreme Solutions</title><meta name="description" content="${escape(tr(project?.seoDescription || project?.description || 'Consulta los proyectos de Extreme Solutions.'))}">
+    <title>${escape(project?.seoTitle ? tr(project.seoTitle) : `${title} | Extreme Solutions`)}</title><meta name="description" content="${escape(tr(project?.seoDescription || project?.description || 'Consulta los proyectos de Extreme Solutions.'))}">
     ${project ? storeHead(project, language, tr) : '<meta name="robots" content="noindex">'}
     <link rel="icon" type="image/png" href="/assets/embedded-1.png"><link rel="stylesheet" href="/base.css"><link rel="stylesheet" href="/dynamic.css"><link rel="stylesheet" href="/showcase.css"><script src="/i18n-data.js"></script><script src="/i18n.js"></script><script src="/preferences.js"></script></head>
     <body><a class="skip-link" href="#contenido">${escape(tr('Saltar al contenido'))}</a>

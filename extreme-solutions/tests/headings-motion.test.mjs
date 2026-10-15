@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { approvedFiles } from './approved-content.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
@@ -11,7 +12,7 @@ const repo = resolve(site, '..');
 const git = args => execFileSync('git', args, { cwd: repo, encoding: 'utf8' });
 const read = file => readFileSync(resolve(site, file), 'utf8').replace(/\r\n/g, '\n');
 const before = file => git(['show', `${PREVIOUS}:extreme-solutions/${file}`]).replace(/\r\n/g, '\n');
-const allowed = new Set(['base.css', 'dynamic.css', 'portada.css', 'privacy.css', 'showcase.css', 'hero-phone.css', 'hero-phone.js', 'tests/palette.test.mjs', 'tests/portada-3d.test.mjs', 'tests/headings-motion.test.mjs'].map(file => 'extreme-solutions/' + file));
+const allowed = new Set(['base.css', 'dynamic.css', 'portada.css', 'privacy.css', 'showcase.css', 'hero-phone.css', 'hero-phone.js', 'tests/palette.test.mjs', 'tests/portada-3d.test.mjs', 'tests/headings-motion.test.mjs'].map(file => 'extreme-solutions/' + file).concat([...approvedFiles]));
 
 test('títulos y teléfono: todo archivo publicado fuera del alcance mantiene su hash exacto', () => {
   const tree = git(['ls-tree', '-r', '-z', PREVIOUS]).split('\0').filter(Boolean).map(line => {
