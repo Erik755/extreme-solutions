@@ -357,6 +357,7 @@ function withoutPaymentDemo(html) {
     .replace(/<button id="saved-only"[^>]*>[\s\S]*?<\/button>/g, '')
     .replace(/^[\t ]*<p class="catalog-hint">Guarda los proyectos que te interesan en este navegador\.<\/p>[\t ]*\n?/m, '')
     .replace('>Más información</a>', '>Privacidad del distintivo de LinkedIn</a>')
+    .replaceAll('https://www.youtube.com/@koras-t7y', 'https://www.youtube.com/@ExtremeSolutionsMX')
     .replace(/\n[\t ]*<\/div>/g, '\n</div>')
     .replace(/\n[\t ]*\n+/g, '\n');
 }

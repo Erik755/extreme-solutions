@@ -41,7 +41,7 @@ test('Reporte Servicio Pro: disponible en Google Play con enlace a la ficha y de
   const project = JSON.parse(readFileSync(new URL('../data/projects.json', import.meta.url), 'utf8')).find(item => item.id === 'reporte-servicio-pro');
   assert.equal(project.links[0].url, 'https://play.google.com/store/apps/details?id=com.reporteservicio.pro');
   assert.equal(project.links[0].label, 'Ver en Google Play →');
-  assert.equal(project.links[1].url, 'https://youtu.be/Jkbw1u1hXkk?si=lP8OdGsO1P8lORdo');
+  assert.equal(project.links[1].url, 'https://youtu.be/ZYKilhLBWvg');
   assert.equal(project.privacy, 'reporte-servicio-pro');
   const translations = JSON.parse(readFileSync(new URL('../data/translations.json', import.meta.url), 'utf8'));
   for (const text of [project.type, project.description, ...project.links.map(link => link.label)]) assert.ok(translations[text], text);
