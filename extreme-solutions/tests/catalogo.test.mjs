@@ -46,8 +46,9 @@ test('Reporte Servicio Pro: disponible en Google Play con enlace a la ficha y de
   const translations = JSON.parse(readFileSync(new URL('../data/translations.json', import.meta.url), 'utf8'));
   for (const text of [project.type, project.description, ...project.links.map(link => link.label)]) assert.ok(translations[text], text);
   const privacy = readFileSync(new URL('../privacidad.html', import.meta.url), 'utf8');
-  assert.ok(privacy.includes('Política 3.0 · app 2.0.15'));
-  assert.ok(!privacy.includes('Política 3.0 · app 2.0.13'));
+  assert.ok(privacy.includes('Política 4.0 · app 2.0.17'));
+  assert.ok(!privacy.includes('Política 3.0 · app 2.0.15'));
+  assert.ok(!/revenuecat/i.test(privacy));
 });
 
 test('Plataforma web operativa conserva su texto y su enlace a /proyecto/ltv-maestro', () => {

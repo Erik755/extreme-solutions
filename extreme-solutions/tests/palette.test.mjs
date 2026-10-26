@@ -307,6 +307,8 @@ const allowedFiles = new Set([
   prefix + 'sitemap.xml',
   prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs', prefix + 'tests/projects.test.mjs',
   'docs/ARCHITECTURE.md', 'docs/VERCEL_READY.md',
+  'politica-pro-es.md',
+  'pnpm-lock.yaml',
   ...approvedFiles,
 ]);
 
@@ -407,10 +409,26 @@ test('privacidad solo retira los avisos del módulo de muestra y sus tres refere
     .replace('LinkedIn, Stripe y otros sitios', 'LinkedIn y otros sitios')
     .replace('Marcas de terceros: Stripe, PayPal, Mercado Pago, Google', 'Marcas de terceros: Google')
     .replace('el idioma, el tema, los proyectos favoritos y tu decisión', 'el idioma, el tema y tu decisión');
-  assert.equal(cleanup(read('privacidad.html')), cleanup(baseline('privacidad.html')));
-  const policies = html => normalizeEol(html).slice(normalizeEol(html).indexOf('<section id="proyectos"'), normalizeEol(html).indexOf('<section id="otros-proyectos"'));
-  assert.equal(policies(read('privacidad.html')), policies(baseline('privacidad.html')), 'compras, precios y avisos de cada app no se modifican');
-  assert.doesNotMatch(read('privacidad.html'), /Stripe|PayPal|Mercado Pago|módulo de pagos/i);
+  const baselineHtml = baseline('privacidad.html');
+  const baselinePro = baselineHtml.match(/<details class="policy reveal policy-full" id="reporte-servicio-pro"[\s\S]*?<\/details>/)[0];
+  const restored = read('privacidad.html')
+    .replace(/<details class="policy reveal policy-full" id="reporte-servicio-pro"[\s\S]*?<\/details>/, baselinePro)
+    .replace('Última actualización: 26 de octubre de 2026', 'Última actualización: 29 de septiembre de 2026')
+    .replace('Varios proveedores (Vercel, Cloudflare, Google, Groq, GitHub)', 'Varios proveedores (Vercel, Cloudflare, Google, Groq, GitHub, RevenueCat)')
+    .replace('Marcas de terceros: Google, Google Play, Android, Gemini, LinkedIn, GitHub, Vercel, Cloudflare, Groq, Danobat', 'Marcas de terceros: Google, Google Play, Android, Gemini, LinkedIn, GitHub, Vercel, Cloudflare, Groq, RevenueCat, Danobat');
+  assert.equal(cleanup(restored), cleanup(baselineHtml));
+  const policyBlock = html => {
+    const source = normalizeEol(html);
+    return source.slice(source.indexOf('<section id="proyectos"'), source.indexOf('<section id="otros-proyectos"'));
+  };
+  const withoutPro = html => policyBlock(html).replace(/<details class="policy reveal policy-full" id="reporte-servicio-pro"[\s\S]*?<\/details>/, '');
+  assert.equal(withoutPro(read('privacidad.html')), withoutPro(baselineHtml), 'las demás políticas de apps no se modifican');
+  const pro = read('privacidad.html').match(/<details class="policy reveal policy-full" id="reporte-servicio-pro"[\s\S]*?<\/details>/)[0];
+  assert.match(pro, /Google Play Billing/);
+  assert.match(pro, /suscripción anual/);
+  assert.match(pro, /compra única de por vida/);
+  assert.doesNotMatch(pro, /revenuecat/i);
+  assert.doesNotMatch(read('privacidad.html'), /Stripe|PayPal|Mercado Pago|módulo de pagos|revenuecat/i);
 });
 
 test('traducciones solo eliminan diez claves de pago de muestra y actualizan tres referencias; i18n generado exacto', () => {
@@ -434,9 +452,24 @@ test('traducciones solo eliminan diez claves de pago de muestra y actualizan tre
     delete expected[key];
     expected[key.replace('el idioma, el tema y los proyectos favoritos', 'el idioma y el tema').replace('el idioma, el tema, los proyectos favoritos y tu decisión', 'el idioma, el tema y tu decisión')] = value.replace('language, theme and favorite projects', 'language and theme').replace('language, theme, favorite projects and your LinkedIn choice', 'language, theme and your LinkedIn choice');
   }
+  for (const key of Object.keys(expected)) {
+    if (/revenuecat/i.test(key) || /revenuecat/i.test(expected[key])) delete expected[key];
+  }
   const translations = JSON.parse(read('data/translations.json'));
-  assert.deepEqual(withoutApprovedTranslations(translations), expected, 'todas las traducciones no relacionadas permanecen intactas');
+  const comparable = withoutApprovedTranslations(translations);
+  const privacy = read('privacidad.html');
+  const added = Object.keys(comparable).filter(key => !(key in expected));
+  const removedBesidesRevenueCat = Object.keys(expected).filter(key => !(key in comparable));
+  assert.deepEqual(removedBesidesRevenueCat, [], 'no se eliminan traducciones ajenas a RevenueCat');
+  assert.ok(added.length > 0, 'la política nueva aporta traducciones');
+  for (const key of added) {
+    assert.ok(privacy.includes(key), key.slice(0, 80));
+    assert.doesNotMatch(key + comparable[key], /revenuecat|stripe|paypal|mercado pago|favoritos/i);
+    delete comparable[key];
+  }
+  assert.deepEqual(comparable, expected, 'todas las traducciones no relacionadas permanecen intactas');
   assert.equal(normalizeEol(read('i18n-data.js')), `window.EXTREME_TRANSLATIONS = ${JSON.stringify(translations, null, 2)};\n`);
+  assert.doesNotMatch(read('data/translations.json') + read('i18n-data.js'), /revenuecat/i);
 });
 
 test('dynamic.js solo corrige hashes/orden del nav, excluye métricas del reveal genérico y añade acomodo dedicado', () => {
