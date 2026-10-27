@@ -88,7 +88,7 @@ function faqSection(project, tr) {
   return `<section class="detail-faq" aria-labelledby="faq-title"><h2 id="faq-title">${escape(tr('Preguntas frecuentes'))}</h2>${FAQS[project.id].map(([q, a]) => `<details><summary>${escape(tr(q))}</summary><p>${escape(tr(a))}</p></details>`).join('')}</section>`;
 }
 
-const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'museum-of-you', 'calculadora-colores']);
+const PHONE_SHOT_IDS = new Set(['evidencia-visual', 'formatos-pdf-excel', 'control-gastos-pro', 'reporte-servicio-pro', 'calculadora-colores']);
 function mediaClass(project) {
   if (project.id === 'ltv-maestro') return ' class="ltv-media"';
   if (PHONE_SHOT_IDS.has(project.id)) return ' class="phone-shot"';

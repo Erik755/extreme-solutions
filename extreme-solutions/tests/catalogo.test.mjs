@@ -7,7 +7,8 @@ const grid = html.match(/<!-- PROJECTS_START -->([\s\S]*?)<!-- PROJECTS_END -->/
 const cards = grid.split('<article ').slice(1);
 
 test('todas las tarjetas del catálogo comparten la misma estructura; MCP y Lentes van primero como destacados', () => {
-  assert.equal(cards.length, 10); // incluye el proyecto de cliente Aura Glamour
+  assert.equal(cards.length, 9); // sin The Museum of You; incluye el proyecto de cliente Aura Glamour
+  assert.ok(!grid.includes('museum-of-you') && !grid.includes('The Museum of You'));
   for (const card of cards) {
     assert.match(card, /^class="project( project-featured)?" /, 'clase distinta en: ' + card.slice(0, 120));
     for (const part of ['class="project-media"', 'class="project-body"', 'class="project-type"', '<h3>', 'class="chips"', 'class="project-links"', 'class="project-video" href="/proyecto/']) assert.ok(card.includes(part), part);

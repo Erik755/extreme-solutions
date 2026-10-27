@@ -65,7 +65,7 @@ test('privacy page is public, fully translated and linked from project pages', a
   const html = readFileSync(new URL('../privacidad.html', import.meta.url), 'utf8');
   const translations = JSON.parse(readFileSync(new URL('../data/translations.json', import.meta.url), 'utf8'));
   const sameInBothLanguages = new Set(['Extreme Solutions', 'Reporte Servicio Pro', 'Reporte de Servicio', 'Reporte de servicio Danobat', 'extreme-solutions-eosin.vercel.app', 'Control de Gastos Pro',
-    'The Museum of You', 'LTV Maestro · La Tercera Vuelta', 'Contactos', 'sanchezerik836@gmail.com',
+    'LTV Maestro · La Tercera Vuelta', 'Contactos', 'sanchezerik836@gmail.com',
     'com.reporteservicio.pro', 'com.reporteservicio.reporter', 'app.lentes.camaras', '© 2026 Extreme Solutions · Erik Sanchez']);
   const body = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, '').split('<body')[1];
   const texts = [...body.matchAll(/>([^<>]+)</g)].map(match => match[1].trim()).filter(text => /\p{L}/u.test(text));
@@ -86,16 +86,19 @@ test('privacy page is public, fully translated and linked from project pages', a
 test('privacy center includes the LFPDPPP notice, full app notices and legal notice', async () => {
   const { readFileSync } = await import('node:fs');
   const html = readFileSync(new URL('../privacidad.html', import.meta.url), 'utf8');
-  for (const id of ['aviso', 'aviso-legal', 'museum', 'reporte-de-servicio-danobat', 'sitio-web']) assert.ok(html.includes(`id="${id}"`), id);
+  for (const id of ['aviso', 'aviso-legal', 'reporte-de-servicio-danobat', 'sitio-web']) assert.ok(html.includes(`id="${id}"`), id);
+  assert.ok(!html.includes('museum-of-you') && !html.includes('The Museum of You') && !html.includes('id="museum"'));
   assert.ok(html.includes('com.reporteservicio.reporter'));
   assert.ok(html.includes('Derechos ARCO') && html.includes('Secretaría Anticorrupción y Buen Gobierno'));
-  for (const url of ['https://www.cloudflare.com/privacypolicy/', 'https://ai.google.dev/gemini-api/terms', 'https://groq.com/privacy-policy', 'https://www.linkedin.com/legal/cookie-policy']) assert.ok(html.includes(url), url);
+  assert.ok(html.includes('https://www.linkedin.com/legal/cookie-policy'));
+  assert.ok(!html.includes('https://ai.google.dev/gemini-api/terms') && !html.includes('https://groq.com/privacy-policy') && !html.includes('museum-of-you.pages.dev'));
   for (const link of html.match(/<a [^>]*target="_blank"[^>]*>/g)) assert.ok(link.includes('rel="noopener noreferrer"'), link);
 });
 
 test('home page loads LinkedIn only after consent and has no payment module', async () => {
   const { readFileSync } = await import('node:fs');
   const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(!html.includes('museum-of-you') && !html.includes('The Museum of You') && !html.includes('museum-of-you.pages.dev'));
   assert.ok(!html.includes('<script src="https://platform.linkedin.com'), 'no static LinkedIn script');
   assert.ok(html.includes('data-linkedin-consent') && html.includes('/linkedin-consent.js'));
   assert.ok(html.includes('/privacidad#aviso-legal'));

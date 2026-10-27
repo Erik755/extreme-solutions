@@ -486,12 +486,6 @@
         #E2EEE7;
     }
 
-    .project[data-project-id="museum-of-you"] .project-media {
-      background:
-        radial-gradient(90% 70% at 50% 42%, rgba(255, 253, 250, .36), transparent 62%),
-        #E2EEE7;
-    }
-
     /* Destacados: el layout bento vive en portada.css; aquí solo el marco media. */
     .project.project-featured {
       display: flex;
@@ -938,12 +932,6 @@
 
     html[data-theme="dark"] .project[data-project-id="formatos-pdf-excel"] .project-media,
     html[data-theme="dark"] .project[data-project-id="reporte-servicio-pro"] .project-media {
-      background:
-        radial-gradient(90% 70% at 50% 42%, rgba(185, 226, 209, .06), transparent 62%),
-        #2B3E34;
-    }
-
-    html[data-theme="dark"] .project[data-project-id="museum-of-you"] .project-media {
       background:
         radial-gradient(90% 70% at 50% 42%, rgba(185, 226, 209, .06), transparent 62%),
         #2B3E34;

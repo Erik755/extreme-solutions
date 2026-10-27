@@ -287,8 +287,12 @@ function scopedCssRecords(source, file) {
   });
 }
 
+function withoutMuseumMedia(records) {
+  return records.filter(record => !record.selector?.includes('museum-of-you'));
+}
+
 for (const file of cssFiles) test(`${file}: conserva paleta, medidas y estructura excepto el rename y tokens de entrada autorizados`, () => {
-  assert.deepEqual(scopedCssRecords(read(file), file), scopedCssRecords(baseline(file), file), 'Ningún cambio de color o geometría fuera del alcance');
+  assert.deepEqual(withoutMuseumMedia(scopedCssRecords(read(file), file)), withoutMuseumMedia(scopedCssRecords(baseline(file), file)), 'Ningún cambio de color o geometría fuera del alcance');
 });
 
 const tree = git(['ls-tree', '-r', '-z', BASELINE], { encoding: 'utf8' }).split('\0').filter(Boolean).map(entry => {
@@ -305,6 +309,7 @@ const allowedFiles = new Set([
   prefix + 'showcase.css',
   prefix + 'hero-phone.css', prefix + 'hero-phone.js', prefix + 'tests/headings-motion.test.mjs', prefix + 'tests/portada-3d.test.mjs',
   prefix + 'sitemap.xml',
+  prefix + 'privacy.js', prefix + 'assets/museum-of-you.webp',
   prefix + 'tests/palette.test.mjs', prefix + 'tests/pulido.test.mjs', prefix + 'tests/projects.test.mjs',
   'docs/ARCHITECTURE.md', 'docs/VERCEL_READY.md',
   'politica-pro-es.md',
@@ -342,7 +347,7 @@ test('refinamiento de controles: conserva también la escena menta y todos los r
   assert.deepEqual(differences, [], 'El teléfono solo reemplaza el encabezado; escena de respaldo, capturas, logos y resto del sitio permanecen intactos');
   for (const file of cssFiles) {
     const before = git(['show', `${CONTROL_BASELINE}:${prefix}${file}`], { encoding: 'utf8' });
-    assert.deepEqual(scopedCssRecords(read(file), file), scopedCssRecords(before, file), file);
+    assert.deepEqual(withoutMuseumMedia(scopedCssRecords(read(file), file)), withoutMuseumMedia(scopedCssRecords(before, file)), file);
   }
 });
 
@@ -352,6 +357,7 @@ function section(html, id) {
 
 function withoutPaymentDemo(html) {
   return withoutApprovedCard(normalizeEol(html))
+    .replace(/\n?<article class="project"[^>]*data-project-id="museum-of-you"[\s\S]*?<\/article>/, '')
     .replace(/^[\t ]*<a href="#pagos">Pagos<\/a>[\t ]*\n?/m, '')
     .replace(/^[\t ]*<section class="section section-compact" id="pagos"[\s\S]*?<\/section>[\t ]*\n?/m, '')
     .replace(/class="pay-note"/g, 'class="capability-note"')
@@ -384,7 +390,7 @@ test('solo desaparece el subtítulo del fundador y se agrega WhatsApp al grupo d
 });
 
 test('la entrada de métricas solo agrega los cuatro tokens/clip locales y conserva el resto de estilos', () => {
-  for (const file of [...cssFiles, 'showcase.css']) assert.deepEqual(scopedCssRecords(read(file), file), scopedCssRecords(baseline(file), file), file);
+  for (const file of [...cssFiles, 'showcase.css']) assert.deepEqual(withoutMuseumMedia(scopedCssRecords(read(file), file)), withoutMuseumMedia(scopedCssRecords(baseline(file), file)), file);
   const band = parseCss(read('dynamic.css')).filter(record => record.selector === '.proof-band');
   assert.equal(band.length, 1);
   assert.deepEqual(band[0].declarations, [
@@ -401,8 +407,18 @@ test('la entrada de métricas solo agrega los cuatro tokens/clip locales y conse
   assert.deepEqual(blog[2].declarations, [{ property: 'margin', value: '.4rem 0 0' }]);
 });
 
+function withoutMuseumProduct(html) {
+  return normalizeEol(html)
+    .replace(/\n          <details class="policy reveal policy-full" id="museum"[\s\S]*?<\/details>/, '')
+    .replace(/\n            <button class="filter-button" type="button" data-topic="ia" aria-pressed="false">IA y servicios en la nube<\/button>/, '')
+    .replace('5 políticas de apps', '4 políticas de apps')
+    .replace('Nuestras apps están pensadas para trabajar localmente. La información sale del dispositivo cuando decides exportarla, compartirla, sincronizarla con tu propia cuenta o usar una función en la nube, como la ficha con IA de The Museum of You.', 'Nuestras apps están pensadas para trabajar localmente. La información sale del dispositivo cuando decides exportarla, compartirla o sincronizarla con tu propia cuenta.')
+    .replace('Apps: los datos descritos en la política de cada app. La mayoría se procesan solo en tu dispositivo y no los recibimos; The Museum of You envía a un servicio de IA la foto que eliges archivar.', 'Apps: los datos descritos en la política de cada app. La mayoría se procesan solo en tu dispositivo y no los recibimos.')
+    .replace('Trabajo local: las apps procesan y conservan los datos en el dispositivo, salvo cuando el usuario decide exportarlos, compartirlos, sincronizarlos con su propia cuenta o usar una función en la nube, como la ficha con IA de The Museum of You.', 'Trabajo local: las apps procesan y conservan los datos en el dispositivo, salvo cuando el usuario decide exportarlos, compartirlos o sincronizarlos con su propia cuenta.');
+}
+
 test('privacidad solo retira los avisos del módulo de muestra y sus tres referencias a proveedores; políticas de apps exactas', () => {
-  const cleanup = html => normalizeEol(html)
+  const cleanup = html => withoutMuseumProduct(html)
     .replace(/<li><span>Pagos: el módulo de pagos del sitio[\s\S]*?<\/li>/g, '')
     .replace(/<li><span>Módulo de pagos de muestra:[\s\S]*?<\/li>/g, '')
     .replace('Google, LinkedIn o Stripe', 'Google o LinkedIn')
@@ -421,7 +437,7 @@ test('privacidad solo retira los avisos del módulo de muestra y sus tres refere
     const source = normalizeEol(html);
     return source.slice(source.indexOf('<section id="proyectos"'), source.indexOf('<section id="otros-proyectos"'));
   };
-  const withoutPro = html => policyBlock(html).replace(/<details class="policy reveal policy-full" id="reporte-servicio-pro"[\s\S]*?<\/details>/, '');
+  const withoutPro = html => policyBlock(withoutMuseumProduct(html)).replace(/<details class="policy reveal policy-full" id="reporte-servicio-pro"[\s\S]*?<\/details>/, '');
   assert.equal(withoutPro(read('privacidad.html')), withoutPro(baselineHtml), 'las demás políticas de apps no se modifican');
   const pro = read('privacidad.html').match(/<details class="policy reveal policy-full" id="reporte-servicio-pro"[\s\S]*?<\/details>/)[0];
   assert.match(pro, /Google Play Billing/);
@@ -455,6 +471,33 @@ test('traducciones solo eliminan diez claves de pago de muestra y actualizan tre
   for (const key of Object.keys(expected)) {
     if (/revenuecat/i.test(key) || /revenuecat/i.test(expected[key])) delete expected[key];
   }
+  const baselinePrivacy = baseline('privacidad.html');
+  const museumPolicy = baselinePrivacy.match(/<details class="policy reveal policy-full" id="museum"[\s\S]*?<\/details>/)?.[0] ?? '';
+  const privacyOutsideMuseum = baselinePrivacy.replace(museumPolicy, '').replaceAll('IA y servicios en la nube', '');
+  const museumProject = JSON.parse(baseline('data/projects.json')).find(item => item.id === 'museum-of-you');
+  const museumStrings = new Set();
+  const collectStrings = value => {
+    if (typeof value === 'string') museumStrings.add(value);
+    else if (Array.isArray(value)) value.forEach(collectStrings);
+    else if (value && typeof value === 'object') Object.values(value).forEach(collectStrings);
+  };
+  collectStrings(museumProject);
+  for (const match of museumPolicy.matchAll(/>([^<>]+)</g)) if (match[1].trim()) museumStrings.add(match[1].trim());
+  const otherProjects = JSON.stringify(JSON.parse(baseline('data/projects.json')).filter(item => item.id !== 'museum-of-you'));
+  const replacedPrivacyKeys = new Set([
+    '5 políticas de apps',
+    'IA y servicios en la nube',
+    'Nuestras apps están pensadas para trabajar localmente. La información sale del dispositivo cuando decides exportarla, compartirla, sincronizarla con tu propia cuenta o usar una función en la nube, como la ficha con IA de The Museum of You.',
+    'Apps: los datos descritos en la política de cada app. La mayoría se procesan solo en tu dispositivo y no los recibimos; The Museum of You envía a un servicio de IA la foto que eliges archivar.',
+    'Trabajo local: las apps procesan y conservan los datos en el dispositivo, salvo cuando el usuario decide exportarlos, compartirlos, sincronizarlos con su propia cuenta o usar una función en la nube, como la ficha con IA de The Museum of You.',
+  ]);
+  const museumTranslation = key => {
+    if (replacedPrivacyKeys.has(key)) return true;
+    if (privacyOutsideMuseum.includes(key) || otherProjects.includes(key)) return false;
+    if (museumStrings.has(key)) return true;
+    return /Museum of You|museum-of-you|Archivar en el museo|pieza de museo|Experiencia creativa con IA|^IA multimodal$|^Privacidad local$|instrucción personalizada|proveedor de IA predeterminado|solo si se elige Groq en los ajustes/.test(key);
+  };
+  for (const key of Object.keys(expected)) if (museumTranslation(key)) delete expected[key];
   const translations = JSON.parse(read('data/translations.json'));
   const comparable = withoutApprovedTranslations(translations);
   const privacy = read('privacidad.html');
@@ -647,9 +690,10 @@ test('SEO público existente se conserva: robots, quince URL canónicas y sin CO
   const expected = normalizeEol(baseline('sitemap.xml'))
     .replace('<loc>https://extreme-solutions-eosin.vercel.app/</loc><lastmod>2026-10-11</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/</loc><lastmod>2026-10-14</lastmod>')
     .replace('<loc>https://extreme-solutions-eosin.vercel.app/privacidad</loc><lastmod>2026-10-10</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/privacidad</loc><lastmod>2026-10-14</lastmod>')
-    .replace('<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-13</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-14</lastmod>');
+    .replace('<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-13</lastmod>', '<loc>https://extreme-solutions-eosin.vercel.app/blog</loc><lastmod>2026-10-14</lastmod>')
+    .replace('  <url><loc>https://extreme-solutions-eosin.vercel.app/proyecto/museum-of-you</loc><lastmod>2026-10-10</lastmod></url>\n', '');
   assert.equal(withoutApprovedSitemap(normalizeEol(read('sitemap.xml'))), expected);
-  assert.equal([...expected.matchAll(/<loc>/g)].length, 15);
+  assert.equal([...expected.matchAll(/<loc>/g)].length, 14);
   const config = JSON.parse(readFileSync(resolve(repositoryRoot, 'vercel.json'), 'utf8'));
   assert.ok(config.headers.flatMap(rule => rule.headers).every(header => header.key.toLowerCase() !== 'access-control-allow-origin' || header.value !== '*'));
 });
@@ -807,7 +851,7 @@ test('el botón principal es verde sereno, distinguible y legible en reposo y ho
 test('todos los pozos de imágenes usan la misma familia menta sin alterar las capturas', () => {
   const lightSelectors = [
     '.project-media', '.project-media:has(img.phone-shot)', '.project-featured .project-media',
-    ...['control-gastos-pro', 'evidencia-visual', 'formatos-pdf-excel', 'reporte-servicio-pro', 'museum-of-you', 'mcp-dual-llm-guard'].map(id => `.project[data-project-id="${id}"] .project-media`),
+    ...['control-gastos-pro', 'evidencia-visual', 'formatos-pdf-excel', 'reporte-servicio-pro', 'mcp-dual-llm-guard'].map(id => `.project[data-project-id="${id}"] .project-media`),
     '.detail-media',
   ];
   for (const selector of lightSelectors) {
@@ -816,7 +860,7 @@ test('todos los pozos de imágenes usan la misma familia menta sin alterar las c
   }
   const darkSelectors = [
     'html[data-theme="dark"] .project-media',
-    ...['control-gastos-pro', 'evidencia-visual', 'formatos-pdf-excel', 'reporte-servicio-pro', 'museum-of-you', 'mcp-dual-llm-guard'].map(id => `html[data-theme="dark"] .project[data-project-id="${id}"] .project-media`),
+    ...['control-gastos-pro', 'evidencia-visual', 'formatos-pdf-excel', 'reporte-servicio-pro', 'mcp-dual-llm-guard'].map(id => `html[data-theme="dark"] .project[data-project-id="${id}"] .project-media`),
     'html[data-theme="dark"] .detail-media',
     'html[data-theme="dark"] .detail-media:has(.detail-image[src$=".svg"])',
   ];

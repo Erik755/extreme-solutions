@@ -78,7 +78,7 @@
   render();
 
   // Enlace profundo: /privacidad#lentes abre y muestra esa política.
-  const aliases = { 'reporte-de-servicio': 'reporte-de-servicio-danobat', 'reporte-de-servicio-reporter': 'reporte-de-servicio-danobat', 'museum-of-you': 'museum' };
+  const aliases = { 'reporte-de-servicio': 'reporte-de-servicio-danobat', 'reporte-de-servicio-reporter': 'reporte-de-servicio-danobat' };
   function openFromHash() {
     const id = decodeURIComponent(location.hash.slice(1));
     const target = id ? document.getElementById(aliases[id] || id) : null;
