@@ -64,7 +64,7 @@ test('MCP Dual LLM Guard: tarjeta de IA con imagen local, enlaces a GitHub y M8v
   assert.ok(guard.includes('src="/assets/mcp-dual-llm-guard.svg"'));
   assert.ok(readFileSync(new URL('../assets/mcp-dual-llm-guard.svg', import.meta.url), 'utf8').startsWith('<svg'));
   const project = JSON.parse(readFileSync(new URL('../data/projects.json', import.meta.url), 'utf8')).find(item => item.id === 'mcp-dual-llm-guard');
-  assert.deepEqual(project.links.map(link => link.url), ['https://github.com/Erik755/mcp-dual-llm-guard', 'https://m8ven.ai/mcp/erik755-mcp-dual-llm-guard-m0uqf4']);
+  assert.deepEqual(project.links.map(link => link.url), ['https://github.com/Erik755/mcp-dual-llm-guard', 'https://m8ven.ai/mcp/erik755-mcp-dual-llm-guard-m0uqf4', 'https://zenodo.org/records/23448095', 'https://orcid.org/0009-0001-4908-3084']);
   assert.ok(guard.includes('<span class="chip">Verificado por M8ven · 75/100</span>'));
   const translations = JSON.parse(readFileSync(new URL('../data/translations.json', import.meta.url), 'utf8'));
   for (const text of [project.type, project.description, project.alt, 'Verificado por M8ven · 75/100', ...project.links.map(link => link.label), project.certification.verified, ...project.certification.findings]) assert.ok(translations[text], text);
@@ -85,4 +85,18 @@ test('MCP Dual LLM Guard: el certificado de M8ven se muestra en la página de de
   for (const part of ['Verificado por M8ven', 'Puntuación de confianza', '1 oct 2026, 8:12 p. m. (CST)', 'Firmado criptográficamente por M8ven; el hash vincula la puntuación con esta versión exacta del código.', 'Análisis estático: sin exfiltración de credenciales, sin acceso a archivos sensibles, sin ofuscación', 'Código abierto con licencia y README', 'Ver ficha en M8ven →']) assert.ok(es.includes(part), part);
   for (const part of ['Verified by M8ven', 'Trust Score', 'Oct 1, 2026, 8:12 PM (CST)', 'Cryptographically signed by M8ven; the hash binds the score to this exact code version.', 'Static analysis: no credential exfiltration, no sensitive file access, no obfuscation', 'Open source with license and README', 'View M8ven report →', 'Verification ID', 'Code hash (SHA-256)', 'HMAC signature', 'Key findings']) assert.ok(en.includes(part), part);
   assert.ok(!projectPage(projects.find(item => item.id === 'ltv-maestro')).includes('class="cert"'));
+});
+
+test('identidad: soporte técnico, agentes y experimentación con traducciones completas', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const tr = JSON.parse(readFileSync(new URL('../data/translations.json', import.meta.url), 'utf8'));
+  assert.match(html, /id="sobre-erik"/);
+  assert.match(html, /mantenimiento CNC/);
+  assert.match(html, /agentes de Grok/);
+  assert.match(html, /No todas las piezas tienen el mismo grado de madurez/);
+  assert.ok(html.includes('https://zenodo.org/records/23448095'));
+  for (const text of html.match(/<section id="sobre-erik"[\s\S]*?<\/section>/)[0].matchAll(/>([^<>]+)</g)) {
+    const value = text[1].trim();
+    if (value && !['LinkedIn', 'Semantic Strands · Zenodo', 'ORCID'].includes(value)) assert.ok(tr[value], value);
+  }
 });
