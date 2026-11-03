@@ -1,249 +1,257 @@
 [
-  {
-    "id": "mcp-dual-llm-guard",
-    "category": "tools",
-    "title": "MCP Dual LLM Guard",
-    "type": "Seguridad de IA · Agentes LLM",
-    "description": "Desarrollamos un middleware en Python que neutraliza por diseño la inyección indirecta de prompts y el envenenamiento de herramientas MCP: un LLM privilegiado planifica solo con punteros, un LLM en cuarentena lee los datos sin acceso a herramientas y un monitor de referencia decide qué datos llegan a cada herramienta. Respaldado por 224 pruebas.",
-    "image": "/assets/mcp-dual-llm-guard.svg",
-    "alt": "Diagrama de MCP Dual LLM Guard: un monitor de referencia separa la entrada no confiable de un LLM privilegiado y un LLM en cuarentena",
-    "tags": [
-      "Python",
-      "MCP",
-      "Patrón Dual LLM",
-      "Verificado por M8ven · 75/100",
-      "OWASP LLM01 · LLM06 · LLM03"
-    ],
-    "links": [
-      {
-        "url": "https://github.com/Erik755/mcp-dual-llm-guard",
-        "label": "Ver en GitHub →"
-      },
-      {
-        "url": "https://m8ven.ai/mcp/erik755-mcp-dual-llm-guard-m0uqf4",
-        "label": "Ver ficha en M8ven →"
-      }
-    ],
-    "certification": {
-      "issuer": "M8ven",
-      "score": 75,
-      "id": "a5dad922de9566da",
-      "repository": "Erik755/mcp-dual-llm-guard",
-      "repositoryUrl": "https://github.com/Erik755/mcp-dual-llm-guard",
-      "verifiedAt": "2026-10-01T20:12-06:00",
-      "verified": "1 oct 2026, 8:12 p. m. (CST)",
-      "codeHash": "f39121b5de101ecd20cf6b2607f96678106031052aaac716a3a54dea94b0c504",
-      "signature": "e0477484f17a44ba1bc7504df4d3342955b0cee6342b1bbd22e8b34418ebc830",
-      "findings": [
-        "Análisis estático: sin exfiltración de credenciales, sin acceso a archivos sensibles, sin ofuscación",
-        "Código abierto con licencia y README"
-      ]
-    },
-    "featured": true
+ {
+  "id": "mcp-dual-llm-guard",
+  "category": "tools",
+  "title": "MCP Dual LLM Guard",
+  "type": "Seguridad de IA · Agentes LLM",
+  "description": "Desarrollamos un middleware en Python que neutraliza por diseño la inyección indirecta de prompts y el envenenamiento de herramientas MCP: un LLM privilegiado planifica solo con punteros, un LLM en cuarentena lee los datos sin acceso a herramientas y un monitor de referencia decide qué datos llegan a cada herramienta. Respaldado por 224 pruebas.",
+  "image": "/assets/mcp-dual-llm-guard.svg",
+  "alt": "Diagrama de MCP Dual LLM Guard: un monitor de referencia separa la entrada no confiable de un LLM privilegiado y un LLM en cuarentena",
+  "tags": [
+   "Python",
+   "MCP",
+   "Patrón Dual LLM",
+   "Verificado por M8ven · 75/100",
+   "OWASP LLM01 · LLM06 · LLM03"
+  ],
+  "links": [
+   {
+    "url": "https://github.com/Erik755/mcp-dual-llm-guard",
+    "label": "Ver en GitHub →"
+   },
+   {
+    "url": "https://m8ven.ai/mcp/erik755-mcp-dual-llm-guard-m0uqf4",
+    "label": "Ver ficha en M8ven →"
+   },
+   {
+    "url": "https://zenodo.org/records/23448095",
+    "label": "Reporte en Zenodo →"
+   },
+   {
+    "url": "https://orcid.org/0009-0001-4908-3084",
+    "label": "ORCID de Erik →"
+   }
+  ],
+  "certification": {
+   "issuer": "M8ven",
+   "score": 75,
+   "id": "a5dad922de9566da",
+   "repository": "Erik755/mcp-dual-llm-guard",
+   "repositoryUrl": "https://github.com/Erik755/mcp-dual-llm-guard",
+   "verifiedAt": "2026-10-01T20:12-06:00",
+   "verified": "1 oct 2026, 8:12 p. m. (CST)",
+   "codeHash": "f39121b5de101ecd20cf6b2607f96678106031052aaac716a3a54dea94b0c504",
+   "signature": "e0477484f17a44ba1bc7504df4d3342955b0cee6342b1bbd22e8b34418ebc830",
+   "findings": [
+    "Análisis estático: sin exfiltración de credenciales, sin acceso a archivos sensibles, sin ofuscación",
+    "Código abierto con licencia y README"
+   ]
   },
-  {
-    "id": "lentes",
-    "category": "android",
-    "title": "Lentes: cámara por carpetas",
-    "type": "Producto Android · Disponible en Google Play",
-    "description": "Convertimos la cámara nativa en un flujo organizado por contexto: cada lente separa fotos y videos en su propia carpeta y puede respaldarlos en un álbum equivalente de Google Fotos.",
-    "image": "/assets/lentes-feature.png",
-    "alt": "Lentes, aplicación Android para organizar fotos y videos por carpetas",
-    "tags": [
-      "Kotlin",
-      "Google Photos Library API",
-      "OAuth · Google Identity Services",
-      "WorkManager",
-      "Google Play Billing"
-    ],
-    "links": [
-      {
-        "url": "https://youtube.com/shorts/F23141yAGew",
-        "label": "Ver demostración →"
-      }
-    ],
-    "featured": true,
-    "privacy": "lentes",
-    "play": "https://play.google.com/store/apps/details?id=app.lentes.camaras"
+  "featured": true
+ },
+ {
+  "id": "lentes",
+  "category": "android",
+  "title": "Lentes: cámara por carpetas",
+  "type": "Producto Android · Disponible en Google Play",
+  "description": "Convertimos la cámara nativa en un flujo organizado por contexto: cada lente separa fotos y videos en su propia carpeta y puede respaldarlos en un álbum equivalente de Google Fotos.",
+  "image": "/assets/lentes-feature.png",
+  "alt": "Lentes, aplicación Android para organizar fotos y videos por carpetas",
+  "tags": [
+   "Kotlin",
+   "Google Photos Library API",
+   "OAuth · Google Identity Services",
+   "WorkManager",
+   "Google Play Billing"
+  ],
+  "links": [
+   {
+    "url": "https://youtube.com/shorts/F23141yAGew",
+    "label": "Ver demostración →"
+   }
+  ],
+  "featured": true,
+  "privacy": "lentes",
+  "play": "https://play.google.com/store/apps/details?id=app.lentes.camaras"
+ },
+ {
+  "id": "reporte-servicio-pro",
+  "category": "android",
+  "title": "Reporte Servicio Pro",
+  "type": "Producto Android · Disponible en Google Play",
+  "description": "Desarrollamos captura de servicios, clientes, evidencias, firmas, historial y documentos PDF/Excel desde el celular. Disponible en Google Play.",
+  "image": "/assets/embedded-6.webp",
+  "alt": "Captura de Reporte Servicio Pro en Android",
+  "tags": [
+   "Android",
+   "PDF",
+   "Excel",
+   "Firmas"
+  ],
+  "links": [
+   {
+    "url": "https://play.google.com/store/apps/details?id=com.reporteservicio.pro",
+    "label": "Ver en Google Play →"
+   },
+   {
+    "url": "https://youtu.be/ZYKilhLBWvg",
+    "label": "Ver demostración →"
+   }
+  ],
+  "featured": false,
+  "privacy": "reporte-servicio-pro",
+  "play": "https://play.google.com/store/apps/details?id=com.reporteservicio.pro",
+  "appCategory": "BusinessApplication",
+  "landing": {
+   "audience": "Para técnicos de campo y de mantenimiento: aire acondicionado y refrigeración, electricistas, mantenimiento industrial, instaladores, CCTV, elevadores, soporte de cómputo y empresas de servicio.",
+   "benefits": [
+    "Sin crear cuentas ni registrarte: abres la app y empiezas.",
+    "Haz el reporte en el sitio aunque no tengas internet: el reporte, las fotos, las firmas y los archivos PDF y Excel se crean sin conexión.",
+    "Marca el problema en cada foto con flechas, círculos, rectángulos, líneas, trazo libre y texto, y agrega una nota que aparece debajo de la imagen.",
+    "Firma del técnico y del cliente directamente en la pantalla.",
+    "PDF tamaño A4 y Excel (.xlsx) con tu logotipo, color de marca, datos del cliente y del equipo, actividades, fotos y firmas.",
+    "Compártelo por WhatsApp, correo u otras apps; también se guarda una copia en Descargas/Reportes_Servicio.",
+    "Catálogo de clientes con importación desde Excel o desde los contactos del teléfono, e historial de reportes con filtro por mes.",
+    "Ubicación GPS opcional, dictado por voz y app en español e inglés."
+   ],
+   "trial": "La descarga es gratis e incluye 10 días de prueba con todas las funciones. Después, guardar y exportar PDF o Excel, firmar, compartir y editar fotos requieren el Plan Pro, una suscripción anual de Google Play; puedes cancelar cuando quieras desde Google Play."
   },
-  {
-    "id": "reporte-servicio-pro",
-    "category": "android",
-    "title": "Reporte Servicio Pro",
-    "type": "Producto Android · Disponible en Google Play",
-    "description": "Desarrollamos captura de servicios, clientes, evidencias, firmas, historial y documentos PDF/Excel desde el celular. Disponible en Google Play.",
-    "image": "/assets/embedded-6.webp",
-    "alt": "Captura de Reporte Servicio Pro en Android",
-    "tags": [
-      "Android",
-      "PDF",
-      "Excel",
-      "Firmas"
-    ],
-    "links": [
-      {
-        "url": "https://play.google.com/store/apps/details?id=com.reporteservicio.pro",
-        "label": "Ver en Google Play →"
-      },
-      {
-        "url": "https://youtu.be/ZYKilhLBWvg",
-        "label": "Ver demostración →"
-      }
-    ],
-    "featured": false,
-    "privacy": "reporte-servicio-pro",
-    "play": "https://play.google.com/store/apps/details?id=com.reporteservicio.pro",
-    "appCategory": "BusinessApplication",
-    "landing": {
-      "audience": "Para técnicos de campo y de mantenimiento: aire acondicionado y refrigeración, electricistas, mantenimiento industrial, instaladores, CCTV, elevadores, soporte de cómputo y empresas de servicio.",
-      "benefits": [
-        "Sin crear cuentas ni registrarte: abres la app y empiezas.",
-        "Haz el reporte en el sitio aunque no tengas internet: el reporte, las fotos, las firmas y los archivos PDF y Excel se crean sin conexión.",
-        "Marca el problema en cada foto con flechas, círculos, rectángulos, líneas, trazo libre y texto, y agrega una nota que aparece debajo de la imagen.",
-        "Firma del técnico y del cliente directamente en la pantalla.",
-        "PDF tamaño A4 y Excel (.xlsx) con tu logotipo, color de marca, datos del cliente y del equipo, actividades, fotos y firmas.",
-        "Compártelo por WhatsApp, correo u otras apps; también se guarda una copia en Descargas/Reportes_Servicio.",
-        "Catálogo de clientes con importación desde Excel o desde los contactos del teléfono, e historial de reportes con filtro por mes.",
-        "Ubicación GPS opcional, dictado por voz y app en español e inglés."
-      ],
-      "trial": "La descarga es gratis e incluye 10 días de prueba con todas las funciones. Después, guardar y exportar PDF o Excel, firmar, compartir y editar fotos requieren el Plan Pro, una suscripción anual de Google Play; puedes cancelar cuando quieras desde Google Play."
-    },
-    "seoDescription": "Haz tu reporte de servicio u orden de trabajo en el sitio, aunque no tengas internet, y entrégalo en PDF o Excel con evidencia fotográfica, firmas y el logotipo de tu empresa."
-  },
-  {
-    "id": "control-gastos-pro",
-    "category": "android",
-    "title": "Control de Gastos Pro",
-    "type": "Producto Android",
-    "description": "Diseñamos una app para organizar gastos personales y empresariales por periodo, registrar movimientos desde los ajustes rápidos y conservar un historial privado en el teléfono.",
-    "image": "/assets/control-gastos-pro-dashboard.webp",
-    "alt": "Panel de Control de Gastos Pro con periodo y sincronización con Google Sheets",
-    "tags": [
-      "Control financiero",
-      "Acceso rápido",
-      "Google Sheets"
-    ],
-    "links": [
-      {
-        "url": "https://youtube.com/shorts/5kS7bNLp73M",
-        "label": "Ver demostración →"
-      }
-    ],
-    "featured": false,
-    "privacy": "control-gastos-pro"
-  },
-  {
-    "id": "calculadora-colores",
-    "category": "web",
-    "title": "Aura Glamour · Calculadora de Colores",
-    "type": "PWA · Proyecto para cliente: salón Aura Glamour",
-    "description": "Una herramienta de bolsillo para coloristas y estilistas que trabajan con tintes Salerm: del diagnóstico capilar a la fórmula exacta en gramos de tinte, mililitros de oxidante, volumen y tiempo de exposición.",
-    "image": "/assets/calculadora-colores.webp",
-    "alt": "Captura de la Calculadora de Colores de Aura Glamour: carrete 3D de tubos Salerm y laboratorio de mezclas",
-    "tags": [
-      "PWA",
-      "Tailwind CSS",
-      "Service Worker",
-      "IndexedDB",
-      "Vercel"
-    ],
-    "links": [
-      {
-        "url": "https://calculadora-colores.vercel.app/",
-        "label": "Abrir la app →"
-      },
-      {
-        "url": "https://youtube.com/shorts/W1TL4d8pi1k",
-        "label": "Ver demostración →"
-      }
-    ],
-    "featured": false,
-    "seoTitle": "Calculadora de Colores Salerm para coloristas | Aura Glamour",
-    "seoDescription": "App web para coloristas que usan Salerm: diagnóstico, fórmula en gramos y ml, simulador de color y clientes con fotos. Funciona sin internet.",
-    "canonical": true,
-    "appUrl": "https://calculadora-colores.vercel.app/",
-    "landing": {
-      "audience": "Tu esencia, nuestro arte. Las fórmulas son una guía de apoyo; la decisión final es de la colorista.",
-      "benefits": [
-        "Diagnóstico capilar y fórmula Salerm (tubo de 60 g + 90 ml)",
-        "Regla del 11 y colores primarios, explicados visualmente",
-        "Carrete 3D de tubos y bol de mezcla",
-        "Simulador de color sobre modelo (previsualización de apoyo)",
-        "Procedimiento paso a paso y galería de 17 estilos",
-        "\"Mis clientes\" con fotos de cada trabajo y respaldo, todo guardado solo en el teléfono",
-        "Instalable, funciona sin internet, 4 temas"
-      ]
-    }
-  },
-  {
-    "id": "ltv-maestro",
-    "category": "web",
-    "title": "LTV Maestro · La Tercera Vuelta",
-    "type": "Plataforma web operativa",
-    "description": "Desarrollamos una plataforma para la operación diaria que reúne ventas, órdenes activas, inventario por peso, recetas y costeo, cortes de caja y reportes para una toma de decisiones más clara.",
-    "image": "https://ltv-maestro.vercel.app/logo.png",
-    "alt": "Logotipo de La Tercera Vuelta, plataforma LTV Maestro",
-    "tags": [
-      "React + Vite",
-      "Tailwind CSS",
-      "Base44",
-      "Vercel",
-      "Operación y reportes"
-    ],
-    "links": [
-      {
-        "url": "https://ltv-maestro.vercel.app/",
-        "label": "Ver plataforma →"
-      }
-    ],
-    "featured": false
-  },
-  {
-    "id": "evidencia-visual",
-    "category": "tools",
-    "title": "Edición de fotos y firmas",
-    "type": "UX de evidencia",
-    "description": "Construimos herramientas para explicar problemas visualmente con flechas, texto, trazos, sellos y firmas de técnico o cliente.",
-    "image": "/assets/embedded-7.webp",
-    "alt": "Editor de fotos con evidencia anotada",
-    "tags": [
-      "Fotos",
-      "Anotación",
-      "Firma"
-    ],
-    "links": [],
-    "featured": false
-  },
-  {
-    "id": "formatos-pdf-excel",
-    "category": "tools",
-    "title": "Formatos PDF y Excel",
-    "type": "Documentos técnicos",
-    "description": "Convertimos datos de campo en documentos editables y presentables para reducir reprocesos después de un servicio.",
-    "image": "/assets/embedded-8.webp",
-    "alt": "Reporte Excel generado desde app Android",
-    "tags": [
-      "Plantillas",
-      "Historial",
-      "Entrega"
-    ],
-    "links": [],
-    "featured": false
-  },
-  {
-    "id": "asistentes-ia",
-    "category": "tools",
-    "title": "TalkTrend, CinematicApp y asistentes",
-    "type": "IA y flujos inteligentes",
-    "description": "Integramos generación de video, publicación, agentes, voz, análisis de pantalla y flujos inteligentes para tareas creativas y operativas.",
-    "image": "/assets/embedded-9.webp",
-    "alt": "Representación visual de automatización, Android e IA",
-    "tags": [
-      "IA",
-      "Video",
-      "Agentes"
-    ],
-    "links": [],
-    "featured": false
+  "seoDescription": "Haz tu reporte de servicio u orden de trabajo en el sitio, aunque no tengas internet, y entrégalo en PDF o Excel con evidencia fotográfica, firmas y el logotipo de tu empresa."
+ },
+ {
+  "id": "control-gastos-pro",
+  "category": "android",
+  "title": "Control de Gastos Pro",
+  "type": "Producto Android",
+  "description": "Diseñamos una app para organizar gastos personales y empresariales por periodo, registrar movimientos desde los ajustes rápidos y conservar un historial privado en el teléfono.",
+  "image": "/assets/control-gastos-pro-dashboard.webp",
+  "alt": "Panel de Control de Gastos Pro con periodo y sincronización con Google Sheets",
+  "tags": [
+   "Control financiero",
+   "Acceso rápido",
+   "Google Sheets"
+  ],
+  "links": [
+   {
+    "url": "https://youtube.com/shorts/5kS7bNLp73M",
+    "label": "Ver demostración →"
+   }
+  ],
+  "featured": false,
+  "privacy": "control-gastos-pro"
+ },
+ {
+  "id": "calculadora-colores",
+  "category": "web",
+  "title": "Aura Glamour · Calculadora de Colores",
+  "type": "PWA · Proyecto para cliente: salón Aura Glamour",
+  "description": "Una herramienta de bolsillo para coloristas y estilistas que trabajan con tintes Salerm: del diagnóstico capilar a la fórmula exacta en gramos de tinte, mililitros de oxidante, volumen y tiempo de exposición.",
+  "image": "/assets/calculadora-colores.webp",
+  "alt": "Captura de la Calculadora de Colores de Aura Glamour: carrete 3D de tubos Salerm y laboratorio de mezclas",
+  "tags": [
+   "PWA",
+   "Tailwind CSS",
+   "Service Worker",
+   "IndexedDB",
+   "Vercel"
+  ],
+  "links": [
+   {
+    "url": "https://calculadora-colores.vercel.app/",
+    "label": "Abrir la app →"
+   },
+   {
+    "url": "https://youtube.com/shorts/W1TL4d8pi1k",
+    "label": "Ver demostración →"
+   }
+  ],
+  "featured": false,
+  "seoTitle": "Calculadora de Colores Salerm para coloristas | Aura Glamour",
+  "seoDescription": "App web para coloristas que usan Salerm: diagnóstico, fórmula en gramos y ml, simulador de color y clientes con fotos. Funciona sin internet.",
+  "canonical": true,
+  "appUrl": "https://calculadora-colores.vercel.app/",
+  "landing": {
+   "audience": "Tu esencia, nuestro arte. Las fórmulas son una guía de apoyo; la decisión final es de la colorista.",
+   "benefits": [
+    "Diagnóstico capilar y fórmula Salerm (tubo de 60 g + 90 ml)",
+    "Regla del 11 y colores primarios, explicados visualmente",
+    "Carrete 3D de tubos y bol de mezcla",
+    "Simulador de color sobre modelo (previsualización de apoyo)",
+    "Procedimiento paso a paso y galería de 17 estilos",
+    "\"Mis clientes\" con fotos de cada trabajo y respaldo, todo guardado solo en el teléfono",
+    "Instalable, funciona sin internet, 4 temas"
+   ]
   }
+ },
+ {
+  "id": "ltv-maestro",
+  "category": "web",
+  "title": "LTV Maestro · La Tercera Vuelta",
+  "type": "Plataforma web operativa",
+  "description": "Desarrollamos una plataforma para la operación diaria que reúne ventas, órdenes activas, inventario por peso, recetas y costeo, cortes de caja y reportes para una toma de decisiones más clara.",
+  "image": "https://ltv-maestro.vercel.app/logo.png",
+  "alt": "Logotipo de La Tercera Vuelta, plataforma LTV Maestro",
+  "tags": [
+   "React + Vite",
+   "Tailwind CSS",
+   "Base44",
+   "Vercel",
+   "Operación y reportes"
+  ],
+  "links": [
+   {
+    "url": "https://ltv-maestro.vercel.app/",
+    "label": "Ver plataforma →"
+   }
+  ],
+  "featured": false
+ },
+ {
+  "id": "evidencia-visual",
+  "category": "tools",
+  "title": "Edición de fotos y firmas",
+  "type": "UX de evidencia",
+  "description": "Construimos herramientas para explicar problemas visualmente con flechas, texto, trazos, sellos y firmas de técnico o cliente.",
+  "image": "/assets/embedded-7.webp",
+  "alt": "Editor de fotos con evidencia anotada",
+  "tags": [
+   "Fotos",
+   "Anotación",
+   "Firma"
+  ],
+  "links": [],
+  "featured": false
+ },
+ {
+  "id": "formatos-pdf-excel",
+  "category": "tools",
+  "title": "Formatos PDF y Excel",
+  "type": "Documentos técnicos",
+  "description": "Convertimos datos de campo en documentos editables y presentables para reducir reprocesos después de un servicio.",
+  "image": "/assets/embedded-8.webp",
+  "alt": "Reporte Excel generado desde app Android",
+  "tags": [
+   "Plantillas",
+   "Historial",
+   "Entrega"
+  ],
+  "links": [],
+  "featured": false
+ },
+ {
+  "id": "asistentes-ia",
+  "category": "tools",
+  "title": "TalkTrend, CinematicApp y asistentes",
+  "type": "IA y flujos inteligentes",
+  "description": "Integramos generación de video, publicación, agentes, voz, análisis de pantalla y flujos inteligentes para tareas creativas y operativas.",
+  "image": "/assets/embedded-9.webp",
+  "alt": "Representación visual de automatización, Android e IA",
+  "tags": [
+   "IA",
+   "Video",
+   "Agentes"
+  ],
+  "links": [],
+  "featured": false
+ }
 ]
