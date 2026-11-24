@@ -579,5 +579,19 @@ window.EXTREME_TRANSLATIONS = {
   "Investigación abierta": "Open research",
   "Semantic Strands es un reporte técnico de un resultado negativo sobre compresión de contexto. Publicarlo permite compartir lo aprendido, no dar por validada una hipótesis.": "Semantic Strands is a technical report on a negative result in context compression. Publishing it shares what was learned; it does not validate a hypothesis.",
   "Reporte en Zenodo →": "Report on Zenodo →",
-  "ORCID de Erik →": "Erik's ORCID →"
+  "ORCID de Erik →": "Erik's ORCID →",
+  "Capacitación": "Training",
+  "Entrar a AnotaLab": "Open AnotaLab",
+  "Capacitación abierta": "Open training",
+  "Gratuita": "Free",
+  "AnotaLab: entrena tu criterio para IA.": "AnotaLab: train your judgment for AI.",
+  "Ruta gratuita en español para practicar data annotation durante ocho semanas. Incluye videos, ejercicios escritos, pruebas de comprensión, ayuda con ejemplos y progreso bloqueado por aprobación. Está pensada para quien quiere prepararse antes de aplicar a trabajo remoto.": "A free Spanish-language path to practice data annotation over eight weeks. It includes videos, written exercises, comprehension quizzes, example-based help, and progress gated by approval. It is designed for anyone who wants to prepare before applying for remote work.",
+  "Características de AnotaLab": "AnotaLab features",
+  "1 hora al día": "1 hour a day",
+  "Texto, imagen y audio": "Text, image, and audio",
+  "Evaluación de IA": "AI evaluation",
+  "Evidencias descargables": "Downloadable evidence",
+  "Sin cuenta": "No account needed",
+  "Abrir AnotaLab": "Open AnotaLab",
+  "Uso libre para capacitación personal. La plataforma no solicita datos personales ni garantiza contratación.": "Free to use for personal training. The platform does not ask for personal data and does not guarantee hiring."
 };
